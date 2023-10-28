@@ -1,0 +1,6 @@
+.idea/
+testCamera
+imgOut
+
+# System files
+.DS_Store
