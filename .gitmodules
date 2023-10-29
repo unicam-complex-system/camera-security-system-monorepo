@@ -1,0 +1,3 @@
+[submodule "ImageRecognition"]
+	path = ImageRecognition
+	url = https://github.com/unicam-complex-system/ImageRecognition
