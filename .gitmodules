@@ -2,3 +2,7 @@
 	path = ImageRecognition
 	url = https://github.com/unicam-complex-system/ImageRecognition
 	branch = main
+[submodule "Backend"]
+	path = Backend
+	url = https://github.com/unicam-complex-system/Backend
+	branch = main
