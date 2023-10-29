@@ -1,8 +1,13 @@
+import os
+
 import cv2
 
 
 # the function passes a frame_count to outFormat, also remember to define all path
-def obtainFramesFromFile(filePath, outFormat, debug: bool):
+def obtainFrames(filePath: str, outFormat: str, debug: bool):
+    if not dirCheck(outFormat):
+        return
+
     video_capture = cv2.VideoCapture(filePath)
 
     previousFrameCount = -1
@@ -41,3 +46,16 @@ def obtainFramesFromFile(filePath, outFormat, debug: bool):
     # Release video capturer and closes the windows
     video_capture.release()
     cv2.destroyAllWindows()
+
+
+def dirCheck(directory: str):
+    outPath = os.path.dirname(directory)
+
+    if not os.path.exists(outPath):
+        choice = input(f"Directory '{outPath}' not exists. You want to create it? (Yes/No): ")
+        if choice.lower() == 'no':
+            print("Operazione annullata.")
+            return False
+
+        os.makedirs(outPath)
+    return True

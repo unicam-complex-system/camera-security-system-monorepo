@@ -1,7 +1,9 @@
-from src.handleSystemStream import obtainFramesFromFile
+from src.handleSystemStream import obtainFrames
 
-obtainFramesFromFile(
-    'testCamera/SuccessfulFiles/test.h264',
-    'imgOut/test.h264_frame_{:04d}.jpeg',
-    True
-)
+if __name__ == "__main__":
+    print("Press q for exit")
+    obtainFrames(
+        'img/SuccessfulConversions/test.h264',
+        'img/out/test.h264_frame_{:04d}.jpeg',
+        True
+    )

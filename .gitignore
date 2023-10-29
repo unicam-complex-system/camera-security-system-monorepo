@@ -1,6 +1,12 @@
+img
+
+
+# Intellij
 .idea/
-testCamera
-imgOut
+*.iml
+
+# Python
+__pycache__
 
 # System files
 .DS_Store
