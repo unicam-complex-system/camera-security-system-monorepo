@@ -3,7 +3,7 @@ import os
 import cv2
 
 
-# the function passes a frame_count to outFormat, also remember to define all path
+# The function passes a frame_count to outFormat, also remember to define all path
 def obtainFrames(filePath: str, outFormat: str, debug: bool):
     if not dirCheck(outFormat):
         return
@@ -39,7 +39,7 @@ def obtainFrames(filePath: str, outFormat: str, debug: bool):
         if debug:
             cv2.imshow('Frame', frame)
 
-        # Esci dal ciclo se premi il tasto 'q'
+        # Press 'q' to exit the for FIXME
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
