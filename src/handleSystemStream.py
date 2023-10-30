@@ -4,11 +4,11 @@ import cv2
 
 
 # The function passes a frame_count to outFormat, also remember to define all path
-def obtainFrames(filePath: str, outFormat: str, debug: bool):
+def obtainFrames(inputPosition: str, outFormat: str, debug: bool):
     if not dirCheck(outFormat):
         return
 
-    video_capture = cv2.VideoCapture(filePath)
+    video_capture = cv2.VideoCapture(inputPosition)
 
     previousFrameCount = -1
 
@@ -39,7 +39,7 @@ def obtainFrames(filePath: str, outFormat: str, debug: bool):
         if debug:
             cv2.imshow('Frame', frame)
 
-        # Press 'q' to exit the for FIXME
+        # Press 'q' to exit the for: works only in the debug view
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
