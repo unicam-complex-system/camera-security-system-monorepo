@@ -5,6 +5,8 @@
 [submodule "css-frontend"]
 	path = css-frontend
 	url = https://github.com/unicam-complex-system/css-frontend.git
+	branch = main
 [submodule "Backend"]
 	path = Backend
 	url = https://github.com/unicam-complex-system/Backend
+	branch = main
