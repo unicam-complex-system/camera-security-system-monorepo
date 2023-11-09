@@ -1,61 +1,66 @@
 import os
+import subprocess
 
 import cv2
 
+# Define the command to fetch the video stream using curl and extract frames using ffmpeg
+command = "curl http://admin:@{}/livestream/11 --no-buffer -o - | ffmpeg -loglevel quiet -y -hide_banner -i - -vf 'fps=1' {}"
 
-# The function passes a frame_count to outFormat, also remember to define all path
-def obtainFrames(inputPosition: str, outFormat: str, debug: bool):
-    if not dirCheck(outFormat):
-        return
 
-    video_capture = cv2.VideoCapture(inputPosition)
+# The function uses outFormat where the char "%d" is the frame count, also remember to define all path
+def handle_status(ip: str, down: bool):
+    if down:
+        print(f"Disconnected from ip: {ip}")
+    else:
+        print(f"Connected with ip: {ip}")
 
-    previousFrameCount = -1
+    pass # TODO save log
+
+
+def handle_connection(ip: str, out_format: str):
+    # Run the command using subprocess
+    try:
+        subprocess.run(
+            command.format(ip, out_format),
+            shell=True,
+            check=True
+        )
+        print("Frames extracted successfully.")
+    except subprocess.CalledProcessError as e:
+        print(e.returncode)
+        print(f"Error: {e}")
+
+
+def obtain_frames(ip: str, out_format: str, debug: bool):
+    if not dir_check(out_format, not debug):
+        raise Exception("Path not usable")
 
     while True:
-        # Read a frame from video, right is a boolean that say if the frame was received correctly
-        right, frame = video_capture.read()
-
-        # The order of calls here is important
-        # We obtain frame_count here because the counter is incremented by vide_capture.read
-        frame_count = int(video_capture.get(cv2.CAP_PROP_POS_FRAMES))
-
-        # controls if the frame is the same as previous, this means that the last frame was reached
-        if previousFrameCount == frame_count:
-            break
-
-        previousFrameCount = frame_count
-
-        if not right:
-            raise Exception(f"Some unknown error happened at frame {frame_count}")
-
-        # Saves the frame as jpeg
-        cv2.imwrite(
-            outFormat.format(frame_count),
-            frame
-        )
-
-        # Shows the frame
-        if debug:
-            cv2.imshow('Frame', frame)
-
-        # Press 'q' to exit the for: works only in the debug view
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    # Release video capturer and closes the windows
-    video_capture.release()
-    cv2.destroyAllWindows()
+        try:
+            subprocess.run(
+                "ping -c 1 {}".format(ip),
+                stdout=subprocess.PIPE,
+                shell=True,
+                check=True
+            )
+            handle_status(ip, False)
+            handle_connection(ip, out_format)
+        except subprocess.CalledProcessError:
+            handle_status(ip, True)
 
 
-def dirCheck(directory: str):
-    outPath = os.path.dirname(directory)
+def dir_check(directory: str, force: bool):
+    out_path = os.path.dirname(directory)
 
-    if not os.path.exists(outPath):
-        choice = input(f"Directory '{outPath}' not exists. You want to create it? (Yes/No): ")
+    if not os.path.exists(out_path):
+        if force:
+            os.makedirs(out_path)
+            return True
+
+        choice = input(f"Directory '{out_path}' not exists. You want to create it? (Yes/No): ")
         if choice.lower() == 'no':
             print("Operazione annullata.")
             return False
 
-        os.makedirs(outPath)
+        os.makedirs(out_path)
     return True
