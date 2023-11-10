@@ -1,0 +1,51 @@
+<mxfile host="app.diagrams.net" modified="2023-11-10T09:55:05.385Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15" etag="ErcL7n3e2GLzYPONJ7aC" version="22.1.0" type="device">
+  <diagram id="2f404044-711c-603c-8f00-f6bb4c023d3c" name="Page-1">
+    <mxGraphModel dx="1314" dy="901" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-65" value="Backend" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-66" value="Frontend" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-67" value="Machine Learning" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-68" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="R8XG8vMAyBgI75kL8bxG-65" target="R8XG8vMAyBgI75kL8bxG-66">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="460" as="sourcePoint" />
+            <mxPoint x="420" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-69" value="Makes request" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8XG8vMAyBgI75kL8bxG-68">
+          <mxGeometry x="-0.4252" y="3" relative="1" as="geometry">
+            <mxPoint x="-3" y="42" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-70" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="R8XG8vMAyBgI75kL8bxG-65" target="R8XG8vMAyBgI75kL8bxG-67">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="460" as="sourcePoint" />
+            <mxPoint x="768" y="222" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-71" value="Keeps updated" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8XG8vMAyBgI75kL8bxG-70">
+          <mxGeometry x="-0.05" y="2" relative="1" as="geometry">
+            <mxPoint x="-3" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-74" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="R8XG8vMAyBgI75kL8bxG-75" target="R8XG8vMAyBgI75kL8bxG-67">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="760" y="190" as="sourcePoint" />
+            <mxPoint x="800" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8XG8vMAyBgI75kL8bxG-75" value="Camera System" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="130" width="250" height="400" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
