@@ -140,8 +140,6 @@
       <bpmn:incoming>Flow_1rc1sul</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1i8jxwa" />
     </bpmn:endEvent>
-    <bpmn:dataObjectReference id="DataObjectReference_0m0laeg" name="Frame" dataObjectRef="DataObject_0gh4i2q" />
-    <bpmn:dataObject id="DataObject_0gh4i2q" />
     <bpmn:sequenceFlow id="Flow_1nfqwgo" sourceRef="Event_1up063f" targetRef="Activity_0dx3dov" />
     <bpmn:sequenceFlow id="Flow_1am9m1i" sourceRef="Activity_1g1wy8a" targetRef="Event_04mh0u1" />
     <bpmn:sequenceFlow id="Flow_1r5hv7o" sourceRef="Event_1lgdehc" targetRef="Activity_0bpkil2" />
@@ -151,6 +149,8 @@
     <bpmn:sequenceFlow id="Flow_1c4jraj" sourceRef="Event_1gtiuf1" targetRef="Activity_0qfjjde" />
     <bpmn:sequenceFlow id="Flow_159lrke" sourceRef="Activity_0qfjjde" targetRef="Activity_0phdd2l" />
     <bpmn:sequenceFlow id="Flow_1rc1sul" sourceRef="Activity_0phdd2l" targetRef="Event_0gafw75" />
+    <bpmn:dataObjectReference id="DataObjectReference_0m0laeg" name="Frame" dataObjectRef="DataObject_0gh4i2q" />
+    <bpmn:dataObject id="DataObject_0gh4i2q" />
   </bpmn:process>
   <bpmn:process id="Process_15tt3vg" isExecutable="false">
     <bpmn:laneSet id="LaneSet_0w6hukq">
@@ -414,9 +414,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_0m0laeg_di" bpmnElement="DataObjectReference_0m0laeg">
-        <dc:Bounds x="962" y="875" width="36" height="50" />
+        <dc:Bounds x="952" y="875" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="964" y="851" width="32" height="14" />
+          <dc:Bounds x="954" y="851" width="32" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1nfqwgo_di" bpmnElement="Flow_1nfqwgo">
@@ -596,12 +596,12 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1b4ig5r_di" bpmnElement="DataOutputAssociation_1b4ig5r">
-        <di:waypoint x="920" y="995" />
-        <di:waypoint x="963" y="925" />
+        <di:waypoint x="919" y="994" />
+        <di:waypoint x="955" y="925" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1c6lng5_di" bpmnElement="DataOutputAssociation_1c6lng5">
-        <di:waypoint x="1009" y="970" />
-        <di:waypoint x="986" y="925" />
+        <di:waypoint x="1005" y="970" />
+        <di:waypoint x="978" y="925" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1dyfujf_di" bpmnElement="DataOutputAssociation_1dyfujf">
         <di:waypoint x="1190" y="970" />
