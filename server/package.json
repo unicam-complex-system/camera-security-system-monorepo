@@ -4,11 +4,11 @@
   "author": "Glydric",
   "description": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "GPL",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "npm ci && nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

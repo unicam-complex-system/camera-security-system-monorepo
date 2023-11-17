@@ -15,15 +15,15 @@ services:
 
   backend:
     container_name: backend
-    image: node:latest
+    image: node:21-alpine
     depends_on:
      - mongo
     restart: always
     ports:
       - 3000:3000
-    working_dir: /app
+    working_dir: /home/node
     volumes:
-      - ./backend:/app
+      - ./server:/home/node
     env_file:
       - .env.mongo_auth
-    command: npm ci && npm start
+    command: npm start
