@@ -73,7 +73,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
+.env.mongo_auth
 .env.development.local
 .env.test.local
 .env.production.local
@@ -102,7 +102,6 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # Docusaurus cache and generated files
 .docusaurus
@@ -135,3 +134,9 @@ dist
 
 # System files
 .DS_Store
+
+## Mongo docker data
+mongo-data
+
+## Envs
+.env*
