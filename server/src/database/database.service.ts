@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
+
 import { Injectable } from "@nestjs/common";
 import { MongoClient } from "mongodb";
 import * as console from 'console';

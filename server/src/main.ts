@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
