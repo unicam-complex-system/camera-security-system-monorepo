@@ -2,20 +2,18 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Controller, Get, Param, Post } from "@nestjs/common";
-import { AppService } from "./app.service";
-import { DatabaseService } from "../database/database.service";
+import { Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 
 const cameraIds = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 type CameraIds = (typeof cameraIds)[number];
 
-const filters = ["intrusionDetection", "online", "offline", "", "all"] as const;
+const filters = ["intrusionDetection", "online", "offline", "all"] as const;
 type FiltersAvailable = (typeof filters)[number];
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly appService: AppService,
     private readonly database: DatabaseService<CameraIds, FiltersAvailable>,
   ) {}
 
@@ -25,17 +23,17 @@ export class AppController {
     // without being checked by nest js,
     // so the check is done at runtime
     if (!filters.includes(filter)) {
-      return "Invalid filter " + filter;
+      throw new HttpException(
+        `Invalid filter "${filter}", the available filters are ${filters}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return this.database.aggregateCamera(filter);
   }
 
   @Post("/:id/online/:status")
-  saveStatus(
-    @Param("id") camera: string,
-    @Param("status") status: boolean,
-  ) {
-    const cameraId = parseInt(camera) as CameraIds
+  saveStatus(@Param("id") camera: string, @Param("status") status: boolean) {
+    const cameraId = parseInt(camera) as CameraIds;
 
     if (!cameraIds.includes(cameraId)) {
       return "Invalid camera Id " + cameraId;
@@ -44,7 +42,7 @@ export class AppController {
     return this.database.addData({
       cameraId: cameraId,
       timestamp: new Date().toISOString(),
-      online: status
-    })
+      online: status,
+    });
   }
 }

@@ -1,0 +1,40 @@
+openapi: 3.0.0
+paths:
+  /aggregate/{filter}:
+    get:
+      operationId: AppController_getAggregateValues
+      parameters:
+        - name: filter
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /{id}/online/{status}:
+    post:
+      operationId: AppController_saveStatus
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: path
+          schema:
+            type: boolean
+      responses:
+        '201':
+          description: ''
+info:
+  title: Complex System Design
+  description: The backend API description
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas: {}
