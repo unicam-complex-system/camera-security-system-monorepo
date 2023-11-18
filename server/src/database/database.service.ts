@@ -3,64 +3,68 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { MongoClient } from "mongodb";
-import * as console from 'console';
-import "dotenv/config"
+import { Db, Document, MongoClient } from "mongodb";
+import "dotenv/config";
+import * as console from "console";
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
-
-const collections: Array<string> = [
-  "camera1",
-  "camera2",
-  "camera3",
-  "camera4",
-  "camera5",
-  "camera6",
-  "camera7",
-  "camera8",
-  "camera9",
-];
-
-const collectionView = collections.map((collection) => {
-  return {
-    $unionWith: {
-      coll: collection,
-      pipeline: [
-        {
-          $addFields: {
-            sourceCollection: collection,
-          },
-        },
-        // Add additional pipeline stages if needed for each collection
-      ],
-    },
-  };
-});
+type DataType = {
+  timestamp: string;
+  online?: boolean;
+  intrusionDetection?: string;
+};
 
 @Injectable()
-export class DatabaseService {
-  async createView() {
-    const db = getDB();
-    console.log(url)
+export class DatabaseService<
+  AvailableCameras extends number,
+  Filters extends string,
+> {
+  private DB: Db;
 
+  constructor() {
+    const client = new MongoClient(url);
 
-    if (await db.listCollections({ name: "all_cameras_view" }).hasNext()) {
-      console.log("View already exists");
-      return;
-    }
-    const pipeline = collectionView;
-
-    await db.createCollection("all_cameras_view", {
-      viewOn: collections[0],
-      pipeline,
-    });
+    client.connect();
+    this.DB = client.db("complexsd");
   }
-}
 
-// mongodb.
-function getDB() {
-  const client = new MongoClient(url);
+  async addData(data: { cameraId: AvailableCameras } & DataType) {
+    const col = this.DB.collection(`cameras`);
+    return await col.insertOne(data);
+  }
 
-  client.connect();
-  return client.db("complexsd");
+  async aggregateCamera(filter?: Filters): Promise<Document[]> {
+    console.log(filter);
+    return await this.DB.collection("cameras")
+      .aggregate()
+      .match(this.getFilter(filter))
+      .group({
+        _id: "$cameraId",
+        count: {
+          $sum: 1,
+        },
+      })
+      .toArray();
+  }
+
+  private getFilter(filter?: Filters) {
+    switch (filter) {
+      case "intrusionDetection":
+        return {
+          intrusionDetection: { $exists: true },
+        };
+      case "online":
+        return {
+          online: { $eq: true },
+        };
+      case "offline":
+        return {
+          online: { $eq: false },
+        };
+      case "":
+      case "all":
+      default:
+        return {};
+    }
+  }
 }
