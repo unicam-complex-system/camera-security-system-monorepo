@@ -4,6 +4,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from './database.service';
+import * as console from 'console';
 
 const cameraIds = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
