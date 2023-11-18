@@ -2,10 +2,9 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Injectable } from "@nestjs/common";
-import { Db, Document, MongoClient } from "mongodb";
-import "dotenv/config";
-import * as console from "console";
+import { Injectable } from '@nestjs/common';
+import { Db, Document, MongoClient } from 'mongodb';
+import 'dotenv/config';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
 type DataType = {
@@ -33,9 +32,8 @@ export class DatabaseService<
     return await col.insertOne(data);
   }
 
-  async aggregateCamera(filter?: Filters): Promise<Document[]> {
-    console.log(filter);
-    return await this.DB.collection("cameras")
+  aggregateCamera(filter?: Filters): Promise<Document[]> {
+    return this.DB.collection("cameras")
       .aggregate()
       .match(this.getFilter(filter))
       .group({
