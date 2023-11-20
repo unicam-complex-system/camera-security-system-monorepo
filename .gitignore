@@ -140,3 +140,6 @@ mongo-data
 
 ## Envs
 .env*
+
+## image output
+img
