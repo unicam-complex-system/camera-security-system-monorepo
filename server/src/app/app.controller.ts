@@ -27,7 +27,7 @@ type FiltersAvailable = (typeof filters)[number];
 export class AppController {
   constructor(
     private readonly database: DatabaseService<CameraIds, FiltersAvailable>,
-    private storage: StorageService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get("/aggregate/:filter")
@@ -84,11 +84,12 @@ export class AppController {
     if (!cameraIds.includes(cameraId)) {
       return "Invalid camera Id " + cameraId;
     }
-    const path = this.storage.secureSaveFile(file.buffer)
+    const timestamp = new Date().toISOString()
+    const path = this.storage.secureSaveFile(timestamp, file.buffer)
 
     this.database.addData({
       cameraId: cameraId,
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp,
       intrusionDetection: path
     })
   }

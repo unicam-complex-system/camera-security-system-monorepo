@@ -1,7 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { StorageService } from './storage.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { StorageService } from "./storage.service";
+import * as fs from "fs";
 
-describe('StorageService', () => {
+describe("StorageService", () => {
   let service: StorageService;
 
   beforeEach(async () => {
@@ -12,7 +13,10 @@ describe('StorageService', () => {
     service = module.get<StorageService>(StorageService);
   });
 
-  it('should be defined', () => {
+  it("Should create file", () => {
     expect(service).toBeDefined();
+    const path = service.secureSaveFile(new Date().toISOString(), "sample data test");
+    expect(fs.existsSync(path)).toBeTruthy();
+    fs.rmSync(path);
   });
 });

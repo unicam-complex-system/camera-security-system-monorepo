@@ -1,23 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import * as fs from "node:fs";
+import * as fs from 'fs';
 
-const imagePath = "img";
 
 @Injectable()
 export class StorageService {
-  secureSaveFile(buffer: NodeJS.ArrayBufferView): string {
-    let index = 0;
-    if (fs.existsSync(imagePath)) {
-      const files = fs.readdirSync(imagePath).map((n) => parseInt(n));
+  imagePath: string = "img";
 
-      index = files.length;
-      while (files.includes(index)) {
-        index++;
-      }
-    } else {
-      fs.mkdirSync(imagePath);
+  secureSaveFile(filename: string, buffer: NodeJS.ArrayBufferView| string): string {
+    if (!fs.existsSync(this.imagePath)) {
+      fs.mkdirSync(this.imagePath);
     }
-    const path = `${imagePath}/${index}`;
+    const path = `${this.imagePath}/${filename}`;
     fs.writeFileSync(path, buffer);
     return path;
   }
