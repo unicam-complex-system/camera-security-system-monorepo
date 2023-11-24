@@ -8,8 +8,7 @@ import {
   HttpStatus,
   Param,
   ParseFilePipeBuilder,
-  Post,
-  UploadedFile,
+  Post, UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
@@ -25,7 +24,7 @@ import { CameraValidator, CameraIds } from '../../validators/camera-id/camera.pi
   description: "Invalid filter or camera id",
 })
 export class MachineLearningController {
-  // @Param("id") id: string;
+
   constructor(private readonly database: DatabaseService) {}
 
   @ApiOperation({
@@ -35,7 +34,7 @@ export class MachineLearningController {
     status: 201,
     description: "Returns the result of adding status",
   })
-  @Post("/:status")
+  @Post(":status")
   saveStatus(
     @Param("id", CameraValidator) cameraId: CameraIds,
     @Param("status") status: string,
@@ -53,7 +52,7 @@ export class MachineLearningController {
     });
   }
 
-  @Post()
+  @Post("/upload") // TODO maybe use Put instead of Post
   @ApiOperation({
     description:
       "Used to send image<br>Command example: <br>" +

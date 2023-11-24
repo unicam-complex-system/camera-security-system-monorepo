@@ -1,47 +1,96 @@
-import { Controller, Get, Header, HttpStatus, Param, StreamableFile } from '@nestjs/common';
-import { DatabaseService } from '../../database/database.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { FiltersValidator } from '../../validators/filters/filters.pipe';
-import { CameraValidator } from '../../validators/camera-id/camera.pipe';
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  HttpStatus,
+  Param,
+  Post,
+  Request,
+  StreamableFile,
+  UseGuards,
+} from "@nestjs/common";
+import { DatabaseService } from "../../database/database.service";
+import { ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  FiltersAvailable,
+  FiltersValidator,
+} from "../../validators/filters/filters.pipe";
+import {
+  CameraIds,
+  CameraValidator,
+} from "../../validators/camera-id/camera.pipe";
+import { AuthGuard } from "../../auth/auth.guard";
+import UserDTO from '../../user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 
-const cameraIds = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
-type CameraIds = (typeof cameraIds)[number];
-
-const filters = ["intrusionDetection", "online", "offline", "all"] as const;
-type FiltersAvailable = (typeof filters)[number];
-
-
-@Controller()
+@Controller("/")
 @ApiTags("Frontend")
-@ApiResponse({
-  status: HttpStatus.BAD_REQUEST,
-  description: "Invalid filter or camera id",
-})
 export class FrontendController {
-
   constructor(
-    private readonly database: DatabaseService,
+    private readonly databaseService: DatabaseService,
+    private jwtService: JwtService,
   ) {}
 
-  @Get("/:filter/aggregate")
-  getAggregateValues(@Param("filter", FiltersValidator) filter: FiltersAvailable) {
-    return this.database.aggregateCamera(filter);
+
+  @ApiBody({
+    type: String,
+    description: "User",
+    examples: {
+      a: {
+        summary: "Simple Body",
+        value: { username: "user", password: "pass" },
+      },
+    },
+  })
+  @Header("Content-Type", "application/json")
+  @Post("login")
+  async login(@Body() user: UserDTO) {
+    await this.databaseService.getUser(user);
+
+    return {
+      access_token: await this.jwtService.signAsync(user.name),
+    };
   }
 
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: "Invalid filter",
+  })
+  @Get(":filter/aggregate")
+  getAggregateValues(
+    @Param("filter", FiltersValidator) filter: FiltersAvailable,
+  ) {
+    return this.databaseService.aggregateCamera(filter);
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: "Invalid filter",
+  })
   @Get(":filter")
   getValues(@Param("filter", FiltersValidator) filter: FiltersAvailable) {
-    return this.database.getData(filter);
+    return this.databaseService.getData(filter);
   }
 
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: "Invalid camera id",
+  })
   @Header("Content-Type", "image/jpeg")
   @Get(":id/:timestamp")
   async getImage(
     @Param("id", CameraValidator) cameraId: CameraIds,
     @Param("timestamp") timestamp: string,
+    @Request() req: any,
   ) {
+    console.log(req.user);
     return new StreamableFile(
-      await this.database.getImage(cameraId, timestamp),
+      await this.databaseService.getImage(cameraId, timestamp),
     );
   }
 }

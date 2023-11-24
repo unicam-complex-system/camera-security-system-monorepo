@@ -8,6 +8,7 @@ import 'dotenv/config';
 import DataType from '../DataType';
 import { CameraIds } from '../validators/camera-id/camera.pipe';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
+import UserDTO from '../user.dto';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
 // type DataType = {
@@ -103,5 +104,18 @@ export class DatabaseService {
       default:
         return {};
     }
+  }
+
+  async getUser(user: UserDTO) {
+    const array = await this.DB.collection("users")
+      .find(user)
+      .toArray();
+
+    if (array.length == 0)
+      throw new HttpException("Data Not found", HttpStatus.NOT_FOUND);
+    if (array.length > 1)
+      throw new HttpException("Too much data found", HttpStatus.NOT_ACCEPTABLE);
+
+    return array[0];
   }
 }
