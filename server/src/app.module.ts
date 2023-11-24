@@ -6,11 +6,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app/app.controller';
 import { DatabaseService } from './database/database.service';
 import { TelegramService } from './telegram/telegram.service';
-import { StorageService } from './storage/storage.service';
+import { FrontendController } from './frontend/frontend.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [DatabaseService, TelegramService, StorageService],
+  controllers: [AppController, FrontendController],
+  providers: [DatabaseService, TelegramService],
 })
 export class AppModule {}

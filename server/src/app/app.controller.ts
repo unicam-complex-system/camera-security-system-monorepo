@@ -4,18 +4,17 @@
 
 import {
   Controller,
-  Get,
   HttpException,
   HttpStatus,
   Param,
   ParseFilePipeBuilder,
-  Post,
-  UploadedFile,
+  Post, UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { StorageService } from '../storage/storage.service';
+import DataType from '../DataType';
+import { ApiTags } from '@nestjs/swagger';
 
 const cameraIds = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 type CameraIds = (typeof cameraIds)[number];
@@ -23,33 +22,19 @@ type CameraIds = (typeof cameraIds)[number];
 const filters = ["intrusionDetection", "online", "offline", "all"] as const;
 type FiltersAvailable = (typeof filters)[number];
 
+@ApiTags("Machine Learning")
 @Controller()
 export class AppController {
   constructor(
     private readonly database: DatabaseService<CameraIds, FiltersAvailable>,
-    private readonly storage: StorageService,
   ) {}
 
-  @Get("/aggregate/:filter")
-  getAggregateValues(@Param("filter") filter: FiltersAvailable) {
-    // DANGER Nest js assumes that the given type is correct
-    // without being checked by nest js,
-    // so the check is done at runtime
-    if (!filters.includes(filter)) {
-      throw new HttpException(
-        `Invalid filter "${filter}", the available filters are ${filters}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return this.database.aggregateCamera(filter);
-  }
-
   @Post("/:id/online/:status")
-  saveStatus(@Param("id") camera: string, @Param("status") status: boolean) {
-    const cameraId = parseInt(camera) as CameraIds;
+  saveStatus(@Param("id") stringId: string, @Param("status") status: boolean) {
+    const cameraId = parseInt(stringId) as CameraIds;
 
     if (!cameraIds.includes(cameraId)) {
-      return "Invalid camera Id " + cameraId;
+      throw new HttpException("Invalid camera Id " + cameraId, HttpStatus.BAD_REQUEST);
     }
 
     return this.database.addData({
@@ -66,7 +51,7 @@ export class AppController {
   @Post(":id/intrusionDetection")
   @UseInterceptors(FileInterceptor("file"))
   uploadImage(
-    @Param("id") id:string,
+    @Param("id") id: string,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: "image/jpeg" })
@@ -82,15 +67,15 @@ export class AppController {
     const cameraId = parseInt(id) as CameraIds;
 
     if (!cameraIds.includes(cameraId)) {
-      return "Invalid camera Id " + cameraId;
+      throw new HttpException("Invalid camera Id " + cameraId, HttpStatus.BAD_REQUEST);
     }
-    const timestamp = new Date().toISOString()
-    const path = this.storage.secureSaveFile(timestamp, file.buffer)
+    const timestamp = new Date().toISOString();
+    // const path = this.storage.secureSaveFile(timestamp, file.buffer);
 
-    this.database.addData({
-      cameraId: cameraId,
-      timestamp: timestamp,
-      intrusionDetection: path
-    })
+    this.database.addData(
+      new DataType(cameraId, timestamp, null, file)
+    );
   }
+
+
 }
