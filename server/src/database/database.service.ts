@@ -6,6 +6,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Db, Document, MongoClient } from 'mongodb';
 import 'dotenv/config';
 import DataType from '../DataType';
+import { CameraIds } from '../validators/camera-id/camera.pipe';
+import { FiltersAvailable } from '../validators/filters/filters.pipe';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
 // type DataType = {
@@ -17,10 +19,7 @@ const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.M
 // };
 
 @Injectable()
-export class DatabaseService<
-  AvailableCameras extends number,
-  Filters extends string,
-> {
+export class DatabaseService {
   private DB: Db;
 
   constructor() {
@@ -30,12 +29,12 @@ export class DatabaseService<
     this.DB = client.db("complexsd");
   }
 
-  async addData(data: DataType<AvailableCameras>) {
+  async addData(data: DataType<CameraIds>) {
     const col = this.DB.collection(`cameras`);
     return await col.insertOne(data);
   }
 
-  async getData(filter?: Filters): Promise<Document[]> {
+  getData(filter?: FiltersAvailable): Promise<Document[]> {
     return this.DB.collection("cameras")
       .aggregate([
         {
@@ -57,7 +56,7 @@ export class DatabaseService<
       .toArray();
   }
 
-  aggregateCamera(filter?: Filters): Promise<Document[]> {
+  aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
     return this.DB.collection("cameras")
       .aggregate()
       .match(this.getFilter(filter))
@@ -70,7 +69,7 @@ export class DatabaseService<
       .toArray();
   }
 
-  async getImage(cameraId: number, timestamp: string): Promise<any> {
+  async getImage(cameraId: number, timestamp: string): Promise<Buffer> {
     const array = await this.DB.collection("cameras")
       .find({
         cameraId: cameraId,
@@ -79,14 +78,14 @@ export class DatabaseService<
       .toArray();
 
     if (array.length == 0)
+      throw new HttpException("Data Not found", HttpStatus.NOT_FOUND);
+    if (array.length > 1)
       throw new HttpException("Too much data found", HttpStatus.NOT_ACCEPTABLE);
 
     return array[0].intrusionDetection.buffer;
   }
 
-
-
-  private getFilter(filter?: Filters) {
+  private getFilter(filter?: FiltersAvailable) {
     switch (filter) {
       case "intrusionDetection":
         return {
@@ -100,7 +99,6 @@ export class DatabaseService<
         return {
           online: { $eq: false },
         };
-      case "":
       case "all":
       default:
         return {};

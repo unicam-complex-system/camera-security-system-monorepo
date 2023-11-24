@@ -6,7 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('MachinelearningController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {

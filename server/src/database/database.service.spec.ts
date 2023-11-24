@@ -5,27 +5,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from './database.service';
 
-const cameraIds = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
-
-const filters = ["intrusionDetection", "online", "offline", "", "all"] as const;
-describe('DatabaseService', () => {
-  let databaseService: DatabaseService<(typeof cameraIds)[number], (typeof filters)[number]>;
+describe("DatabaseService", () => {
+  let databaseService: DatabaseService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [DatabaseService],
     }).compile();
 
-    databaseService = module.get<DatabaseService<(typeof cameraIds)[number], (typeof filters)[number]>>(DatabaseService);
+    databaseService = module.get<DatabaseService>(DatabaseService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(databaseService).toBeDefined();
   });
 
-  it('should get aggregated data', async () => {
-    const aggregateData = await databaseService.aggregateCamera()
+  it("should get aggregated data", async () => {
+    const aggregateData = await databaseService.aggregateCamera();
 
-    expect(aggregateData).not.toBeNull()
+    expect(aggregateData).not.toBeNull();
+  });
+
+  it("should get single data", async () => {
+    const aggregateData = await databaseService.getData("all");
+
+    expect(aggregateData).not.toBeNull();
+  });
+  it("should get image data", async () => {
+    const aggregateData = await databaseService.getData("all");
+
+    aggregateData
+      .filter((value) => value.intrusionDetection)
+      .map((value) =>
+        expect(() =>
+          databaseService.getImage(value.cameraId, value.timestamp),
+        ).not.toThrow(),
+      );
+
+    const spy =  jest.fn()
+    await databaseService.getImage(1, "this will make it throw").catch(spy);
+    expect(spy).toHaveBeenCalled();
   });
 });
