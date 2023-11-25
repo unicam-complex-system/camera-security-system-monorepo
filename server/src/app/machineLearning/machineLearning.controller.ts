@@ -3,19 +3,21 @@
  */
 
 import {
+  BadRequestException,
   Controller,
-  HttpException,
   HttpStatus,
   Param,
   ParseFilePipeBuilder,
-  Post, UploadedFile, UseGuards,
+  Post,
+  UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import DataType from '../../DataType';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CameraValidator, CameraIds } from '../../validators/camera-id/camera.pipe';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CameraIds, CameraValidator } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
 
 @ApiTags("Machine Learning")
@@ -25,11 +27,27 @@ import { AuthGuard } from '../../auth/auth.guard';
 })
 @Controller("/:id")
 export class MachineLearningController {
-
   constructor(private readonly database: DatabaseService) {}
 
   @ApiOperation({
     description: "Updates the online status of the camera",
+  })
+  @ApiParam({
+    name: "id",
+    type: "number",
+    example: 1
+  })
+  @ApiParam({
+    name: "status",
+    type: "string",
+    examples: {
+      online: {
+        value: "online",
+      },
+      offline: {
+        value: "offline",
+      },
+    },
   })
   @ApiCreatedResponse()
   @ApiBearerAuth("CSS-Auth")
@@ -40,10 +58,7 @@ export class MachineLearningController {
     @Param("status") status: string,
   ) {
     if (status.toLowerCase() != "online" && status.toLowerCase() != "offline")
-      throw new HttpException(
-        "Invalid status " + status,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException(`Invalid status ${status}`);
 
     return this.database.addData({
       cameraId: cameraId,
@@ -60,7 +75,7 @@ export class MachineLearningController {
   @ApiBearerAuth("CSS-Auth")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("file"))
-  @Post("/upload") // TODO maybe use Put instead of Post
+  @Post("/upload")
   uploadImage(
     @Param("id") cameraId: CameraIds,
     @UploadedFile(
@@ -76,7 +91,6 @@ export class MachineLearningController {
     file: Express.Multer.File,
   ) {
     const timestamp = new Date().toISOString();
-    // const path = this.storage.secureSaveFile(timestamp, file.buffer);
 
     this.database.addData(new DataType(cameraId, timestamp, null, file));
     return timestamp;

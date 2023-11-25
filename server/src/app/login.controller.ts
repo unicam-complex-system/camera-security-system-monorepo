@@ -2,8 +2,8 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Body, Controller, Header, HttpStatus, Post } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Header, Post } from '@nestjs/common';
+import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiTags } from '@nestjs/swagger';
 import UserDTO from '../user.dto';
 import { DatabaseService } from '../database/database.service';
 import { JwtService } from '@nestjs/jwt';

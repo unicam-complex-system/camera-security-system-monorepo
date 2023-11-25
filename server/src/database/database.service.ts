@@ -2,13 +2,12 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { HttpException, HttpStatus, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Db, Document, Filter, MongoClient } from 'mongodb';
 import 'dotenv/config';
 import DataType from '../DataType';
 import { CameraIds } from '../validators/camera-id/camera.pipe';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
-import UserDTO from '../user.dto';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
 
