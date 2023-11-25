@@ -9,6 +9,7 @@ import { DatabaseService } from './database/database.service';
 import { TelegramService } from './telegram/telegram.service';
 import { JwtModule } from '@nestjs/jwt';
 // import { AuthService } from './auth/auth.service';
+import { LoginController } from './app/login.controller';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
       // signOptions: { expiresIn: "60s" },
     }),
   ],
-  controllers: [MachineLearningController, FrontendController],
+  controllers: [MachineLearningController, FrontendController, LoginController],
   providers: [DatabaseService, TelegramService],
 })
 export class AppModule {}

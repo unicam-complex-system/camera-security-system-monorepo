@@ -2,8 +2,8 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Db, Document, MongoClient } from 'mongodb';
+import { HttpException, HttpStatus, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { Db, Document, Filter, MongoClient } from 'mongodb';
 import 'dotenv/config';
 import DataType from '../DataType';
 import { CameraIds } from '../validators/camera-id/camera.pipe';
@@ -11,13 +11,6 @@ import { FiltersAvailable } from '../validators/filters/filters.pipe';
 import UserDTO from '../user.dto';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017`;
-// type DataType = {
-//   timestamp: string;
-//   online?: boolean;
-//   intrusionDetection?: string;
-//   buffer?: Binary;
-//
-// };
 
 @Injectable()
 export class DatabaseService {
@@ -53,7 +46,6 @@ export class DatabaseService {
         },
       ])
       .match(this.getFilter(filter))
-
       .toArray();
   }
 
@@ -71,19 +63,28 @@ export class DatabaseService {
   }
 
   async getImage(cameraId: number, timestamp: string): Promise<Buffer> {
-    const array = await this.DB.collection("cameras")
-      .find({
-        cameraId: cameraId,
-        timestamp: timestamp,
-      })
-      .toArray();
+    const array = await this.getRawDataArray("cameras", {
+      cameraId: cameraId,
+      timestamp: timestamp,
+    });
+    return array[0].intrusionDetection.buffer;
+  }
+
+  async getRawDataArray(
+    collection: string,
+    filter: Filter<Document>,
+    errorString0: string = "Data Not found",
+    limit: number = 1,
+    errorStringExceed: string = "Too much data found",
+  ) {
+    const array = await this.DB.collection(collection).find(filter).toArray();
 
     if (array.length == 0)
-      throw new HttpException("Data Not found", HttpStatus.NOT_FOUND);
-    if (array.length > 1)
-      throw new HttpException("Too much data found", HttpStatus.NOT_ACCEPTABLE);
+      throw new NotFoundException(errorString0);
+    if (array.length > limit)
+      throw new NotAcceptableException(errorStringExceed);
 
-    return array[0].intrusionDetection.buffer;
+    return array;
   }
 
   private getFilter(filter?: FiltersAvailable) {
@@ -104,18 +105,5 @@ export class DatabaseService {
       default:
         return {};
     }
-  }
-
-  async getUser(user: UserDTO) {
-    const array = await this.DB.collection("users")
-      .find(user)
-      .toArray();
-
-    if (array.length == 0)
-      throw new HttpException("Data Not found", HttpStatus.NOT_FOUND);
-    if (array.length > 1)
-      throw new HttpException("Too much data found", HttpStatus.NOT_ACCEPTABLE);
-
-    return array[0];
   }
 }

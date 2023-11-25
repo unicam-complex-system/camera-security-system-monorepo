@@ -8,21 +8,22 @@ import {
   HttpStatus,
   Param,
   ParseFilePipeBuilder,
-  Post, UploadedFile,
+  Post, UploadedFile, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import DataType from '../../DataType';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CameraValidator, CameraIds } from '../../validators/camera-id/camera.pipe';
+import { AuthGuard } from '../../auth/auth.guard';
 
-@Controller("/:id")
 @ApiTags("Machine Learning")
 @ApiResponse({
   status: HttpStatus.BAD_REQUEST,
   description: "Invalid filter or camera id",
 })
+@Controller("/:id")
 export class MachineLearningController {
 
   constructor(private readonly database: DatabaseService) {}
@@ -30,10 +31,9 @@ export class MachineLearningController {
   @ApiOperation({
     description: "Updates the online status of the camera",
   })
-  @ApiResponse({
-    status: 201,
-    description: "Returns the result of adding status",
-  })
+  @ApiCreatedResponse()
+  @ApiBearerAuth("CSS-Auth")
+  @UseGuards(AuthGuard)
   @Post(":status")
   saveStatus(
     @Param("id", CameraValidator) cameraId: CameraIds,
@@ -52,13 +52,15 @@ export class MachineLearningController {
     });
   }
 
-  @Post("/upload") // TODO maybe use Put instead of Post
   @ApiOperation({
     description:
       "Used to send image<br>Command example: <br>" +
       " curl -X 'POST' http://localhost:3000/1 -H 'Content-Type: multipart/form-data' -F file=@{filename}.jpg",
   })
+  @ApiBearerAuth("CSS-Auth")
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("file"))
+  @Post("/upload") // TODO maybe use Put instead of Post
   uploadImage(
     @Param("id") cameraId: CameraIds,
     @UploadedFile(

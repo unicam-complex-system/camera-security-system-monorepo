@@ -12,6 +12,7 @@ import { Request } from "express";
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
+  //The canActivate method is called before the route handler, it saves the user object to the request["user"] object
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
@@ -19,8 +20,9 @@ export class AuthGuard implements CanActivate {
       throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
     try {
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+      // We don't check if the user exists in db because the token is generated from us and only if the user exists
+      // Maybe we can check if the user exists in db and if not throw an error, in the case the user have been deleted
+      // But for now we don't delete users and users do not have defined authorization levels
       request["user"] = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
