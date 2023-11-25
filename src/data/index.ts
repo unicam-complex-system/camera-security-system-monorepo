@@ -1,2 +1,1 @@
-export { theme, antTheme } from "./theme";
-export { loggedInNavBarItems } from "./navBarData";
+export { loggedInNavBarItems, guestNavBarItems } from "./navBarData";

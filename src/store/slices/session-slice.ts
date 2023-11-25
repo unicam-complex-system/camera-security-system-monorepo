@@ -4,7 +4,15 @@ import type { RootState } from "../store";
 import { Session } from "@/types";
 
 // Define the initial state using that type
-const initialState = null as Session;
+const initialState = {
+  accessToken: "asdf1234hbhj123bkdshfh2389317492013r0hf1273y4rwefh29fy10",
+  user: {
+    firstName: "Nabil Mohammed",
+    lastName: "Khelifa",
+    email: "nabil.nablotech@gmail.com",
+    mobileNumber: "393513117160",
+  },
+} as Session;
 
 export const sessionSlice = createSlice({
   name: "session",
