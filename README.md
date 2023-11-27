@@ -1,6 +1,11 @@
-## Description
+# Technology
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-## Installation
+<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+
+## Just Run
 
 Firstly add .env file to root directory using the following template 
 ```text
@@ -10,7 +15,7 @@ JWT_SECRET=secret
 ```
 Then you can run
 ```bash
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 ## Running the app
@@ -31,17 +36,4 @@ $ npm run start:prod
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
-
-# Technology
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
