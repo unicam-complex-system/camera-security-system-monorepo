@@ -2,8 +2,15 @@
 
 ## Installation
 
+Firstly add .env file to root directory using the following template 
+```text
+MONGO_INITDB_ROOT_USERNAME=username
+MONGO_INITDB_ROOT_PASSWORD=password
+JWT_SECRET=secret
+```
+Then you can run
 ```bash
-$ npm ci
+$ docker-compose up -d
 ```
 
 ## Running the app
@@ -33,7 +40,6 @@ $ npm run test:cov
 ```
 
 # Technology
-
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
