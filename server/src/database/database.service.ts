@@ -8,6 +8,8 @@ import 'dotenv/config';
 import DataType from '../DataType';
 import { CameraIds } from '../validators/camera-id/camera.pipe';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
+import * as console from 'console';
+import * as process from 'process';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
 
@@ -19,7 +21,20 @@ export class DatabaseService {
     const client = new MongoClient(url);
 
     client.connect();
-    this.DB = client.db("complexsd");
+    this.DB = client.db("csd");
+    // If no user exists it automatically creates one with the default credentials in env file
+    this.DB.collection("users")
+      .countDocuments()
+      .then((size) => {
+        console.log(size);
+        if (size == 0) {
+          this.DB.collection(`users`).insertOne({
+            name: process.env.CSD_USER,
+            password: process.env.CSD_PASSWORD,
+          });
+        }
+      });
+    // console.log(documents)
   }
 
   async addData(data: DataType<CameraIds>) {
@@ -78,8 +93,7 @@ export class DatabaseService {
   ) {
     const array = await this.DB.collection(collection).find(filter).toArray();
 
-    if (array.length == 0)
-      throw new NotFoundException(errorString0);
+    if (array.length == 0) throw new NotFoundException(errorString0);
     if (array.length > limit)
       throw new NotAcceptableException(errorStringExceed);
 

@@ -12,6 +12,8 @@ Firstly add .env file to root directory using the following template
 MONGO_INITDB_ROOT_USERNAME=username
 MONGO_INITDB_ROOT_PASSWORD=password
 JWT_SECRET=secret
+CSD_USER=User
+CSD_PASSWORD=Password
 ```
 Then you can run
 ```bash

@@ -7,6 +7,7 @@ import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiTags } from '@nest
 import UserDTO from '../user.dto';
 import { DatabaseService } from '../database/database.service';
 import { JwtService } from '@nestjs/jwt';
+import * as process from 'process';
 
 @ApiTags("Frontend")
 @Controller("/")
@@ -22,7 +23,7 @@ export class LoginController {
     examples: {
       a: {
         summary: "Existing user",
-        value: { name: "Basic", password: "Basic" },
+        value: { name: process.env.CSD_USER, password: process.env.CSD_PASSWORD },
       },
       b: {
         summary: "Non existing user",
