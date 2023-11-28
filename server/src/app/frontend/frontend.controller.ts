@@ -9,11 +9,12 @@ import {
 import { DatabaseService } from "../../database/database.service";
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth, ApiOkResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
   ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+} from "@nestjs/swagger";
 import {
   FiltersAvailable,
   FiltersValidator,
@@ -55,7 +56,9 @@ const filterParams = {
 @UseGuards(AuthGuard)
 @Controller("/")
 export class FrontendController {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+  ) {}
 
   @ApiParam(filterParams)
   @Get(":filter/aggregate")

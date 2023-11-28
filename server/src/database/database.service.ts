@@ -8,8 +8,8 @@ import 'dotenv/config';
 import DataType from '../DataType';
 import { CameraIds } from '../validators/camera-id/camera.pipe';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
-import * as console from 'console';
 import * as process from 'process';
+import UserDTO from '../user.dto';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
 
@@ -26,7 +26,6 @@ export class DatabaseService {
     this.DB.collection("users")
       .countDocuments()
       .then((size) => {
-        console.log(size);
         if (size == 0) {
           this.DB.collection(`users`).insertOne({
             name: process.env.CSD_USER,
@@ -34,7 +33,6 @@ export class DatabaseService {
           });
         }
       });
-    // console.log(documents)
   }
 
   async addData(data: DataType<CameraIds>) {
@@ -98,6 +96,14 @@ export class DatabaseService {
       throw new NotAcceptableException(errorStringExceed);
 
     return array;
+  }
+
+  // This will also check if the user exists
+  async checkUserAndUpdateTelegramId(telegramId: number, userData: UserDTO) {
+    await this.getRawDataArray("users", userData, "User Not found");
+    return await this.DB.collection("users").updateOne(userData, {
+      $set: { telegramId: telegramId },
+    });
   }
 
   private getFilter(filter?: FiltersAvailable) {

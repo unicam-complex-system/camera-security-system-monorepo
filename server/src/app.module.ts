@@ -8,7 +8,6 @@ import { FrontendController } from './app/frontend/frontend.controller';
 import { DatabaseService } from './database/database.service';
 import { TelegramService } from './telegram/telegram.service';
 import { JwtModule } from '@nestjs/jwt';
-// import { AuthService } from './auth/auth.service';
 import { LoginController } from './app/login.controller';
 
 @Module({
@@ -22,5 +21,6 @@ import { LoginController } from './app/login.controller';
   ],
   controllers: [MachineLearningController, FrontendController, LoginController],
   providers: [DatabaseService, TelegramService],
+  exports: [DatabaseService, TelegramService],
 })
 export class AppModule {}

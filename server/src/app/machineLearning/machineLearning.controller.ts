@@ -19,6 +19,7 @@ import DataType from '../../DataType';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CameraIds, CameraValidator } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
+import { TelegramService } from '../../telegram/telegram.service';
 
 @ApiTags("Machine Learning")
 @ApiResponse({
@@ -27,7 +28,10 @@ import { AuthGuard } from '../../auth/auth.guard';
 })
 @Controller("/:id")
 export class MachineLearningController {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly telegramApi: TelegramService,
+  ) {}
 
   @ApiOperation({
     description: "Updates the online status of the camera",
@@ -35,7 +39,7 @@ export class MachineLearningController {
   @ApiParam({
     name: "id",
     type: "number",
-    example: 1
+    example: 1,
   })
   @ApiParam({
     name: "status",
