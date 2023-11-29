@@ -1,3 +1,9 @@
+import { VideoStreamContainer } from "@/containers";
+
 export default function Home() {
-  return <main></main>;
+  return (
+    <main>
+      <VideoStreamContainer />
+    </main>
+  );
 }
