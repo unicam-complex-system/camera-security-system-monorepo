@@ -12,12 +12,12 @@ export default class DataType<ID> {
 
   constructor(
     cameraId: ID,
-    timestamp: string,
+    date: Date,
     online?: boolean,
     file?: Express.Multer.File,
   ) {
     this.cameraId = cameraId;
-    this.timestamp = timestamp;
+    this.timestamp = date.toISOString();
     this.online = online;
     this.intrusionDetection = new Binary(file.buffer);
   }

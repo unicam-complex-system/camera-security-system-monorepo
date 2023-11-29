@@ -121,14 +121,16 @@ export class MachineLearningController {
     )
     file: Express.Multer.File,
   ) {
-    const timestamp = new Date().toISOString();
+    const date = new Date();
 
-    await this.database.addData(new DataType(cameraId, timestamp, null, file));
+    await this.database.addData(
+      new DataType(cameraId, date, null, file),
+    );
     await this.telegramApi.sendIntrusionDetectionNotification(
       cameraId,
-      timestamp,
+      date,
       file.buffer,
     );
-    return timestamp;
+    return date.toISOString();
   }
 }

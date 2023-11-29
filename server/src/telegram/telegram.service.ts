@@ -54,15 +54,16 @@ export class TelegramService {
 
   async sendIntrusionDetectionNotification(
     cameraId: number,
-    timestamp: string,
+    date: Date,
     image: Buffer,
   ) {
-    const users = await this.databaseService.getRawDataArray("users", {});
+    const users = await this.databaseService.getRawDataArray("users");
+
     users
       .map((user) => user.telegramId)
       .forEach((id) => {
         this.bot.sendPhoto(id, image, {
-          caption: `Intrusion detected on camera ${cameraId} at ${timestamp}`,
+          caption: `Intrusion detected on Camera ${cameraId}\nTime: ${date.toUTCString()}`,
         });
       });
   }

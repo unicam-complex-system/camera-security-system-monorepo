@@ -84,7 +84,7 @@ export class DatabaseService {
 
   async getRawDataArray(
     collection: string,
-    filter: Filter<Document>,
+    filter: Filter<Document> = {},
     errorString0: string = "Data Not found",
     limit: number = 1,
     errorStringExceed: string = "Too much data found",
