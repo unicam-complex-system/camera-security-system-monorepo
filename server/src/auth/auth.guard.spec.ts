@@ -8,7 +8,7 @@ describe("AuthGuard", () => {
 
   beforeAll(async () => {
     const service = new JwtService({
-      secret: "TestKey",
+      secret: process.env.JWT_SECRET,
     });
     auth = new AuthGuard(service);
     jwtToken = await service.signAsync(payload);

@@ -48,7 +48,7 @@ class ImageUploadDto {
 export class MachineLearningController {
   constructor(
     private readonly database: DatabaseService,
-    private readonly telegramApi: TelegramService,
+    readonly telegramApi: TelegramService,
   ) {}
 
   @ApiOperation({

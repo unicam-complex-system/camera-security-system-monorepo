@@ -11,7 +11,6 @@ import { Request } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-
   constructor(private jwtService: JwtService) {}
 
   // The canActivate method is called before the route handler, it saves the user object to the request["user"] object
@@ -31,9 +30,7 @@ export class AuthGuard implements CanActivate {
   // Maybe we can check if the user exists in db and if not throw an error, in the case the user have been deleted
   // But for now we don't delete users and users do not have defined authorization levels
   checkUser(token: string) {
-    return this.jwtService.verifyAsync(token, {
-      secret: process.env.JWT_SECRET,
-    });
+    return this.jwtService.verifyAsync(token);
   }
 
   private extractTokenFromHeader(request: Request): string {

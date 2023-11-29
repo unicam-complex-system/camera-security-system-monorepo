@@ -24,9 +24,15 @@ describe("MachineLearningController", () => {
     }).compile();
 
     controller = app.get<MachineLearningController>(MachineLearningController);
+
   });
 
   it("should exists", () => {
     expect(controller).toBeDefined();
   });
+
+  // afterAll(async () => {
+  //   // await controller.telegramApi.bot.stopPolling();
+  //   // await controller.telegramApi.bot.close()
+  // });
 });

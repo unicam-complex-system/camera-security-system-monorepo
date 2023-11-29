@@ -11,8 +11,6 @@ export class TelegramService {
   constructor(private readonly databaseService: DatabaseService) {
     this.bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
-    console.log("Telegram bot started");
-
     this.bot.onText(/\/user (.+)/, (m) => this.onLogin(m));
     this.bot.onText(/\/start/, (m) => this.welcome(m));
   }
