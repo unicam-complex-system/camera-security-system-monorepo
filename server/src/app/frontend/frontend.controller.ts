@@ -16,6 +16,7 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import {
+  filters,
   FiltersAvailable,
   FiltersValidator,
 } from "../../validators/filters/filters.pipe";
@@ -56,12 +57,10 @@ const filterParams = {
 @UseGuards(AuthGuard)
 @Controller("/")
 export class FrontendController {
-  constructor(
-    private readonly databaseService: DatabaseService,
-  ) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   @ApiParam(filterParams)
-  @Get(":filter/aggregate")
+  @Get(`:filter(${filters.join("|")})/aggregate`)
   getAggregateValues(
     @Param("filter", FiltersValidator) filter: FiltersAvailable,
   ) {
@@ -69,7 +68,7 @@ export class FrontendController {
   }
 
   @ApiParam(filterParams)
-  @Get(":filter")
+  @Get(`:filter(${filters.join("|")})`)
   getValues(@Param("filter", FiltersValidator) filter: FiltersAvailable) {
     return this.databaseService.getData(filter);
   }

@@ -16,14 +16,32 @@ import {
 import { DatabaseService } from '../../database/database.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import DataType from '../../DataType';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CameraIds, CameraValidator } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TelegramService } from '../../telegram/telegram.service';
 
+class ImageUploadDto {
+  @ApiProperty({
+    type: "string",
+    format: "binary",
+    description: "Image file to upload",
+  })
+  file: any;
+}
+
 @ApiTags("Machine Learning")
-@ApiResponse({
-  status: HttpStatus.BAD_REQUEST,
+@ApiBadRequestResponse({
   description: "Invalid filter or camera id",
 })
 @Controller("/:id")
@@ -56,11 +74,12 @@ export class MachineLearningController {
   @ApiCreatedResponse()
   @ApiBearerAuth("CSS-Auth")
   @UseGuards(AuthGuard)
-  @Post(":status")
+  @Post(`:status(online|offline)`)
   saveStatus(
     @Param("id", CameraValidator) cameraId: CameraIds,
     @Param("status") status: string,
   ) {
+    // Following condition could be removed as the path can only be online or offline
     if (status.toLowerCase() != "online" && status.toLowerCase() != "offline")
       throw new BadRequestException(`Invalid status ${status}`);
 
@@ -72,16 +91,24 @@ export class MachineLearningController {
   }
 
   @ApiOperation({
-    description:
-      "Used to send image<br>Command example: <br>" +
-      " curl -X 'POST' http://localhost:3000/1 -H 'Content-Type: multipart/form-data' -F file=@{filename}.jpg",
+    description: "Used to send image",
   })
   @ApiBearerAuth("CSS-Auth")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    description: `The image file to upload`,
+    type: ImageUploadDto,
+  })
+  @ApiParam({
+    name: "id",
+    type: "number",
+    example: 1,
+  })
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("file"))
-  @Post("/upload")
-  uploadImage(
-    @Param("id") cameraId: CameraIds,
+  @Post()
+  async uploadImage(
+    @Param("id", CameraValidator) cameraId: CameraIds,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: "image/jpeg" })
@@ -96,7 +123,12 @@ export class MachineLearningController {
   ) {
     const timestamp = new Date().toISOString();
 
-    this.database.addData(new DataType(cameraId, timestamp, null, file));
+    await this.database.addData(new DataType(cameraId, timestamp, null, file));
+    await this.telegramApi.sendIntrusionDetectionNotification(
+      cameraId,
+      timestamp,
+      file.buffer,
+    );
     return timestamp;
   }
 }

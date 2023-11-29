@@ -51,4 +51,19 @@ export class TelegramService {
         `Remember that only one device at a time can be connected with your account'`,
     );
   }
+
+  async sendIntrusionDetectionNotification(
+    cameraId: number,
+    timestamp: string,
+    image: Buffer,
+  ) {
+    const users = await this.databaseService.getRawDataArray("users", {});
+    users
+      .map((user) => user.telegramId)
+      .forEach((id) => {
+        this.bot.sendPhoto(id, image, {
+          caption: `Intrusion detected on camera ${cameraId} at ${timestamp}`,
+        });
+      });
+  }
 }
