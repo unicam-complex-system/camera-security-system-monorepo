@@ -1,0 +1,12 @@
+img
+
+
+# Intellij
+.idea/
+*.iml
+
+# Python
+__pycache__
+
+# System files
+.DS_Store
