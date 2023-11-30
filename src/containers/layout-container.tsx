@@ -3,13 +3,12 @@ import { ConfigProvider, Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { loggedInNavBarItems, guestNavBarItems } from "@/data";
-import { antTheme, theme } from "../../theme";
+import { antTheme } from "../../theme";
 import type { NavBarItem } from "@/types";
 import "@/app/globals.css";
 import { getCurrentNav } from "@/utils";
 import { BellOutlined } from "@ant-design/icons";
-import { useAppSelector } from "@/hooks";
-import { selectSession } from "@/store";
+import { useSessionSlice, useCameraSlice } from "@/hooks";
 const { Header, Content, Footer, Sider } = Layout;
 
 export const LayoutContainer = ({
@@ -18,7 +17,8 @@ export const LayoutContainer = ({
   children: React.ReactNode;
 }) => {
   /* state to check if ant design styled loaded */
-  const session = useAppSelector(selectSession);
+  const { session } = useSessionSlice();
+  const { isFullScreenGrid } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
@@ -72,10 +72,18 @@ export const LayoutContainer = ({
           </Sider>
           <Layout>
             <Header className="bg-primary flex justify-end">
-              {session && <BellOutlined className="cursor-pointer text-2xl text-white" />}
+              {session && (
+                <BellOutlined className="cursor-pointer text-2xl text-white" />
+              )}
             </Header>
-            <Content className="pt-6 px-4 p-0">
-              <div className="p-6 bg-white min-h-[360px]">{children}</div>
+            <Content
+              className={`${
+                isFullScreenGrid
+                  ? "fixed top-0 left-0 w-screen h-screen"
+                  : "pt-6 px-4 p-0"
+              }`}
+            >
+              <div className="p-2 bg-white min-h-[360px]">{children}</div>
             </Content>
             <Footer className="text-center">
               CSS ©2023 Created by CSS team

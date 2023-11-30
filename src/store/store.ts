@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sessionReducer from "./slices/session-slice";
+import cameraReducer from "./slices/camera-slice";
 
 export const store = configureStore({
   reducer: {
     session: sessionReducer,
+    camera: cameraReducer,
   },
 });
 
