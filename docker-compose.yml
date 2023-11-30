@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  mongo:
+    container_name: mongoDB
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data:/data/db
+    env_file:
+      - .env
+
+  backend:
+    container_name: backend
+    image: node:21-alpine
+    depends_on:
+     - mongo
+    restart: always
+    ports:
+      - 8080:8080
+    working_dir: /home/node
+    volumes:
+      - ./server:/home/node
+    env_file:
+      - .env
+    environment:
+      - MONGO_HOST=mongo:27017 # this indicates the container called mongo and the port it is listening on
+#    command: npm start
+    command: npm run start:dev
