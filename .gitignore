@@ -128,8 +128,19 @@ dist
 *.iml
 .idea
 
+img
+
+
+# Intellij
+.idea/
+*.iml
+
+# Python
+__pycache__
+
 # System files
 .DS_Store
+
 
 ## Mongo docker data
 mongo-data
