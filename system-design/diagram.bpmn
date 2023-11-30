@@ -93,9 +93,11 @@
     <bpmn:sendTask id="Activity_0bpkil2" name="Send telegram notification with frame">
       <bpmn:incoming>Flow_1r5hv7o</bpmn:incoming>
       <bpmn:outgoing>Flow_0l0ys0v</bpmn:outgoing>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_1c6lng5">
-        <bpmn:targetRef>DataObjectReference_0m0laeg</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
+      <bpmn:property id="Property_1ky5p09" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_062faod">
+        <bpmn:sourceRef>DataObjectReference_0m0laeg</bpmn:sourceRef>
+        <bpmn:targetRef>Property_1ky5p09</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
     </bpmn:sendTask>
     <bpmn:task id="Activity_1z0j6oj" name="Increase intrusion detection counter for camera id">
       <bpmn:incoming>Flow_0l0ys0v</bpmn:incoming>
@@ -599,10 +601,6 @@
         <di:waypoint x="919" y="994" />
         <di:waypoint x="955" y="925" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_1c6lng5_di" bpmnElement="DataOutputAssociation_1c6lng5">
-        <di:waypoint x="1005" y="970" />
-        <di:waypoint x="978" y="925" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1dyfujf_di" bpmnElement="DataOutputAssociation_1dyfujf">
         <di:waypoint x="1190" y="970" />
         <di:waypoint x="1190" y="810" />
@@ -661,6 +659,10 @@
       <bpmndi:BPMNEdge id="Flow_177hqvf_di" bpmnElement="Flow_177hqvf">
         <di:waypoint x="370" y="1060" />
         <di:waypoint x="370" y="1230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_062faod_di" bpmnElement="DataInputAssociation_062faod">
+        <di:waypoint x="987" y="925" />
+        <di:waypoint x="1017" y="970" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
