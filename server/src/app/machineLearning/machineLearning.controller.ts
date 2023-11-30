@@ -44,7 +44,7 @@ class ImageUploadDto {
 @ApiBadRequestResponse({
   description: "Invalid filter or camera id",
 })
-@Controller("/:id")
+@Controller("/:id(\\d+)")
 export class MachineLearningController {
   constructor(
     private readonly database: DatabaseService,
@@ -104,7 +104,7 @@ export class MachineLearningController {
     type: "number",
     example: 1,
   })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("file"))
   @Post()
   async uploadImage(

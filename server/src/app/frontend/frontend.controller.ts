@@ -55,7 +55,7 @@ const filterParams = {
   description: "Camera id or filter is invalid",
 })
 @UseGuards(AuthGuard)
-@Controller("/")
+@Controller()
 export class FrontendController {
   constructor(private readonly databaseService: DatabaseService) {}
 
@@ -85,7 +85,7 @@ export class FrontendController {
     example: "2023-11-23T18:38:35.571Z",
   })
   @Header("Content-Type", "image/jpeg")
-  @Get(":id/:timestamp")
+  @Get("/:id(\\d+)/:timestamp")
   async getImage(
     @Param("id", CameraValidator) cameraId: CameraIds,
     @Param("timestamp") timestamp: string,

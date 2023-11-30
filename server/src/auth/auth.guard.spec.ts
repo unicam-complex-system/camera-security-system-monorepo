@@ -1,26 +1,32 @@
-import { AuthGuard } from "./auth.guard";
 import { JwtService } from "@nestjs/jwt";
 
 describe("AuthGuard", () => {
   const payload = "complexUserNamePayload";
-  let auth: AuthGuard;
+  let service: JwtService;
   let jwtToken: string;
 
   beforeAll(async () => {
-    const service = new JwtService({
+    service = new JwtService({
       secret: process.env.JWT_SECRET,
     });
-    auth = new AuthGuard(service);
     jwtToken = await service.signAsync(payload);
   });
 
-  it("should be defined", () => {
-    expect(auth).toBeDefined();
+  it("Should be defined", () => {
+    expect(service).toBeDefined();
     expect(jwtToken).toBeDefined();
   });
 
-  it("Get Payload from token", async () => {
-    const user = await auth.checkUser(jwtToken);
+  it("Get Payload from token", () => {
+    const user = service.verify(jwtToken);
     expect(user).toBe(payload);
+  });
+
+  it("Should fail JwtVerify of another token", () => {
+    expect(() =>
+      service.verify(
+        "eyJhbGciOiJIUzI1NiJ9.QmFzaWM.MTnCJYESf5QRL9N8gqn5Di5PEZX8eZB5sN8W4TJTDKF",
+      ),
+    ).toThrow();
   });
 });

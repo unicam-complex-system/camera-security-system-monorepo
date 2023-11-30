@@ -21,4 +21,7 @@ describe("FiltersPipe", () => {
   it("TELEGRAM_TOKEN should be defined", () => {
     expect(process.env.TELEGRAM_TOKEN).toBeDefined();
   });
+  it("MONGO_HOST should be defined", () => {
+    expect(process.env.MONGO_HOST).toBeDefined();
+  });
 });
