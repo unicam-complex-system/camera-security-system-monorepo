@@ -1,20 +1,20 @@
 import os
 import subprocess
 
-import cv2
+from ping3 import ping
 
 # Define the command to fetch the video stream using curl and extract frames using ffmpeg
-command = "curl http://admin:@{}/livestream/11 --no-buffer -o - | ffmpeg -loglevel quiet -y -hide_banner -i - -vf 'fps=1' {}"
+command = "curl http://admin:@{}/livestream/11 --no-buffer -o - | ffmpeg -loglevel quiet -y -hide_banner -i - -vf 'fps=1' {}" # TODO convert to array
 
 
 # The function uses outFormat where the char "%d" is the frame count, also remember to define all path
 def handle_status(ip: str, down: bool):
     if down:
-        print(f"Disconnected from ip: {ip}")
+        print(f"Failed connection with ip: {ip}")
     else:
         print(f"Connected with ip: {ip}")
 
-    pass # TODO save log
+    # TODO save log
 
 
 def handle_connection(ip: str, out_format: str):
@@ -36,17 +36,11 @@ def obtain_frames(ip: str, out_format: str, debug: bool):
         raise Exception("Path not usable")
 
     while True:
-        try:
-            subprocess.run(
-                "ping -c 1 {}".format(ip),
-                stdout=subprocess.PIPE,
-                shell=True,
-                check=True
-            )
+        if ping(ip) is None:
+            handle_status(ip, True)
+        else:
             handle_status(ip, False)
             handle_connection(ip, out_format)
-        except subprocess.CalledProcessError:
-            handle_status(ip, True)
 
 
 def dir_check(directory: str, force: bool):
