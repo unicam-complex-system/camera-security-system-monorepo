@@ -1,11 +1,10 @@
 import os
 import subprocess
 
+import cv2
+import ffmpeg
+import numpy as np
 from ping3 import ping
-
-# Define the command to fetch the video stream using curl and extract frames using ffmpeg
-command = "curl http://admin:@{}/livestream/11 --no-buffer -o - | ffmpeg -loglevel quiet -y -hide_banner -i - -vf 'fps=1' {}" # TODO convert to array
-
 
 # The function uses outFormat where the char "%d" is the frame count, also remember to define all path
 def handle_status(ip: str, down: bool):
@@ -17,14 +16,26 @@ def handle_status(ip: str, down: bool):
     # TODO save log
 
 
+opts = {"loglevel": "quiet", "r": "30", "f": "avfoundation"}
+
+
 def handle_connection(ip: str, out_format: str):
     # Run the command using subprocess
+    cmd = (ffmpeg
+           .input("0:", **opts)
+           .output("pipe:", format="rawvideo", pix_fmt="bgr24")
+           .run_async(pipe_stdout=True)
+           )
+    while True:
+        raw_frame = cmd.stdout.read(1920 * 1080 * 3)
+        if not raw_frame:
+            break
+        frame = np.frombuffer(raw_frame, np.uint8).reshape((1080, 1920, 3))
+
+        cv2.imshow("VideoFrame", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
     try:
-        subprocess.run(
-            command.format(ip, out_format),
-            shell=True,
-            check=True
-        )
         print("Frames extracted successfully.")
     except subprocess.CalledProcessError as e:
         print(e.returncode)
