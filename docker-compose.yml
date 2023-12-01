@@ -22,7 +22,7 @@ services:
       - 8080:8080
     working_dir: /home/node
     volumes:
-      - ./server:/home/node
+      - ./Backend:/home/node
     env_file:
       - .env
     environment:
