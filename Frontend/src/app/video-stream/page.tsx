@@ -1,9 +1,7 @@
 import { VideoStreamContainer } from "@/containers";
 
-export default function Home() {
+export default function VideoStreamPage() {
   return (
-    <main>
       <VideoStreamContainer />
-    </main>
   );
 }

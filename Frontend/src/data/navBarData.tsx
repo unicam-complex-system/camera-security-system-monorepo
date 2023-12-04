@@ -22,7 +22,7 @@ export const loggedInNavBarItems: NavBarItem[] = [
   {
     key: "authorized-entites",
     label: "Authorized Entities",
-    route: "/authorized-entites",
+    route: "/authorized-entities",
     icon: UserOutlined,
   },
   {
