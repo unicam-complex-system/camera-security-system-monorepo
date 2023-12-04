@@ -2,44 +2,19 @@
 The repository contains the sources code for the Camera Security System project.
 
 # Backend
-## Technology
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
 
 ## Just Run
 
-Firstly add .env file to root directory using the following template 
+Firstly add .env file to root directory using the following template
 ```text
 MONGO_INITDB_ROOT_USERNAME=username
 MONGO_INITDB_ROOT_PASSWORD=password
 JWT_SECRET=secret
 CSD_USER=User
 CSD_PASSWORD=Password
+TELEGRAM_TOKEN=api_token
 ```
 Then you can run
 ```bash
 $ docker compose up -d
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
 ```
