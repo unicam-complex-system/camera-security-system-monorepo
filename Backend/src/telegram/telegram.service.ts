@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
+
 import { Injectable, NotFoundException } from "@nestjs/common";
 import * as TelegramBot from "node-telegram-bot-api";
 import * as process from "process";
