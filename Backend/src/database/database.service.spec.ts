@@ -2,8 +2,8 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseService } from './database.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DatabaseService } from "./database.service";
 
 describe("DatabaseService", () => {
   let databaseService: DatabaseService;
@@ -42,7 +42,7 @@ describe("DatabaseService", () => {
         ).not.toThrow(),
       );
 
-    const spy =  jest.fn()
+    const spy = jest.fn();
     await databaseService.getImage(1, "this will make it throw").catch(spy);
     expect(spy).toHaveBeenCalled();
   });

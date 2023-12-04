@@ -2,10 +2,10 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { FrontendController } from './frontend.controller';
-import { DatabaseService } from '../../database/database.service';
-import { JwtModule } from '@nestjs/jwt';
+import { Test, TestingModule } from "@nestjs/testing";
+import { FrontendController } from "./frontend.controller";
+import { DatabaseService } from "../../database/database.service";
+import { JwtModule } from "@nestjs/jwt";
 
 describe("FrontendController", () => {
   let controller: FrontendController;

@@ -12,10 +12,10 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
-} from '@nestjs/common';
-import { DatabaseService } from '../../database/database.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import DataType from '../../DataType';
+} from "@nestjs/common";
+import { DatabaseService } from "../../database/database.service";
+import { FileInterceptor } from "@nestjs/platform-express";
+import DataType from "../../DataType";
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -26,10 +26,13 @@ import {
   ApiParam,
   ApiProperty,
   ApiTags,
-} from '@nestjs/swagger';
-import { CameraIds, CameraValidator } from '../../validators/camera-id/camera.pipe';
-import { AuthGuard } from '../../auth/auth.guard';
-import { TelegramService } from '../../telegram/telegram.service';
+} from "@nestjs/swagger";
+import {
+  CameraIds,
+  CameraValidator,
+} from "../../validators/camera-id/camera.pipe";
+import { AuthGuard } from "../../auth/auth.guard";
+import { TelegramService } from "../../telegram/telegram.service";
 
 class ImageUploadDto {
   @ApiProperty({
@@ -123,9 +126,7 @@ export class MachineLearningController {
   ) {
     const date = new Date();
 
-    await this.database.addData(
-      new DataType(cameraId, date, null, file),
-    );
+    await this.database.addData(new DataType(cameraId, date, null, file));
     await this.telegramApi.sendIntrusionDetectionNotification(
       cameraId,
       date,

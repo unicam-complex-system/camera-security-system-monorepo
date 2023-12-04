@@ -2,7 +2,7 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Binary } from 'mongodb';
+import { Binary } from "mongodb";
 
 export default class DataType<ID> {
   cameraId: ID;

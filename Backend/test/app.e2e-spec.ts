@@ -2,11 +2,11 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../src/app.module';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import { AppModule } from "../src/app.module";
 
-describe('MachinelearningController (e2e)', () => {
+describe("MachinelearningController (e2e)", () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe('MachinelearningController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it("/ (GET)", () => {
     // return request(app.getHttpServer())
     //   .get('/')
     //   .expect(200)

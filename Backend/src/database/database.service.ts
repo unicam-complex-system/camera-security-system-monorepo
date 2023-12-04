@@ -2,14 +2,18 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { Db, Document, Filter, MongoClient } from 'mongodb';
-import 'dotenv/config';
-import DataType from '../DataType';
-import { CameraIds } from '../validators/camera-id/camera.pipe';
-import { FiltersAvailable } from '../validators/filters/filters.pipe';
-import * as process from 'process';
-import UserDTO from '../user.dto';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from "@nestjs/common";
+import { Db, Document, Filter, MatchKeysAndValues, MongoClient } from "mongodb";
+import "dotenv/config";
+import DataType from "../DataType";
+import { CameraIds } from "../validators/camera-id/camera.pipe";
+import { FiltersAvailable } from "../validators/filters/filters.pipe";
+import * as process from "process";
+import UserDTO from "../user.dto";
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
 
@@ -98,12 +102,20 @@ export class DatabaseService {
     return array;
   }
 
+  async checkAndUpdateUser(
+    user: Filter<Document>,
+    newData: MatchKeysAndValues<Document>,
+  ) {
+    await this.getRawDataArray("users", user, "User Not found");
+
+    return this.DB.collection("users").updateOne(user, {
+      $set: newData,
+    });
+  }
+
   // This will also check if the user exists
   async checkUserAndUpdateTelegramId(telegramId: number, userData: UserDTO) {
-    await this.getRawDataArray("users", userData, "User Not found");
-    return await this.DB.collection("users").updateOne(userData, {
-      $set: { telegramId: telegramId },
-    });
+    return await this.checkAndUpdateUser(userData, { telegramId: telegramId });
   }
 
   private getFilter(filter?: FiltersAvailable) {

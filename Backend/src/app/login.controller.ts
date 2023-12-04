@@ -2,12 +2,17 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Body, Controller, Header, Post } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiTags } from '@nestjs/swagger';
-import UserDTO from '../user.dto';
-import { DatabaseService } from '../database/database.service';
-import { JwtService } from '@nestjs/jwt';
-import * as process from 'process';
+import { Body, Controller, Header, Post } from "@nestjs/common";
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiTags,
+} from "@nestjs/swagger";
+import UserDTO from "../user.dto";
+import { DatabaseService } from "../database/database.service";
+import { JwtService } from "@nestjs/jwt";
+import * as process from "process";
 
 @ApiTags("Frontend")
 @Controller("/")
@@ -23,7 +28,10 @@ export class LoginController {
     examples: {
       a: {
         summary: "Existing user",
-        value: { name: process.env.CSD_USER, password: process.env.CSD_PASSWORD },
+        value: {
+          name: process.env.CSD_USER,
+          password: process.env.CSD_PASSWORD,
+        },
       },
       b: {
         summary: "Non existing user",
