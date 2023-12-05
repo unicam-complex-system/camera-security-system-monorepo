@@ -2,14 +2,14 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
+import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { MachineLearningController } from './app/machineLearning/machineLearning.controller';
 import { FrontendController } from './app/frontend/frontend.controller';
 import { DatabaseService } from './database/database.service';
 import { TelegramService } from './telegram/telegram.service';
-import { JwtModule } from '@nestjs/jwt';
 import { LoginController } from './app/login.controller';
-import { CameraStreamModule } from './cameraStream/cameraStream.module';
+import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 
 @Module({
   imports: [
@@ -19,10 +19,9 @@ import { CameraStreamModule } from './cameraStream/cameraStream.module';
       // FIXME Error: Payload as string is not allowed with the following sign options: expiresIn
       // signOptions: { expiresIn: "60s" },
     }),
-    CameraStreamModule,
   ],
   controllers: [MachineLearningController, FrontendController, LoginController],
-  providers: [DatabaseService, TelegramService],
+  providers: [DatabaseService, TelegramService, CameraStreamGateway],
   exports: [DatabaseService, TelegramService],
 })
 export class AppModule {}

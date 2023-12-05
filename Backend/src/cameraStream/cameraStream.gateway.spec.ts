@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CameraStreamGateway } from './cameraStreamGateway';
+import { CameraStreamGateway } from './cameraStream.gateway';
 
 describe('WebrtcGateway', () => {
   let gateway: CameraStreamGateway;
