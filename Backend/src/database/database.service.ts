@@ -6,14 +6,14 @@ import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
-} from "@nestjs/common";
-import { Db, Document, Filter, MatchKeysAndValues, MongoClient } from "mongodb";
-import "dotenv/config";
-import DataType from "../DataType";
-import { CameraIds } from "../validators/camera-id/camera.pipe";
-import { FiltersAvailable } from "../validators/filters/filters.pipe";
-import * as process from "process";
-import UserDTO from "../user.dto";
+} from '@nestjs/common';
+import { Db, Document, Filter, MatchKeysAndValues, MongoClient } from 'mongodb';
+import 'dotenv/config';
+import DataType from '../DataType';
+import { CameraIds } from '../validators/camera-id/camera.pipe';
+import { FiltersAvailable } from '../validators/filters/filters.pipe';
+import * as process from 'process';
+import UserDTO from '../user.dto';
 
 const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
 
@@ -25,9 +25,9 @@ export class DatabaseService {
     const client = new MongoClient(url);
 
     client.connect();
-    this.DB = client.db("csd");
+    this.DB = client.db('csd');
     // If no user exists it automatically creates one with the default credentials in env file
-    this.DB.collection("users")
+    this.DB.collection('users')
       .countDocuments()
       .then((size) => {
         if (size == 0) {
@@ -45,14 +45,14 @@ export class DatabaseService {
   }
 
   getData(filter?: FiltersAvailable): Promise<Document[]> {
-    return this.DB.collection("cameras")
+    return this.DB.collection('cameras')
       .aggregate([
         {
           $addFields: {
             intrusionDetection: {
               $cond: {
                 if: {
-                  $ifNull: ["$intrusionDetection", false],
+                  $ifNull: ['$intrusionDetection', false],
                 },
                 then: true,
                 else: false,
@@ -66,11 +66,11 @@ export class DatabaseService {
   }
 
   aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
-    return this.DB.collection("cameras")
+    return this.DB.collection('cameras')
       .aggregate()
       .match(this.getFilter(filter))
       .group({
-        _id: "$cameraId",
+        _id: '$cameraId',
         count: {
           $sum: 1,
         },
@@ -79,7 +79,7 @@ export class DatabaseService {
   }
 
   async getImage(cameraId: number, timestamp: string): Promise<Buffer> {
-    const array = await this.getRawDataArray("cameras", {
+    const array = await this.getRawDataArray('cameras', {
       cameraId: cameraId,
       timestamp: timestamp,
     });
@@ -89,9 +89,9 @@ export class DatabaseService {
   async getRawDataArray(
     collection: string,
     filter: Filter<Document> = {},
-    errorString0: string = "Data Not found",
+    errorString0: string = 'Data Not found',
     limit: number = 1,
-    errorStringExceed: string = "Too much data found",
+    errorStringExceed: string = 'Too much data found',
   ) {
     const array = await this.DB.collection(collection).find(filter).toArray();
 
@@ -106,9 +106,9 @@ export class DatabaseService {
     user: Filter<Document>,
     newData: MatchKeysAndValues<Document>,
   ) {
-    await this.getRawDataArray("users", user, "User Not found");
+    await this.getRawDataArray('users', user, 'User Not found');
 
-    return this.DB.collection("users").updateOne(user, {
+    return this.DB.collection('users').updateOne(user, {
       $set: newData,
     });
   }
@@ -120,19 +120,19 @@ export class DatabaseService {
 
   private getFilter(filter?: FiltersAvailable) {
     switch (filter) {
-      case "intrusionDetection":
+      case 'intrusionDetection':
         return {
           intrusionDetection: { $eq: true },
         };
-      case "online":
+      case 'online':
         return {
           online: { $eq: true },
         };
-      case "offline":
+      case 'offline':
         return {
           online: { $eq: false },
         };
-      case "all":
+      case 'all':
       default:
         return {};
     }

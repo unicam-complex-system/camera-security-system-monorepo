@@ -3,7 +3,7 @@ import {
   HttpStatus,
   Injectable,
   PipeTransform,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 @Injectable()
 export class FiltersValidator implements PipeTransform {
@@ -20,9 +20,9 @@ export class FiltersValidator implements PipeTransform {
 }
 
 export const filters = [
-  "intrusionDetection",
-  "online",
-  "offline",
-  "all",
+  'intrusionDetection',
+  'online',
+  'offline',
+  'all',
 ] as const;
 export type FiltersAvailable = (typeof filters)[number];

@@ -3,7 +3,7 @@ import {
   HttpStatus,
   Injectable,
   PipeTransform,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 @Injectable()
 export class CameraValidator implements PipeTransform {
@@ -12,7 +12,7 @@ export class CameraValidator implements PipeTransform {
 
     if (!cameraIds.includes(cameraId)) {
       throw new HttpException(
-        "Invalid camera Id " + cameraId,
+        'Invalid camera Id ' + cameraId,
         HttpStatus.BAD_REQUEST,
       );
     }

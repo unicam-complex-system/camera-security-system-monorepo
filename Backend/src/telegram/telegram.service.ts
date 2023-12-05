@@ -2,11 +2,11 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-import { Injectable, NotFoundException } from "@nestjs/common";
-import * as TelegramBot from "node-telegram-bot-api";
-import * as process from "process";
-import { DatabaseService } from "../database/database.service";
-import UserDTO from "../user.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import * as TelegramBot from 'node-telegram-bot-api';
+import * as process from 'process';
+import { DatabaseService } from '../database/database.service';
+import UserDTO from '../user.dto';
 
 @Injectable()
 export class TelegramService {
@@ -24,8 +24,8 @@ export class TelegramService {
   private async welcome(msg: TelegramBot.Message) {
     await this.bot.sendMessage(
       msg.chat.id,
-      "Welcome to CSS bot\n" +
-        "This bot was developed by Leonardo Migliorelli\n" +
+      'Welcome to CSS bot\n' +
+        'This bot was developed by Leonardo Migliorelli\n' +
         "Please login with '/user <name> <password>'\n" +
         "To disable intrusion detection, type '/disable'" +
         "To reenable intrusion detection, type '/enable'",
@@ -34,7 +34,7 @@ export class TelegramService {
 
   private async onLogin(msg: TelegramBot.Message) {
     // removes /start command and then format name and password
-    const array = msg.text.substring(6).split(" ");
+    const array = msg.text.substring(6).split(' ');
     const userData: UserDTO = {
       name: array[0],
       password: array[1],
@@ -74,13 +74,13 @@ export class TelegramService {
     } catch (e) {
       await this.bot.sendMessage(
         msg.chat.id,
-        e == NotFoundException ? "You are not logged in" : e.message,
+        e == NotFoundException ? 'You are not logged in' : e.message,
       );
       return;
     }
     await this.bot.sendMessage(
       msg.chat.id,
-      `Intrusion detection ${status ? "enabled" : "disabled"}`,
+      `Intrusion detection ${status ? 'enabled' : 'disabled'}`,
     );
     return;
   }
@@ -90,7 +90,7 @@ export class TelegramService {
     date: Date,
     image: Buffer,
   ) {
-    const users = await this.databaseService.getRawDataArray("users");
+    const users = await this.databaseService.getRawDataArray('users');
 
     users
       .filter((user) => user.getsAlerts)
