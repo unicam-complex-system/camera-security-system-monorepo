@@ -15,12 +15,8 @@ import {
   HttpException,
   UseFilters,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import * as console from 'console';
-import { SocketsContainer } from '@nestjs/websockets/sockets-container';
-import { DatabaseService } from '../database/database.service';
-import { TelegramService } from '../telegram/telegram.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Catch(WsException, HttpException)
