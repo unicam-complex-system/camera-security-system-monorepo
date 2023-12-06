@@ -15,16 +15,18 @@ import { FiltersAvailable } from '../validators/filters/filters.pipe';
 import * as process from 'process';
 import UserDTO from '../user.dto';
 
-const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
+const url = `${process.env.MONGO_PROTOCOL ?? 'mongodb'}://${
+  process.env.MONGO_INITDB_ROOT_USERNAME
+}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_HOST}`;
 
 @Injectable()
 export class DatabaseService {
   private DB: Db;
 
   constructor() {
+    console.log(url);
     const client = new MongoClient(url);
 
-    client.connect();
     this.DB = client.db('csd');
     // If no user exists it automatically creates one with the default credentials in env file
     this.DB.collection('users')

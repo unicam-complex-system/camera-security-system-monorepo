@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Controller,
   HttpStatus,
+  Optional,
   Param,
   ParseFilePipeBuilder,
   Post,
@@ -51,7 +52,7 @@ class ImageUploadDto {
 export class MachineLearningController {
   constructor(
     private readonly database: DatabaseService,
-    readonly telegramApi: TelegramService,
+    @Optional() private readonly telegramApi: TelegramService,
   ) {}
 
   @ApiOperation({

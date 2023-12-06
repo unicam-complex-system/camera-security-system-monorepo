@@ -5,7 +5,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MachineLearningController } from './machineLearning.controller';
 import { DatabaseService } from '../../database/database.service';
-import { TelegramService } from '../../telegram/telegram.service';
 import { JwtModule } from '@nestjs/jwt';
 
 describe('MachineLearningController', () => {
@@ -20,7 +19,7 @@ describe('MachineLearningController', () => {
         }),
       ],
       controllers: [MachineLearningController],
-      providers: [DatabaseService, TelegramService],
+      providers: [DatabaseService],
     }).compile();
 
     controller = app.get<MachineLearningController>(MachineLearningController);
@@ -29,9 +28,4 @@ describe('MachineLearningController', () => {
   it('should exists', () => {
     expect(controller).toBeDefined();
   });
-
-  // afterAll(async () => {
-  //   // await controller.telegramApi.bot.stopPolling();
-  //   // await controller.telegramApi.bot.close()
-  // });
 });

@@ -1,5 +1,5 @@
 {
-  "globalSetup": "./env.spec.ts",
+  "globalSetup": "./envCheck.ts",
   "moduleFileExtensions": [
     "js",
     "json",

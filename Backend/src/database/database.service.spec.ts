@@ -31,6 +31,7 @@ describe('DatabaseService', () => {
 
     expect(aggregateData).not.toBeNull();
   });
+
   it('should get image data', async () => {
     const aggregateData = await databaseService.getData('all');
 

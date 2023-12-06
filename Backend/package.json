@@ -8,10 +8,11 @@
   "scripts": {
     "build": "nest build",
     "start": "npm ci && nest start",
-    "start:dev": "npm start -- --watch",
+    "start:dev": "nest start -- --watch",
     "start:debug": "npm start -- --debug --watch",
     "start:prod": "node dist/main",
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
+    "test:det": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
