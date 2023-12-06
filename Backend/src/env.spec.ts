@@ -2,26 +2,26 @@
  * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
  */
 
-describe('FiltersPipe', () => {
-  it('MONGO_INITDB_ROOT_USERNAME should be defined', () => {
-    expect(process.env.MONGO_INITDB_ROOT_USERNAME).toBeDefined();
-  });
-  it('MONGO_INITDB_ROOT_PASSWORD should be defined', () => {
-    expect(process.env.MONGO_INITDB_ROOT_PASSWORD).toBeDefined();
-  });
-  it('JWT_SECRET should be defined', () => {
-    expect(process.env.JWT_SECRET).toBeDefined();
-  });
-  it('CSD_USER should be defined', () => {
-    expect(process.env.CSD_USER).toBeDefined();
-  });
-  it('CSD_PASSWORD should be defined', () => {
-    expect(process.env.CSD_PASSWORD).toBeDefined();
-  });
-  it('TELEGRAM_TOKEN should be defined', () => {
-    expect(process.env.TELEGRAM_TOKEN).toBeDefined();
-  });
-  it('MONGO_HOST should be defined', () => {
-    expect(process.env.MONGO_HOST).toBeDefined();
-  });
-});
+import * as process from 'process';
+
+function throwsIfNull(value: any, message: string) {
+  if (!value) {
+    throw new Error(message);
+  }
+}
+
+export default () => {
+  throwsIfNull(
+    process.env.MONGO_INITDB_ROOT_USERNAME,
+    'MONGO_INITDB_ROOT_USERNAME not defined',
+  );
+  throwsIfNull(
+    process.env.MONGO_INITDB_ROOT_PASSWORD,
+    'MONGO_INITDB_ROOT_PASSWORD not defined',
+  );
+  throwsIfNull(process.env.JWT_SECRET, 'JWT_SECRET not defined');
+  throwsIfNull(process.env.CSD_USER, 'CSD_USER not defined');
+  throwsIfNull(process.env.CSD_PASSWORD, 'CSD_PASSWORD not defined');
+  throwsIfNull(process.env.TELEGRAM_TOKEN, 'TELEGRAM_TOKEN not defined');
+  throwsIfNull(process.env.MONGO_HOST, 'MONGO_HOST not defined');
+};

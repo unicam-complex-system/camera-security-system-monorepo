@@ -16,7 +16,6 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import * as console from 'console';
 import { JwtService } from '@nestjs/jwt';
 
 @Catch(WsException, HttpException)
@@ -57,7 +56,6 @@ export class CameraStreamGateway implements OnGatewayConnection {
   ) {
     try {
       const message = JSON.parse(data) as Message;
-      console.log(message.id, message.data);
 
       client.to('clients').emit(message.id.toString(), message.data);
     } catch (e) {

@@ -1,0 +1,18 @@
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  jest-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Working Directory
+        run: cd Backend
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
