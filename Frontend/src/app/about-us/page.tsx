@@ -5,7 +5,7 @@ import {
   AboutUsTeamContainer,
 } from "@/containers";
 
-export default function ContactUsPage() {
+export default function AboutUsPage() {
   return (
     <div className="flex flex-col">
       <AboutUsOverviewContainer />
