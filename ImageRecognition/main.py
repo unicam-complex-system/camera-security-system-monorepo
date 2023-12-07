@@ -1,6 +1,6 @@
 import concurrent.futures
 
-from src.handleSystemStream import obtain_frames
+from src.handleSystemStream import obtain_frames, handle_connection
 
 IPs = [
     "172.20.14.97",
@@ -15,11 +15,9 @@ IPs = [
 
 
 def start(debug: bool):
-    path = "../../img/"
     with concurrent.futures.ThreadPoolExecutor() as executor:
         args: (str, str, bool) = [(
             ip,
-            f'{path}out/stream/{ip}/%d.jpg',
             debug
         ) for ip in IPs]
 
@@ -28,4 +26,5 @@ def start(debug: bool):
 
 
 if __name__ == "__main__":
+    # handle_connection("172.20.14.97")
     start(False)

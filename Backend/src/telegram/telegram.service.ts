@@ -1,8 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import * as TelegramBot from "node-telegram-bot-api";
-import * as process from "process";
-import { DatabaseService } from "../database/database.service";
-import UserDTO from "../user.dto";
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import * as TelegramBot from 'node-telegram-bot-api';
+import * as process from 'process';
+import { DatabaseService } from '../database/database.service';
+import UserDTO from '../user.dto';
 
 @Injectable()
 export class TelegramService {
@@ -13,30 +17,38 @@ export class TelegramService {
 
     this.bot.onText(/\/user (.+)/, (m) => this.onLogin(m));
     this.bot.onText(/\/start/, (m) => this.welcome(m));
+    this.bot.onText(/\/disable/, (m) => this.setIntrusionDetection(m, false));
+    this.bot.onText(/\/enable/, (m) => this.setIntrusionDetection(m, true));
   }
 
   private async welcome(msg: TelegramBot.Message) {
     await this.bot.sendMessage(
       msg.chat.id,
-      "Welcome to CSS bot\n" +
-        "This bot was developed by Leonardo Migliorelli\n" +
-        "Please login with '/user <name> <password>'",
+      'Welcome to CSS bot\n' +
+        'This bot was developed by Leonardo Migliorelli\n' +
+        "Please login with '/user <name> <password>'\n" +
+        "To disable intrusion detection, type '/disable'" +
+        "To reenable intrusion detection, type '/enable'",
     );
   }
 
   private async onLogin(msg: TelegramBot.Message) {
     // removes /start command and then format name and password
-    const array = msg.text.substring(6).split(" ");
+    const array = msg.text.substring(6).split(' ');
     const userData: UserDTO = {
       name: array[0],
       password: array[1],
     };
 
     try {
-      await this.databaseService.checkUserAndUpdateTelegramId(
-        msg.chat.id,
-        userData,
-      );
+      await this.databaseService.checkAndUpdateUser(userData, {
+        telegramId: msg.chat.id,
+      });
+
+      // await this.databaseService.checkUserAndUpdateTelegramId(
+      //   msg.chat.id,
+      //   userData,
+      // );
     } catch (e) {
       await this.bot.sendMessage(msg.chat.id, e.message);
       return;
@@ -50,14 +62,38 @@ export class TelegramService {
     );
   }
 
+  private async setIntrusionDetection(
+    msg: TelegramBot.Message,
+    status: boolean,
+  ) {
+    try {
+      await this.databaseService.checkAndUpdateUser(
+        { telegramId: msg.chat.id },
+        { getsAlerts: status },
+      );
+    } catch (e) {
+      await this.bot.sendMessage(
+        msg.chat.id,
+        e == NotFoundException ? 'You are not logged in' : e.message,
+      );
+      return;
+    }
+    await this.bot.sendMessage(
+      msg.chat.id,
+      `Intrusion detection ${status ? 'enabled' : 'disabled'}`,
+    );
+    return;
+  }
+
   async sendIntrusionDetectionNotification(
     cameraId: number,
     date: Date,
     image: Buffer,
   ) {
-    const users = await this.databaseService.getRawDataArray("users");
+    const users = await this.databaseService.getRawDataArray('users');
 
     users
+      .filter((user) => user.getsAlerts)
       .map((user) => user.telegramId)
       .forEach((id) => {
         this.bot.sendPhoto(id, image, {

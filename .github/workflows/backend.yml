@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - main
+      - glydric
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  jest-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        working-directory: "Backend"
+        run: npm ci
+      - name: Run tests
+        working-directory: "Backend"
+        run: npm test
+        env:
+          MONGO_PROTOCOL: ${{ secrets.MONGO_PROTOCOL }}
+          MONGO_HOST: ${{ secrets.MONGO_HOST }}
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CSD_USER: ${{ secrets.CSD_USER }}
+          CSD_PASSWORD: ${{ secrets.CSD_PASSWORD }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

@@ -1,32 +1,42 @@
-import { JwtService } from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from './auth.guard';
 
-describe("AuthGuard", () => {
-  const payload = "complexUserNamePayload";
+describe('AuthGuard', () => {
+  const payload = 'complexUserNamePayload';
   let service: JwtService;
-  let jwtToken: string;
+  let auth: AuthGuard;
+  let headers: Record<string, string>;
 
   beforeAll(async () => {
     service = new JwtService({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET ?? 'keytest',
     });
-    jwtToken = await service.signAsync(payload);
+
+    auth = new AuthGuard(service);
+    headers = tokenToHeaders(await service.signAsync(payload));
   });
 
-  it("Should be defined", () => {
-    expect(service).toBeDefined();
-    expect(jwtToken).toBeDefined();
+  it('Should be defined', () => {
+    expect(auth).toBeDefined();
+    expect(headers).toBeDefined();
   });
 
-  it("Get Payload from token", () => {
-    const user = service.verify(jwtToken);
+  it('Get Payload from token', () => {
+    const user = auth.checkToken(headers);
     expect(user).toBe(payload);
   });
 
-  it("Should fail JwtVerify of another token", () => {
+  it('Should fail JwtVerify of another token', () => {
     expect(() =>
-      service.verify(
-        "eyJhbGciOiJIUzI1NiJ9.QmFzaWM.MTnCJYESf5QRL9N8gqn5Di5PEZX8eZB5sN8W4TJTDKF",
+      auth.checkToken(
+        tokenToHeaders(
+          'eyJhbGciOiJIUzI1NiJ9.QmFzaWM.MTnCJYESf5QRL9N8gqn5Di5PEZX8eZB5sN8W4TJTDKF',
+        ),
       ),
     ).toThrow();
   });
+
+  function tokenToHeaders(token: string) {
+    return { authorization: `Bearer ${token}` };
+  }
 });

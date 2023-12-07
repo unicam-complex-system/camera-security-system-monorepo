@@ -5,7 +5,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from './database.service';
 
-describe("DatabaseService", () => {
+describe('DatabaseService', () => {
   let databaseService: DatabaseService;
 
   beforeEach(async () => {
@@ -16,23 +16,24 @@ describe("DatabaseService", () => {
     databaseService = module.get<DatabaseService>(DatabaseService);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(databaseService).toBeDefined();
   });
 
-  it("should get aggregated data", async () => {
+  it('should get aggregated data', async () => {
     const aggregateData = await databaseService.aggregateCamera();
 
     expect(aggregateData).not.toBeNull();
   });
 
-  it("should get single data", async () => {
-    const aggregateData = await databaseService.getData("all");
+  it('should get single data', async () => {
+    const aggregateData = await databaseService.getData('all');
 
     expect(aggregateData).not.toBeNull();
   });
-  it("should get image data", async () => {
-    const aggregateData = await databaseService.getData("all");
+
+  it('should get image data', async () => {
+    const aggregateData = await databaseService.getData('all');
 
     aggregateData
       .filter((value) => value.intrusionDetection)
@@ -42,8 +43,8 @@ describe("DatabaseService", () => {
         ).not.toThrow(),
       );
 
-    const spy =  jest.fn()
-    await databaseService.getImage(1, "this will make it throw").catch(spy);
+    const spy = jest.fn();
+    await databaseService.getImage(1, 'this will make it throw').catch(spy);
     expect(spy).toHaveBeenCalled();
   });
 });

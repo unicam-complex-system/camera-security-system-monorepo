@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Controller,
   HttpStatus,
+  Optional,
   Param,
   ParseFilePipeBuilder,
   Post,
@@ -27,91 +28,94 @@ import {
   ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
-import { CameraIds, CameraValidator } from '../../validators/camera-id/camera.pipe';
+import {
+  CameraIds,
+  CameraValidator,
+} from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TelegramService } from '../../telegram/telegram.service';
 
 class ImageUploadDto {
   @ApiProperty({
-    type: "string",
-    format: "binary",
-    description: "Image file to upload",
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
   })
   file: any;
 }
 
-@ApiTags("Machine Learning")
+@ApiTags('Machine Learning')
 @ApiBadRequestResponse({
-  description: "Invalid filter or camera id",
+  description: 'Invalid filter or camera id',
 })
-@Controller("/:id(\\d+)")
+@Controller('/:id(\\d+)')
 export class MachineLearningController {
   constructor(
     private readonly database: DatabaseService,
-    readonly telegramApi: TelegramService,
+    @Optional() private readonly telegramApi: TelegramService,
   ) {}
 
   @ApiOperation({
-    description: "Updates the online status of the camera",
+    description: 'Updates the online status of the camera',
   })
   @ApiParam({
-    name: "id",
-    type: "number",
+    name: 'id',
+    type: 'number',
     example: 1,
   })
   @ApiParam({
-    name: "status",
-    type: "string",
+    name: 'status',
+    type: 'string',
     examples: {
       online: {
-        value: "online",
+        value: 'online',
       },
       offline: {
-        value: "offline",
+        value: 'offline',
       },
     },
   })
   @ApiCreatedResponse()
-  @ApiBearerAuth("CSS-Auth")
+  @ApiBearerAuth('CSS-Auth')
   @UseGuards(AuthGuard)
   @Post(`:status(online|offline)`)
   saveStatus(
-    @Param("id", CameraValidator) cameraId: CameraIds,
-    @Param("status") status: string,
+    @Param('id', CameraValidator) cameraId: CameraIds,
+    @Param('status') status: string,
   ) {
     // Following condition could be removed as the path can only be online or offline
-    if (status.toLowerCase() != "online" && status.toLowerCase() != "offline")
+    if (status.toLowerCase() != 'online' && status.toLowerCase() != 'offline')
       throw new BadRequestException(`Invalid status ${status}`);
 
     return this.database.addData({
       cameraId: cameraId,
       timestamp: new Date().toISOString(),
-      online: status.toLowerCase() === "online",
+      online: status.toLowerCase() === 'online',
     });
   }
 
   @ApiOperation({
-    description: "Used to send image",
+    description: 'Used to send image',
   })
-  @ApiBearerAuth("CSS-Auth")
-  @ApiConsumes("multipart/form-data")
+  @ApiBearerAuth('CSS-Auth')
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: `The image file to upload`,
     type: ImageUploadDto,
   })
   @ApiParam({
-    name: "id",
-    type: "number",
+    name: 'id',
+    type: 'number',
     example: 1,
   })
   // @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor('file'))
   @Post()
   async uploadImage(
-    @Param("id", CameraValidator) cameraId: CameraIds,
+    @Param('id', CameraValidator) cameraId: CameraIds,
     @UploadedFile(
       new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: "image/jpeg" })
+        .addFileTypeValidator({ fileType: 'image/jpeg' })
         .addMaxSizeValidator({
           maxSize: 100000, // 100Kb
         })
@@ -123,9 +127,7 @@ export class MachineLearningController {
   ) {
     const date = new Date();
 
-    await this.database.addData(
-      new DataType(cameraId, date, null, file),
-    );
+    await this.database.addData(new DataType(cameraId, date, null, file));
     await this.telegramApi.sendIntrusionDetectionNotification(
       cameraId,
       date,

@@ -1,66 +1,47 @@
-import os
-import subprocess
-
 import cv2
+import ffmpeg
+import numpy as np
+from ping3 import ping
 
-# Define the command to fetch the video stream using curl and extract frames using ffmpeg
-command = "curl http://admin:@{}/livestream/11 --no-buffer -o - | ffmpeg -loglevel quiet -y -hide_banner -i - -vf 'fps=1' {}"
 
-
-# The function uses outFormat where the char "%d" is the frame count, also remember to define all path
-def handle_status(ip: str, down: bool):
-    if down:
-        print(f"Disconnected from ip: {ip}")
+def handle_status(ip: str, is_available: bool):
+    if is_available:
+        print(f"Failed connection with ip: {ip}")
     else:
         print(f"Connected with ip: {ip}")
 
-    pass # TODO save log
+    # TODO save log
 
 
-def handle_connection(ip: str, out_format: str):
+opts = {
+    "loglevel": "quiet",  # "r": "30", "f": "avfoundation"
+    "headers": 'Authorization: Basic YWRtaW46'
+}
+
+
+def handle_connection(ip: str, debug: bool):
     # Run the command using subprocess
-    try:
-        subprocess.run(
-            command.format(ip, out_format),
-            shell=True,
-            check=True
-        )
-        print("Frames extracted successfully.")
-    except subprocess.CalledProcessError as e:
-        print(e.returncode)
-        print(f"Error: {e}")
-
-
-def obtain_frames(ip: str, out_format: str, debug: bool):
-    if not dir_check(out_format, not debug):
-        raise Exception("Path not usable")
-
+    cmd = (ffmpeg
+           .input(f"http://{ip}/livestream/11", **opts)
+           .output("pipe:", format="rawvideo", pix_fmt="bgr24")
+           .run_async(pipe_stdout=True)
+           )
     while True:
-        try:
-            subprocess.run(
-                "ping -c 1 {}".format(ip),
-                stdout=subprocess.PIPE,
-                shell=True,
-                check=True
-            )
-            handle_status(ip, False)
-            handle_connection(ip, out_format)
-        except subprocess.CalledProcessError:
-            handle_status(ip, True)
+        raw_frame = cmd.stdout.read(1920 * 1080 * 3)
+        if not raw_frame:
+            break
+        frame = np.frombuffer(raw_frame, np.uint8).reshape((1080, 1920, 3))
+
+        if debug:
+            cv2.imshow(f"VideoFrame{ip}", frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
 
 
-def dir_check(directory: str, force: bool):
-    out_path = os.path.dirname(directory)
+def obtain_frames(ip: str, debug: bool):
+    while True:
+        available = ping(ip) is not None
+        handle_status(ip, available)
 
-    if not os.path.exists(out_path):
-        if force:
-            os.makedirs(out_path)
-            return True
-
-        choice = input(f"Directory '{out_path}' not exists. You want to create it? (Yes/No): ")
-        if choice.lower() == 'no':
-            print("Operazione annullata.")
-            return False
-
-        os.makedirs(out_path)
-    return True
+        if available:
+            handle_connection(ip, debug)
