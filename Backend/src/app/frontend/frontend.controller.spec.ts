@@ -7,7 +7,7 @@ import { FrontendController } from './frontend.controller';
 import { DatabaseService } from '../../database/database.service';
 import { JwtModule } from '@nestjs/jwt';
 
-describe("FrontendController", () => {
+describe('FrontendController', () => {
   let controller: FrontendController;
 
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe("FrontendController", () => {
     controller = module.get<FrontendController>(FrontendController);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 });

@@ -5,9 +5,9 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { IncomingHttpHeaders } from 'http';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,24 +21,38 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
 
     try {
-      request["user"] = this.jwtService.verify(token);
-      token;
+      const headers = this.getGenericHeaders(context);
+
+      //TODO check if the user is saved
+      request['user'] = this.checkToken(headers);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.UNAUTHORIZED);
     }
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string {
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+  // token saved as `Bearer ${token}`
+  checkToken(headers: Record<string, string> | IncomingHttpHeaders) {
+    const token = headers.authorization;
 
-    if (type != "Bearer") {
-      throw new ForbiddenException("No token provided");
+    if (token == undefined || !token.startsWith('Bearer ')) {
+      throw new ForbiddenException('No token provided');
     }
 
-    return token;
+    return this.jwtService.verify(token.slice(7, token.length));
+  }
+
+  private getGenericHeaders(context: ExecutionContext): Record<string, string> {
+    const request = context.switchToHttp().getRequest();
+    switch (context.getType()) {
+      case 'rpc':
+        throw new HttpException('rpc protocol', HttpStatus.NOT_IMPLEMENTED);
+      case 'ws':
+        return request.handshake.headers;
+      case 'http':
+        return request.headers;
+    }
   }
 }

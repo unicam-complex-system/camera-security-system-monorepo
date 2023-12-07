@@ -7,6 +7,8 @@ The repository contains the sources code for the Camera Security System project.
 
 Firstly add .env file to root directory using the following template
 ```text
+MONGO_PROTOCOL=mongodb
+MONGO_HOST=mongo:27017
 MONGO_INITDB_ROOT_USERNAME=username
 MONGO_INITDB_ROOT_PASSWORD=password
 JWT_SECRET=secret
