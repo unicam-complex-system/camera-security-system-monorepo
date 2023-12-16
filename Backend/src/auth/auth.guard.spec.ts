@@ -9,7 +9,7 @@ describe('AuthGuard', () => {
 
   beforeAll(async () => {
     service = new JwtService({
-      secret: process.env.JWT_SECRET ?? 'keytest',
+      secret: process.env.JWT_SECRET,
     });
 
     auth = new AuthGuard(service);

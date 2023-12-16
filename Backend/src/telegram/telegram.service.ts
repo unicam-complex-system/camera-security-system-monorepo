@@ -92,6 +92,7 @@ export class TelegramService {
   ) {
     const users = await this.databaseService.getRawDataArray('users');
 
+    // TODO test filter
     users
       .filter((user) => user.getsAlerts)
       .map((user) => user.telegramId)

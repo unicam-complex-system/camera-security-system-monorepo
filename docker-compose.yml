@@ -25,7 +25,5 @@ services:
       - ./Backend:/home/node
     env_file:
       - .env
-#    environment:
-#      - MONGO_HOST=mongo:27017 # this indicates the container called mongo and the port it is listening on
 #    command: npm start
-    command: npm run start:dev
+    command: npm run start -- --watch

@@ -24,4 +24,5 @@ export default () => {
   throwsIfNotDefined(process.env.CSD_PASSWORD, 'CSD_PASSWORD');
   throwsIfNotDefined(process.env.TELEGRAM_TOKEN, 'TELEGRAM_TOKEN');
   throwsIfNotDefined(process.env.MONGO_HOST, 'MONGO_HOST');
+  throwsIfNotDefined(process.env.BCRYPT_SALT, 'BCRYPT_SALT');
 };

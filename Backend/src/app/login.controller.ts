@@ -10,17 +10,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import UserDTO from '../user.dto';
-import { DatabaseService } from '../database/database.service';
-import { JwtService } from '@nestjs/jwt';
 import * as process from 'process';
+import { LoginService } from '../login/login.service';
 
 @ApiTags('Frontend')
 @Controller('/')
 export class LoginController {
-  constructor(
-    private readonly databaseService: DatabaseService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly loginService: LoginService) {}
 
   @ApiBody({
     type: String,
@@ -44,10 +40,6 @@ export class LoginController {
   @Header('Content-Type', 'application/json')
   @Post('login')
   async login(@Body() user: UserDTO) {
-    await this.databaseService.getRawDataArray('users', user, 'User Not found');
-
-    return {
-      access_token: await this.jwtService.signAsync(user.name),
-    };
+    return await this.loginService.checkUser(user);
   }
 }
