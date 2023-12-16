@@ -10,6 +10,7 @@ import { DatabaseService } from './database/database.service';
 import { TelegramService } from './telegram/telegram.service';
 import { LoginController } from './app/login.controller';
 import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
+import { LoginService } from './login/login.service';
 
 @Module({
   imports: [
@@ -21,7 +22,12 @@ import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
     }),
   ],
   controllers: [MachineLearningController, FrontendController, LoginController],
-  providers: [DatabaseService, TelegramService, CameraStreamGateway],
+  providers: [
+    DatabaseService,
+    TelegramService,
+    CameraStreamGateway,
+    LoginService,
+  ],
   exports: [DatabaseService, TelegramService],
 })
 export class AppModule {}

@@ -14,6 +14,7 @@ import { CameraIds } from '../validators/camera-id/camera.pipe';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
 import * as process from 'process';
 import UserDTO from '../user.dto';
+import * as bcrypt from 'bcrypt';
 
 const url = `${process.env.MONGO_PROTOCOL ?? 'mongodb'}://${
   process.env.MONGO_INITDB_ROOT_USERNAME
@@ -24,7 +25,6 @@ export class DatabaseService {
   private DB: Db;
 
   constructor() {
-    console.log(url);
     const client = new MongoClient(url);
 
     this.DB = client.db('csd');
@@ -35,10 +35,27 @@ export class DatabaseService {
         if (size == 0) {
           this.DB.collection(`users`).insertOne({
             name: process.env.CSD_USER,
-            password: process.env.CSD_PASSWORD,
+            password: bcrypt.hashSync(
+              process.env.CSD_PASSWORD,
+              process.env.BCRYPT_SALT,
+            ),
           });
         }
       });
+    this.DB.collection('users').findOneAndUpdate(
+      {
+        name: process.env.CSD_USER,
+        password: process.env.CSD_PASSWORD,
+      },
+      {
+        $set: {
+          password: bcrypt.hashSync(
+            process.env.CSD_PASSWORD,
+            process.env.BCRYPT_SALT,
+          ),
+        },
+      },
+    );
   }
 
   async addData(data: DataType<CameraIds>) {
