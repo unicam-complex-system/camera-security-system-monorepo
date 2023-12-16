@@ -15,6 +15,7 @@ JWT_SECRET=secret
 CSD_USER=User
 CSD_PASSWORD=Password
 TELEGRAM_TOKEN=api_token
+BCRYPT_SALT=...
 ```
 Then you can run
 ```bash
