@@ -5,7 +5,7 @@ The repository contains the sources code for the Camera Security System project.
 
 ## Just Run
 
-Firstly add .env file to root directory using the following template
+Firstly add .secrets.yml file to root directory using the following template
 ```text
 MONGO_PROTOCOL=mongodb
 MONGO_HOST=mongo:27017
