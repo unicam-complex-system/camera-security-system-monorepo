@@ -50,7 +50,7 @@ export const LayoutContainer = ({
     <ConfigProvider theme={antTheme}>
       {antStyleLoaded && (
         <Layout className="min-h-screen">
-          <Sider className="bg-primary" breakpoint="lg" collapsedWidth="0">
+          <Sider className="bg-primary" breakpoint="xl" collapsedWidth="0">
             <div className="flex justify-center p-2">
               <img
                 src="/images/logo-without-text.svg"

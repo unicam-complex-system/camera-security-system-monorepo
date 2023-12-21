@@ -2,6 +2,9 @@ export const theme = {
   colors: {
     primaryColor: "#112236",
     secondaryColor: "#588D9F",
+    successColor: "#52C41A",
+    dangerColor: "#ff4d4f",
+    warningColor: "#fcad03",
     white: "#FFFFFF",
     black: "#000000",
   },
@@ -10,6 +13,8 @@ export const theme = {
 export const antTheme = {
   token: {
     colorPrimary: theme.colors.secondaryColor,
+    colorPrimaryHover: theme.colors.secondaryColor + "AA",
+    colorPrimaryActive: theme.colors.secondaryColor,
   },
   components: {
     Menu: {

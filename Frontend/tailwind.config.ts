@@ -4,6 +4,7 @@ import { theme } from "./theme";
 const config: Config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/data/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/containers/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
@@ -19,9 +20,14 @@ const config: Config = {
         black: theme.colors.black,
         primary: theme.colors.primaryColor,
         secondary: theme.colors.secondaryColor,
+        success: theme.colors.successColor,
+        danger: theme.colors.dangerColor,
       },
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: false, // <== disable this!
+  },
 };
 export default config;
