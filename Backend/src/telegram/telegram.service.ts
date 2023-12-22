@@ -80,7 +80,7 @@ export class TelegramService {
     }
     await this.bot.sendMessage(
       msg.chat.id,
-      `Intrusion detection ${status ? 'enabled' : 'disabled'}`,
+      `Intrusion detection notifications: ${status ? 'enabled' : 'disabled'}`,
     );
     return;
   }
@@ -92,7 +92,6 @@ export class TelegramService {
   ) {
     const users = await this.databaseService.getRawDataArray('users');
 
-    // TODO test filter
     users
       .filter((user) => user.getsAlerts)
       .map((user) => user.telegramId)

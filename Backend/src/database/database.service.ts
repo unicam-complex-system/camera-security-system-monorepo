@@ -42,6 +42,7 @@ export class DatabaseService {
           });
         }
       });
+    // If the user exists but the password is not hashed it will hash it
     this.DB.collection('users').findOneAndUpdate(
       {
         name: process.env.CSD_USER,
