@@ -10,7 +10,7 @@ services:
     volumes:
       - ./mongo-data:/data/db
     env_file:
-      - .env
+      - .secrets.yml
 
   backend:
     container_name: backend
@@ -24,6 +24,6 @@ services:
     volumes:
       - ./Backend:/home/node
     env_file:
-      - .env
+      - .secrets.yml
 #    command: npm start
     command: npm run start -- --watch
