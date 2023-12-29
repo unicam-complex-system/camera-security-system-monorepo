@@ -3,6 +3,7 @@
  */
 
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MachineLearningController } from './app/machineLearning/machineLearning.controller';
 import { FrontendController } from './app/frontend/frontend.controller';
@@ -14,6 +15,7 @@ import { LoginService } from './login/login.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

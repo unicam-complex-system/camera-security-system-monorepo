@@ -35,10 +35,10 @@ export class DatabaseService {
         if (size == 0) {
           this.DB.collection(`users`).insertOne({
             name: process.env.CSD_USER,
-            password: bcrypt.hashSync(
-              process.env.CSD_PASSWORD,
+            password: process.env.CSD_PASSWORD/* bcrypt.hashSync(
+              ,
               process.env.BCRYPT_SALT,
-            ),
+            ) */,
           });
         }
       });
@@ -50,10 +50,10 @@ export class DatabaseService {
       },
       {
         $set: {
-          password: bcrypt.hashSync(
-            process.env.CSD_PASSWORD,
+          password: process.env.CSD_PASSWORD/* bcrypt.hashSync(
+            ,
             process.env.BCRYPT_SALT,
-          ),
+          ) */,
         },
       },
     );

@@ -6,3 +6,4 @@ export { AboutUsSolutionContainer } from "./about-us-container/about-us-solution
 export { AboutUsTeamContainer } from "./about-us-container/about-us-team-container";
 export { AboutUsMissionContainer } from "./about-us-container/about-us-mission-container";
 export { AnalyticsContainer } from "./analytics-container/analytics-container";
+export { LoginContainer } from "./login-container";
