@@ -36,8 +36,6 @@ $ docker compose up -d
 This is the frontend part of the camera security system. It is this part that enables
 user to interact with the system visually.
 
-## To Run the frontend locally
-
 ### 0- Prerequisite
 You should first install node.js in your machine.
 You can get more information [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
