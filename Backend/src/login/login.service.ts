@@ -17,7 +17,7 @@ export class LoginService {
     // console.log(bcrypt.hashSync(user.password, process.env.BCRYPT_SALT));
     const encryptedUser = {
       name: user.name,
-      password: bcrypt.hashSync(user.password, process.env.BCRYPT_SALT),
+      password: bcrypt.hashSync(user.password, parseInt(process.env.BCRYPT_SALT)),
     };
 
     // this should not throw an error, then the return is executed
