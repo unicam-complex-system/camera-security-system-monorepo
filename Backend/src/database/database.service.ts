@@ -37,7 +37,7 @@ export class DatabaseService {
             name: process.env.CSD_USER,
             password: bcrypt.hashSync(
               process.env.CSD_PASSWORD,
-              parseInt(process.env.BCRYPT_SALT),
+              process.env.BCRYPT_SALT,
             ),
           });
         }
@@ -52,7 +52,7 @@ export class DatabaseService {
         $set: {
           password: bcrypt.hashSync(
             process.env.CSD_PASSWORD,
-            parseInt(process.env.BCRYPT_SALT),
+            process.env.BCRYPT_SALT,
           ),
         },
       },
