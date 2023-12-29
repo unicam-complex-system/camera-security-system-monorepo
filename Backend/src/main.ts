@@ -34,7 +34,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger-api', app, document);
 
-  app.enableCors({ origin: true });
   await app.listen(8080);
 
   console.log(
@@ -43,3 +42,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+y
