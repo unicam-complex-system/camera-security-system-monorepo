@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "./store-hooks";
 import { Session } from "@/types";
-import { selectSession, logIn } from "@/store";
+import { selectSession, logIn, logOut } from "@/store";
 
 export const useSessionSlice = () => {
   const dispatch = useAppDispatch();
@@ -9,12 +9,17 @@ export const useSessionSlice = () => {
   const session: Session = useAppSelector(selectSession);
 
   /* redux session state updaters */
-  const logInState = (newSession: Exclude<Session, null>) => {
+  const logInState = (newSession: Session) => {
     dispatch(logIn(newSession));
+  };
+
+  const logOutState = () => {
+    dispatch(logOut());
   };
 
   return {
     session: session,
     logIn: logInState,
+    logOut: logOutState,
   };
 };

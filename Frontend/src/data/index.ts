@@ -10,3 +10,4 @@ export {
   recentActivitiesData,
   recentActivitiesColumns,
 } from "./recent-activities-data";
+export { loginFormSchema } from "./form-schema-data";
