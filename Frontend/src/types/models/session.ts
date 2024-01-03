@@ -6,4 +6,4 @@ import { User } from "./user";
 export type Session = {
   accessToken: string;
   user: User;
-} | null;
+};

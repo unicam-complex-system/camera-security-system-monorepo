@@ -2,8 +2,9 @@
 import type { FC } from "react";
 import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
-import { useCameraSlice } from "@/hooks";
+import { useCameraSlice, useSessionSlice } from "@/hooks";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
+import { io } from "socket.io-client";
 import React from "react";
 
 type PropsType = {
@@ -12,8 +13,23 @@ type PropsType = {
 
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
+  /* hooks */
   const { cameras, isFullScreenGrid, toggleIsFullScreenGrid } =
     useCameraSlice();
+
+  const { session } = useSessionSlice();
+
+  /* websocket */
+  const webSocketUrl = process.env.NEXT_PUBLIC_BACKENDXXX_URL
+    ? process.env.NEXT_PUBLIC_BACKENDXXX_URL
+    : "";
+
+  const socket = io(webSocketUrl, {
+    transports: ["websocket", "polling", "flashsocket"],
+    auth: {
+      token: `Bearer ddd${session.accessToken}`,
+    },
+  });
 
   /* event handlers */
   const onScreenSizeClick = () => {
@@ -35,6 +51,7 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
         {Array.from({ length: sizePerScreen }).map((item, index) => (
           <React.Fragment key={index}>
             <VideoRecordingScreen
+              socket={socket}
               camera={index < cameras.length ? cameras[index] : undefined}
             />
           </React.Fragment>

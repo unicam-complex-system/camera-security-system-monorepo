@@ -6,4 +6,4 @@
 export type Notification = {
   type: "info" | "error" | "success";
   message: string;
-} | null;
+};
