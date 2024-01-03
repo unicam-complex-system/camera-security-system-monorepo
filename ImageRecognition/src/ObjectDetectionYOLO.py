@@ -31,9 +31,6 @@ cam6 = 'rtsp://192.168.1.41:80/ch5_0.264'
 cam7 = 'rtsp://192.168.1.41:80/ch6_0.264'
 cam8 = 'rtsp://192.168.1.41:80/ch7_0.264'
 
-#setting of telegram
-TOKEN = '6929905186:AAEouI3G2sbfS-y6ZzkXrpNgPQRAPs5_v-g'
-channel_id = '792557360'
 
 last_sent_image = None
 
