@@ -25,6 +25,7 @@ import {
   CameraValidator,
 } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
+import { createReadStream } from 'fs';
 
 const filterParams = {
   name: 'filter',
@@ -54,7 +55,7 @@ const filterParams = {
 @ApiBadRequestResponse({
   description: 'Camera id or filter is invalid',
 })
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller()
 export class FrontendController {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -96,5 +97,35 @@ export class FrontendController {
     });
 
     return new StreamableFile(array[0].intrusionDetection.buffer);
+  }
+
+  /* Camera stream main hls file endpoint */
+  @ApiParam({
+    name: 'id',
+    type: 'number',
+    description: 'Camera id',
+    example: 1,
+  })
+  @Get('/hls/:id(\\d+)')
+  async getMainHLS(@Param('id') cameraId: CameraIds) {
+    const filePath = `${__dirname}\\..\\..\\${process.env.HLS_OUTPUT_DIRECTORY}\\${cameraId}\\${cameraId}_${process.env.HLS_FILE_NAME}`;
+    const file = createReadStream(filePath);
+    return new StreamableFile(file);
+  }
+
+  /* Camera stream split hls file endpoint */
+  @ApiParam({
+    name: 'filename',
+    type: 'string',
+    example: 'some.ts',
+  })
+  @Get('/hls/:filename')
+  async getHLSFiles(
+    @Param('filename') filename: string,
+  ) {
+    const id = filename.substring(0,filename.indexOf("_"));
+    const filePath = `${__dirname}\\..\\..\\${process.env.HLS_OUTPUT_DIRECTORY}\\${id}\\${filename}`;
+    const file = createReadStream(filePath);
+    return new StreamableFile(file);
   }
 }

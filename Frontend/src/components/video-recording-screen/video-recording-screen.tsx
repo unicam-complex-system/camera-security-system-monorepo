@@ -1,36 +1,20 @@
 import type { FC } from "react";
 import { Camera } from "@/types";
+import HLSPlayer from "./hls-player";
 
 type PropsType = {
   camera?: Camera;
-  socket?: any;
 };
 
 /**  This component renders a single video recording screen */
-export const VideoRecordingScreen: FC<PropsType> = ({ camera, socket }) => {
-  socket?.on("connect", () => {
-    if (camera && camera.isActive) {
-      socket.emit("message", { id: camera.key });
-    }
-  });
-
-  if (camera && camera.isActive) {
-    socket?.on(camera.key, (...args: any[]) => {
-      console.log(args);
-    });
-  }
-
-  socket?.on("disconnect", (reason) => {
-    // ...
-    console.log(reason);
-  });
-
+export const VideoRecordingScreen: FC<PropsType> = ({ camera }) => {
   return (
     <>
       {camera && (
         <>
           {camera.isActive && (
-            <iframe className="w-full min-h-[250px]" src={camera.url}></iframe>
+            // <iframe className="w-full min-h-[250px]" src={camera.url}></iframe>
+            <HLSPlayer camera={camera} />
           )}
           {!camera.isActive && (
             <div className="bg-black min-h-[250px] relative">

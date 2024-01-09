@@ -39,7 +39,12 @@ export const LoginContainer: FC = () => {
         },
       });
     } catch (error: any) {
-      openNotification({ type: "error", message: error.response.data.message });
+      openNotification({
+        type: "error",
+        message: error?.response?.data
+          ? error.response?.data?.message
+          : error.message,
+      });
     } finally {
       setIsLoading(false);
     }

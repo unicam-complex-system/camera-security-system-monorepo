@@ -1,3 +1,4 @@
+"use client";
 import { Camera } from "@/types";
 
 export const cameras: Camera[] = [
@@ -5,7 +6,7 @@ export const cameras: Camera[] = [
     key: "backyard",
     name: "Backyard",
     isActive: true,
-    url: "https://www.youtube.com/embed/Sv2h-csnlps?modestbranding=1&showinfo=0&controls=0&autoplay=1&mute=1",
+    url: "http://localhost:8080/hls/1",
   },
   {
     key: "main-road",
