@@ -25,6 +25,10 @@ CSD_PASSWORD=Password
 TELEGRAM_TOKEN=api_token
 # Should be of the format of BCrypt hash
 BCRYPT_SALT=...
+# folder path. It is relative to the backend location. The folder directory should never be absolute or start with / 
+HLS_OUTPUT_DIRECTORY=HLS_OUTPUT
+# Master file name of HLS stream
+HLS_FILE_NAME=index.m3u8
 ```
 Then you can run
 ```bash
