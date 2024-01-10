@@ -1,8 +1,10 @@
 "use client";
+import { useEffect } from "react";
 import type { FC } from "react";
 import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
 import { useCameraSlice } from "@/hooks";
+import { cameras as camerasData } from "@/data";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
 import React from "react";
 
@@ -13,7 +15,7 @@ type PropsType = {
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   /* hooks */
-  const { cameras, isFullScreenGrid, toggleIsFullScreenGrid } =
+  const { cameras, isFullScreenGrid, toggleIsFullScreenGrid, setCameras } =
     useCameraSlice();
 
   /* event handlers */
@@ -29,6 +31,11 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
 
     toggleIsFullScreenGrid();
   };
+
+  /* useEffect hooks */
+  useEffect(() => {
+    setCameras(camerasData);
+  }, []);
 
   return (
     <>

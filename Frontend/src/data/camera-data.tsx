@@ -1,4 +1,3 @@
-"use client";
 import { Camera } from "@/types";
 
 export const cameras: Camera[] = [

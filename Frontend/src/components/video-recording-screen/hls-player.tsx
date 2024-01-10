@@ -1,4 +1,3 @@
-// src/components/HlsPlayer.js
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 import { Camera } from "@/types";
@@ -14,7 +13,10 @@ const HlsPlayer = ({ camera }: { camera: Camera }) => {
     if (Hls.isSupported()) {
       const hls = new Hls({
         xhrSetup: (xhr) => {
-          xhr.setRequestHeader("Authorization", `Bearer ${session.accessToken}`);
+          xhr.setRequestHeader(
+            "Authorization",
+            `Bearer ${session.accessToken}`
+          );
         },
       });
       hls.loadSource(camera.url); // Replace with your HLS stream URL
