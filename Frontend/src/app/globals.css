@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
 
-html,body{
-    margin:0;
-    padding:0;
+.video-container .video-control {
+  display: none;
+  padding: 15px 10px;
+  transition: display 0.2s ease-out;
+  -webkit-box-shadow: 0px -9px 26px -1px rgba(0, 0, 0, 0.65);
+  box-shadow: 0px -9px 26px -1px rgba(0, 0, 0, 0.65);
+}
+
+.video-container:hover .video-control {
+  display: flex;
+  cursor: pointer;
 }

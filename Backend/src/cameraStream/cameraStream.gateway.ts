@@ -6,8 +6,9 @@ import {
   MessageBody,
   OnGatewayConnection,
   WsException,
+  WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { AuthGuard } from '../auth/auth.guard';
 import {
   Catch,
@@ -17,6 +18,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { initiateCameraStream } from './UDPStream';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -28,16 +30,24 @@ export class WsExceptionFilter implements WsExceptionFilter {
 type Message = { id: number; data: Buffer };
 
 @WebSocketGateway({
-  transports: ['websocket'],
+  transports: ['websocket', 'polling'],
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
+    transports: ['websocket', 'polling'],
+    credentials: true,
   },
-  namespace: '/',
+  allowEIO3: true,
 })
 @UseGuards(AuthGuard)
 @UseFilters(WsExceptionFilter)
 export class CameraStreamGateway implements OnGatewayConnection {
+  @WebSocketServer() io: Server;
   constructor(private readonly jwtService: JwtService) {}
+
+  afterInit() {
+    // initiateCameraStream(this.io);
+  }
 
   handleConnection(@ConnectedSocket() client: Socket) {
     try {
@@ -47,6 +57,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
       return;
     }
     client.join('clients');
+    console.log(this.io.adapter);
   }
 
   @SubscribeMessage('message')

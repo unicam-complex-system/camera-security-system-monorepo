@@ -120,10 +120,8 @@ export class FrontendController {
     example: 'some.ts',
   })
   @Get('/hls/:filename')
-  async getHLSFiles(
-    @Param('filename') filename: string,
-  ) {
-    const id = filename.substring(0,filename.indexOf("_"));
+  async getHLSFiles(@Param('filename') filename: string) {
+    const id = filename.substring(0, filename.indexOf('_'));
     const filePath = `${__dirname}\\..\\..\\${process.env.HLS_OUTPUT_DIRECTORY}\\${id}\\${filename}`;
     const file = createReadStream(filePath);
     return new StreamableFile(file);

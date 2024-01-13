@@ -1,13 +1,22 @@
-import type { FC } from "react";
+import { useEffect, type FC, useRef } from "react";
+import { useNotificationSlice } from "@/hooks";
 import { Camera } from "@/types";
 import HLSPlayer from "./hls-player";
+import { Socket } from "socket.io-client";
+import React from "react";
+const Peer = require("simple-peer");
 
 type PropsType = {
   camera?: Camera;
+  videoRef: any;
 };
 
+
 /**  This component renders a single video recording screen */
-export const VideoRecordingScreen: FC<PropsType> = ({ camera }) => {
+export const VideoRecordingScreen: FC<PropsType> = ({ camera, videoRef }) => {
+  const { openNotification } = useNotificationSlice();
+  console.log(videoRef);
+
   return (
     <>
       {camera && (
@@ -15,6 +24,14 @@ export const VideoRecordingScreen: FC<PropsType> = ({ camera }) => {
           {camera.isActive && (
             // <iframe className="w-full min-h-[250px]" src={camera.url}></iframe>
             <HLSPlayer camera={camera} />
+            // <video
+            //   className="w-full min-h-[250px]"
+            //   ref={(el) => {
+            //     console.log(el);
+            //     videoRef.current = { ...videoRef.current, [camera.key]: el };
+            //     console.log(videoRef);
+            //   }}
+            // />
           )}
           {!camera.isActive && (
             <div className="bg-black min-h-[250px] relative">

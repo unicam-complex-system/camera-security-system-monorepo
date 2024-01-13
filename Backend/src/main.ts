@@ -8,6 +8,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { initiateCameraStream } from './cameraStream/cameraStream';
+const dgram = require('dgram');
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
@@ -42,7 +44,7 @@ async function bootstrap() {
   );
 
   initiateCameraStream();
+  
 }
 
 bootstrap();
-
