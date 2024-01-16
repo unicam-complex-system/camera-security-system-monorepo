@@ -61,7 +61,7 @@ export const authorizedEntitiesData: AuthorizedEntity[] = [
   },
   {
     id: "fad4sl3jf21oivc4sj",
-    name: "Leonardo Migliori",
+    name: "Leonardo Migliorelli",
     entityType: "human",
     registrationDate: Date().toString().substring(0, 15),
     photoUrl: "/images/person.jpg",
