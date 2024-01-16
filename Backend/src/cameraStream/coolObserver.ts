@@ -4,6 +4,7 @@
 
 import { Subject } from 'rxjs';
 
+// Actually not used but it may be useful in the future or in another project
 export default class CoolObserver<T> {
   subject: Subject<T[]> = new Subject<T[]>();
 

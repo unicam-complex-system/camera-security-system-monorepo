@@ -28,7 +28,7 @@ import {
   CameraValidator,
 } from '../../validators/camera-id/camera.pipe';
 import { Observable } from 'rxjs';
-import { subscribers } from '../../cameraStream/cameraStream.gateway';
+import { subscribers, Message } from '../../cameraStream/cameraStream.gateway';
 
 const filterParams = {
   name: 'filter',
@@ -109,12 +109,10 @@ export class FrontendController {
     example: 1,
   })
   @ApiOkResponse({
-    description: 'Get the video stream in buffer format for the given camera',
+    description: 'Get the video stream in buffer format',
   })
-  @Sse('/stream/:id(\\d+)')
-  async getVideoStream(
-    @Param('id', CameraValidator) cameraId: CameraIds,
-  ): Promise<Observable<string>> {
-    return subscribers.get(cameraId);
+  @Sse('/stream')
+  async getVideoStream(): Promise<Observable<Message>> {
+    return subscribers;
   }
 }

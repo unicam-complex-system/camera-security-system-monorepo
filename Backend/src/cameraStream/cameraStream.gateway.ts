@@ -20,11 +20,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import CoolObserver from './coolObserver';
+import { Subject } from 'rxjs';
 
-export const subscribers: CoolObserver<string> = new CoolObserver();
+export const subscribers: Subject<Message> = new Subject<Message>();
 
-type Message = { id: number; data: Buffer };
+export type Message = { id: number; data: Buffer };
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -62,14 +62,9 @@ export class CameraStreamGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('message')
-  private broadcastMessage(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: string,
-  ) {
+  private videoStream(@MessageBody() data: string) {
     try {
-      const message = JSON.parse(data) as Message;
-
-      subscribers.add(message.id, message.data.toString());
+      subscribers.next(JSON.parse(data));
     } catch (e) {
       return e.message;
     }
