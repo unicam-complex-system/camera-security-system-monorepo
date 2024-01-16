@@ -8,6 +8,7 @@ import {
   Param,
   Sse,
   StreamableFile,
+  UseGuards,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import {
@@ -29,6 +30,7 @@ import {
 } from '../../validators/camera-id/camera.pipe';
 import { Observable } from 'rxjs';
 import { subscribers, Message } from '../../cameraStream/cameraStream.gateway';
+import { AuthGuard } from '../../auth/auth.guard';
 
 const filterParams = {
   name: 'filter',
@@ -58,7 +60,7 @@ const filterParams = {
 @ApiBadRequestResponse({
   description: 'Camera id or filter is invalid',
 })
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller()
 export class FrontendController {
   constructor(private readonly databaseService: DatabaseService) {}
