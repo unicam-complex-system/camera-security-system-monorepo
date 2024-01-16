@@ -2,11 +2,11 @@ import { Camera } from "@/types";
 
 export const cameras: Camera[] = [
   {
-    key: "backyard",
+    key: "1",
     name: "Backyard",
     isActive: true,
     url: "http://localhost:8080/hls/1",
-  },
+  },/* 
   {
     key: "main-road",
     name: "Main road",
@@ -36,5 +36,5 @@ export const cameras: Camera[] = [
     name: "Baby room",
     isActive: false,
     url: "https://www.youtube.com/embed/ewEW_xAKRMg?modestbranding=1&showinfo=0&controls=0&autoplay=1&mute=1",
-  },
+  }, */
 ];

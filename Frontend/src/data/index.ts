@@ -11,4 +11,3 @@ export {
   recentActivitiesColumns,
 } from "./recent-activities-data";
 export { loginFormSchema } from "./form-schema-data";
-export { user } from "./user-data";

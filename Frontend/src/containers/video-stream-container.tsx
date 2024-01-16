@@ -1,22 +1,40 @@
 "use client";
-import { useEffect } from "react";
 import type { FC } from "react";
 import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
-import { useCameraSlice } from "@/hooks";
+import { useCameraSlice, useSessionSlice } from "@/hooks";
 import { cameras as camerasData } from "@/data";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { io } from "socket.io-client";
+import Hls from "hls.js";
 
 type PropsType = {
   sizePerScreen?: number;
 };
 
+const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
+  ? process.env.NEXT_PUBLIC_BACKEND_URL
+  : "";
+
+const socket = io(webSocketURL, {
+  transportOptions: {
+    polling: {
+      extraHeaders: {
+        Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+      },
+    },
+  },
+});
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   /* hooks */
   const { cameras, isFullScreenGrid, toggleIsFullScreenGrid, setCameras } =
     useCameraSlice();
+  const { session } = useSessionSlice();
+  const videoRef: any = useRef(null);
+  const hlsRef: any = useRef(null);
+  const mediaSourceRef: any = useRef(null);
 
   /* event handlers */
   const onScreenSizeClick = () => {
@@ -35,6 +53,35 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   /* useEffect hooks */
   useEffect(() => {
     setCameras(camerasData);
+
+    // client-side
+    socket.on("connect", () => {
+      console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log(reason); // undefined
+    });
+
+    socket.on("stream", (message) => {
+      console.log(message);
+
+      const videoElement = videoRef.current?.[message.id];
+
+      if (videoElement) {
+        if (Hls.isSupported()) {
+          hlsRef.current = { ...hlsRef.current, [message.id]: new Hls() };
+          // hlsRef.current.attachMedia(videoElement);
+          console.log(hlsRef);
+          const uint8Array = new Uint8Array(message.data);
+          hlsRef.current[message.id]?.appendData(uint8Array, "video");
+        } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+          // Handle non-HLS.js fallback for browsers that support HLS natively
+          console.error("HLS.js is not supported");
+        }
+      }
+    });
+    console.log(socket);
   }, []);
 
   return (
@@ -44,6 +91,7 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           <React.Fragment key={index}>
             <VideoRecordingScreen
               camera={index < cameras.length ? cameras[index] : undefined}
+              videoRef={videoRef}
             />
           </React.Fragment>
         ))}

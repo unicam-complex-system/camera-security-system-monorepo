@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { Session, SessionState } from "@/types";
-import { user } from "@/data";
+
 
 // Define the initial state using that type
 let initialState = {
@@ -12,7 +12,7 @@ let initialState = {
 
 const accessToken = sessionStorage.getItem("access_token");
 if (accessToken) {
-  initialState.currentSession = { accessToken: accessToken, user: { ...user } };
+  initialState.currentSession = { accessToken: accessToken };
 }
 
 export const sessionSlice = createSlice({

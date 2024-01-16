@@ -8,8 +8,9 @@ import {
   MessageBody,
   OnGatewayConnection,
   WsException,
+  WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { AuthGuard } from '../auth/auth.guard';
 import {
   Catch,
@@ -33,15 +34,20 @@ export class WsExceptionFilter implements WsExceptionFilter {
 }
 
 @WebSocketGateway({
-  transports: ['websocket'],
+  transports: ['websocket', 'polling'],
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
+    transports: ['websocket', 'polling'],
+    credentials: true,
   },
-  namespace: '/',
+  allowEIO3: true,
 })
 @UseGuards(AuthGuard)
 @UseFilters(WsExceptionFilter)
 export class CameraStreamGateway implements OnGatewayConnection {
+  @WebSocketServer() io: Server;
+
   constructor(private readonly jwtService: JwtService) {}
 
   handleConnection(@ConnectedSocket() client: Socket) {
