@@ -1,10 +1,13 @@
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
 import {
   Controller,
   Get,
   Header,
   Param,
+  Sse,
   StreamableFile,
-  UseGuards,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import {
@@ -24,8 +27,8 @@ import {
   CameraIds,
   CameraValidator,
 } from '../../validators/camera-id/camera.pipe';
-import { AuthGuard } from '../../auth/auth.guard';
-import { createReadStream } from 'fs';
+import { Observable } from 'rxjs';
+import { subscribers } from '../../cameraStream/cameraStream.gateway';
 
 const filterParams = {
   name: 'filter',
@@ -99,33 +102,19 @@ export class FrontendController {
     return new StreamableFile(array[0].intrusionDetection.buffer);
   }
 
-  /* Camera stream main hls file endpoint */
   @ApiParam({
     name: 'id',
     type: 'number',
     description: 'Camera id',
     example: 1,
   })
-  @Get('/hls/:id(\\d+)')
-  async getMainHLS(@Param('id') cameraId: CameraIds) {
-    const filePath = `${__dirname}\\..\\..\\${process.env.HLS_OUTPUT_DIRECTORY}\\${cameraId}\\${cameraId}_${process.env.HLS_FILE_NAME}`;
-    const file = createReadStream(filePath);
-    return new StreamableFile(file);
-  }
-
-  /* Camera stream split hls file endpoint */
-  @ApiParam({
-    name: 'filename',
-    type: 'string',
-    example: 'some.ts',
+  @ApiOkResponse({
+    description: 'Get the video stream in buffer format for the given camera',
   })
-  @Get('/hls/:filename')
-  async getHLSFiles(
-    @Param('filename') filename: string,
-  ) {
-    const id = filename.substring(0,filename.indexOf("_"));
-    const filePath = `${__dirname}\\..\\..\\${process.env.HLS_OUTPUT_DIRECTORY}\\${id}\\${filename}`;
-    const file = createReadStream(filePath);
-    return new StreamableFile(file);
+  @Sse('/stream/:id(\\d+)')
+  async getVideoStream(
+    @Param('id', CameraValidator) cameraId: CameraIds,
+  ): Promise<Observable<string>> {
+    return subscribers.get(cameraId);
   }
 }

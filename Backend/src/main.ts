@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { initiateCameraStream } from './cameraStream/cameraStream';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
@@ -40,9 +40,6 @@ async function bootstrap() {
   console.log(
     '\nApp started, look at http://localhost:8080/swagger-api for the documentation',
   );
-
-  initiateCameraStream();
 }
 
 bootstrap();
-

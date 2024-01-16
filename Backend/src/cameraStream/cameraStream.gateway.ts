@@ -1,4 +1,6 @@
-// websocket.gateway.ts
+/*
+ * Copyright (c) 2023. Leonardo Migliorelli <Glydric>
+ */
 import {
   WebSocketGateway,
   SubscribeMessage,
@@ -17,6 +19,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import CoolObserver from './coolObserver';
+
+export const subscribers: CoolObserver<string> = new CoolObserver();
+
+type Message = { id: number; data: Buffer };
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -24,8 +31,6 @@ export class WsExceptionFilter implements WsExceptionFilter {
     host.switchToWs().getClient().disconnect();
   }
 }
-
-type Message = { id: number; data: Buffer };
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -46,6 +51,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
       client.disconnect();
       return;
     }
+
     client.join('clients');
   }
 
@@ -57,7 +63,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
     try {
       const message = JSON.parse(data) as Message;
 
-      client.to('clients').emit(message.id.toString(), message.data);
+      subscribers.add(message.id, message.data.toString());
     } catch (e) {
       return e.message;
     }
