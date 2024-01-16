@@ -25,4 +25,4 @@ services:
       - ./Backend:/home/node
     env_file:
       - .secrets.yml
-§    command: npm run start
+    command: npm run start
