@@ -9,7 +9,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 const fs = require('fs');
 
-export let httpInstance;
 async function bootstrap() {
   const httpsOptions = {
     key: fs.readFileSync(
@@ -50,7 +49,7 @@ async function bootstrap() {
 
   app.enableCors({ origin: true });
   await app.listen(process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080');
-  app.getHttpServer();
+
   console.log(
     `\nApp started, look at https://localhost:${
       process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080'
