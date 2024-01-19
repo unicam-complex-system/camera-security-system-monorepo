@@ -11,11 +11,11 @@ The CSS is mainly composed of three 5 components:
     5. IPCameras: These are the cameras that captures videos of the surrounding.
 
 In order to successfully run the full project components in your local machine, launch the components in the following order:
-    1. Install your IP Cameras in the areas desired and connect it to the network.
-    2. Run the media server.  
-    3. Run the backend.
-    4. Run the frontend.
-    5. Run the machine learning component.
+    1.  Install your IP Cameras in the areas desired and connect it to the network.
+    2.  Run the media server.  
+    3.  Run the backend.
+    4.  Run the frontend.
+    5.  Run the machine learning component.
 
 Below, you will get full details on how to run each component.
 
