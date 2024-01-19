@@ -15,6 +15,7 @@ describe('WebStreamGateway', () => {
           global: true,
           secret: process.env.JWT_SECRET,
         }),
+        OpenVidu
       ],
     }).compile();
 
