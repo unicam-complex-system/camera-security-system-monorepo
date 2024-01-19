@@ -104,7 +104,7 @@ In order to run the application you will need to define the environment variable
 .env file in the root Backend directory.
 
 Copy the content of .env_example found in the Backend root directory and change the variable values
-accordingly. 
+accordingly. You can also run the backend by just adding the telegram token and leave the rest of the config as it is.
 
 ### 3- Install packages
 
