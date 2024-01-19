@@ -125,10 +125,10 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           // publishAudio and publishVideo are set to false since we only
           // want to observe the stream of IPCAM only.
           let publisher = await openVidu.initPublisherAsync(undefined, {
-            audioSource: undefined, // The source of audio. If undefined default microphone
-            videoSource: undefined, // The source of video. If undefined default webcam
+            audioSource: false, // The source of audio. If undefined default microphone
+            videoSource: false, // The source of video. If undefined default webcam
             publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
-            publishVideo: true, // Whether you want to start publishing with your video enabled or not
+            publishVideo: false, // Whether you want to start publishing with your video enabled or not
           });
 
           // -Publish your stream ---
