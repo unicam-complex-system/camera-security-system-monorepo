@@ -13,12 +13,15 @@ const VideoPlayer = ({
   const [fullScreen, setFullScreen] = useState(false);
 
   /* event handlers */
-  const onScreenSizeClick = () => {
+  const onScreenSizeToggle = (event?: any) => {
     const elem = document.documentElement;
     // Enter fullscreen mode
     if (elem.requestFullscreen && !fullScreen) {
       elem.requestFullscreen();
-    } else if (document.exitFullscreen && fullScreen) {
+    } else if (
+      (document.exitFullscreen && fullScreen) ||
+      (event.key === "Escape" && fullScreen)
+    ) {
       document.exitFullscreen();
     }
 
@@ -26,14 +29,14 @@ const VideoPlayer = ({
   };
 
   return (
-    <div className="w-full min-h-[250px] video-container relative">
+    <div className="w-full min-h-[250px] video-container relative" onKeyDown={onScreenSizeToggle}>
       <video
         ref={(el) => {
           videoRef.current = { ...videoRef.current, [camera.key]: el };
         }}
         className={`${
           fullScreen
-            ? "w-screen h-screen fixed top-0 -bottom-10 left-0 right-0"
+            ? "w-screen h-screen fixed top-0 -bottom-10 left-0 right-0 z-50"
             : "w-full h-full "
         }`}
         autoPlay={true}
@@ -50,12 +53,12 @@ const VideoPlayer = ({
           {fullScreen ? (
             <FullscreenOutlined
               className="cursor-pointer text-lg "
-              onClick={onScreenSizeClick}
+              onClick={onScreenSizeToggle}
             />
           ) : (
             <FullscreenExitOutlined
               className="cursor-pointer text-lg "
-              onClick={onScreenSizeClick}
+              onClick={onScreenSizeToggle}
             />
           )}
         </Tooltip>

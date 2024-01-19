@@ -160,7 +160,7 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
     );
   }, [subscribers]);
 
-  console.log(subscribers);
+  
   return (
     <>
       <div className="grid grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">

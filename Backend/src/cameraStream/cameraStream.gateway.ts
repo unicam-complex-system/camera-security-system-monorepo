@@ -73,7 +73,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
           .catch((error) => console.error(error));
       });
     } catch (error) {
-      console.error("Failed after initalizing...");
+      console.error('Failed after initalizing...');
     }
   }
 
