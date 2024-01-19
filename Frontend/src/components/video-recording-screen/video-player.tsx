@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
 import { Camera } from "@/types";
-import { useSessionSlice } from "@/hooks";
 import { Tooltip } from "antd";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
 
-const HlsPlayer = ({ camera }: { camera: Camera }) => {
+const VideoPlayer = ({
+  camera,
+  videoRef,
+}: {
+  camera: Camera;
+  videoRef: any;
+}) => {
   const [fullScreen, setFullScreen] = useState(false);
-  const videoRef: any = useRef(null);
-  const { session } = useSessionSlice();
 
   /* event handlers */
   const onScreenSizeClick = () => {
@@ -23,33 +25,12 @@ const HlsPlayer = ({ camera }: { camera: Camera }) => {
     setFullScreen(!fullScreen);
   };
 
-  useEffect(() => {
-    const video: any = videoRef.current;
-
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        xhrSetup: (xhr) => {
-          xhr.setRequestHeader(
-            "Authorization",
-            `Bearer ${session.accessToken}`
-          );
-        },
-      });
-      hls.loadSource(camera.url); // Replace with your HLS stream URL
-      hls.attachMedia(video);
-
-      return () => {
-        hls.destroy();
-      };
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = camera.url; // Replace with your HLS stream URL
-    }
-  }, []);
-
   return (
     <div className="w-full min-h-[250px] video-container relative">
       <video
-        ref={videoRef}
+        ref={(el) => {
+          videoRef.current = { ...videoRef.current, [camera.key]: el };
+        }}
         className={`${
           fullScreen
             ? "w-screen h-screen fixed top-0 -bottom-10 left-0 right-0"
@@ -83,4 +64,4 @@ const HlsPlayer = ({ camera }: { camera: Camera }) => {
   );
 };
 
-export default HlsPlayer;
+export default VideoPlayer;

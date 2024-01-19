@@ -5,9 +5,9 @@ import { VideoRecordingScreen } from "@/components";
 import { useCameraSlice, useSessionSlice } from "@/hooks";
 import { cameras as camerasData } from "@/data";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import Hls from "hls.js";
+import { OpenVidu } from "openvidu-browser";
 
 type PropsType = {
   sizePerScreen?: number;
@@ -26,15 +26,14 @@ const socket = io(webSocketURL, {
     },
   },
 });
+
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
+  const [subscribers, setSubscribers] = useState<any[]>([]);
   /* hooks */
   const { cameras, isFullScreenGrid, toggleIsFullScreenGrid, setCameras } =
     useCameraSlice();
-  const { session } = useSessionSlice();
   const videoRef: any = useRef(null);
-  const hlsRef: any = useRef(null);
-  const mediaSourceRef: any = useRef(null);
 
   /* event handlers */
   const onScreenSizeClick = () => {
@@ -53,46 +52,121 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   /* useEffect hooks */
   useEffect(() => {
     setCameras(camerasData);
+    const openVidu = new OpenVidu();
+    const session = openVidu.initSession();
+
+    const disconnectSession = () => {
+      if (session) {
+        session.disconnect();
+      }
+    };
+    window.addEventListener("beforeunload", disconnectSession);
 
     // client-side
-    socket.on("connect", () => {
+    socket.on("connect", async () => {
       console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+
+      try {
+        session.on("streamCreated", (event) => {
+          // Subscribe to the Stream to receive it. Second parameter is undefined
+          // so OpenVidu doesn't create an HTML video by its own
+          let subscriber = session.subscribe(event.stream, undefined);
+
+          // Update the state with the new subscribers
+          setSubscribers([...subscribers, subscriber]);
+        });
+
+        // On every Stream destroyed...
+        session.on("streamDestroyed", (event) => {
+          // Remove the stream from 'subscribers' array
+          const streamManager = event.stream.streamManager;
+          setSubscribers(
+            subscribers.filter((subscriber) => subscriber != streamManager)
+          );
+        });
+
+        // On every asynchronous exception...
+        session.on("exception", (exception) => {
+          console.error(exception);
+        });
+      } catch (error: any) {
+        console.log(error);
+      }
     });
 
     socket.on("disconnect", (reason) => {
       console.log(reason); // undefined
     });
 
-    socket.on("stream", (message) => {
-      console.log(message);
-
-      const videoElement = videoRef.current?.[message.id];
-
-      if (videoElement) {
-        if (Hls.isSupported()) {
-          hlsRef.current = { ...hlsRef.current, [message.id]: new Hls() };
-          // hlsRef.current.attachMedia(videoElement);
-          console.log(hlsRef);
-          const uint8Array = new Uint8Array(message.data);
-          hlsRef.current[message.id]?.appendData(uint8Array, "video");
-        } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
-          // Handle non-HLS.js fallback for browsers that support HLS natively
-          console.error("HLS.js is not supported");
-        }
-      }
+    socket.on("error", (data) => {
+      const error = JSON.parse(data);
+      console.log(error);
     });
-    console.log(socket);
+
+    socket.on("session_delivery", (data) => {
+      console.log("session received");
+      const message = JSON.parse(data) as { sessionId: string };
+      socket.emit(
+        "token_request",
+        JSON.stringify({
+          sessionId: message.sessionId,
+        })
+      );
+    });
+
+    socket.on("token_delivery", (data) => {
+      console.log("token received");
+      const message = JSON.parse(data) as { token: any };
+      session
+        .connect(message.token, { clientData: "random" })
+        .then(async () => {
+          // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+          // element: we will manage it on our own) and with the desired properties.
+          // publishAudio and publishVideo are set to false since we only
+          // want to observe the stream of IPCAM only.
+          let publisher = await openVidu.initPublisherAsync(undefined, {
+            audioSource: undefined, // The source of audio. If undefined default microphone
+            videoSource: undefined, // The source of video. If undefined default webcam
+            publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
+            publishVideo: true, // Whether you want to start publishing with your video enabled or not
+          });
+
+          // -Publish your stream ---
+
+          session.publish(publisher);
+        })
+        .catch((error) => {
+          console.log(
+            "There was an error connecting to the session:",
+            error.code,
+            error.message
+          );
+        });
+    });
+
+    socket.on("participantLeft", (data) => {
+      const message = JSON.parse(data);
+      console.log(data);
+    });
+
+    return () => window.addEventListener("beforeunload", disconnectSession);
   }, []);
 
+  useEffect(() => {
+    subscribers.forEach((subscriber) =>
+      subscriber.addVideoElement(
+        videoRef.current?.[subscriber?.stream?.connection?.data]
+      )
+    );
+  }, [subscribers]);
+
+  console.log(subscribers);
   return (
     <>
       <div className="grid grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">
-        {Array.from({ length: sizePerScreen }).map((item, index) => (
+        {cameras.map((camera, index) => (
           <React.Fragment key={index}>
-            <VideoRecordingScreen
-              camera={index < cameras.length ? cameras[index] : undefined}
-              videoRef={videoRef}
-            />
+            <VideoRecordingScreen camera={camera} videoRef={videoRef} />
           </React.Fragment>
         ))}
       </div>

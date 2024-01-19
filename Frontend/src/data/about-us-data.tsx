@@ -27,7 +27,7 @@ export const aboutUsData = {
     },
     {
       name: "Nicolò Rossini",
-      image: "/images/nabil.jpg",
+      image: "/images/nicolo.jpg",
       title: "Machine Learning Engineer",
     },
   ],

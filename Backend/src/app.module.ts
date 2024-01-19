@@ -12,6 +12,7 @@ import { TelegramService } from './telegram/telegram.service';
 import { LoginController } from './app/login.controller';
 import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 import { LoginService } from './login/login.service';
+import { MediaServerController } from './app/mediaServer/mediaServer.controller';
 
 @Module({
   imports: [
@@ -23,7 +24,12 @@ import { LoginService } from './login/login.service';
       // signOptions: { expiresIn: "60s" },
     }),
   ],
-  controllers: [MachineLearningController, FrontendController, LoginController],
+  controllers: [
+    MachineLearningController,
+    FrontendController,
+    LoginController,
+    MediaServerController,
+  ],
   providers: [
     DatabaseService,
     TelegramService,
