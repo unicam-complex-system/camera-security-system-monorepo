@@ -2,15 +2,15 @@
 The repository contains the sources code for the Camera Security System project(CSS).
 
 # Architecture
-The CSS is mainly composed of three 5 components:
-    1. Frontend: It is the UI that enables the user to view and use the project in the browser. <br />
-    2. Backend: It is responsible for authentication, logging detection events, and establish       communication between the frontend and the media server to access the IP Cameras. <br /> 
-    3. Media Server: It is responsible for delivering the camera streams from the IP Cameras to the frontend. We have used [OpenVidu](openvidu.io/) for implementing the media server. <br />
-    4. Machine learning: It is responsible for analyzing the camera streams and check if an object is 
+The CSS is mainly composed of three 5 components: <br /> <br />
+    1. **Frontend**: It is the UI that enables the user to view and use the project in the browser. <br />
+    2. **Backend**: It is responsible for authentication, logging detection events, and establish       communication between the frontend and the media server to access the IP Cameras. <br /> 
+    3. **Media Server**: It is responsible for delivering the camera streams from the IP Cameras to the frontend. We have used [OpenVidu](openvidu.io/) for implementing the media server. <br />
+    4. **Machine learning**: It is responsible for analyzing the camera streams and check if an object is 
     detected. <br />
-    5. IPCameras: These are the cameras that captures videos of the surrounding.<br />
+    5. **IPCameras**: These are the cameras that captures videos of the surrounding.<br />
 
-In order to successfully run the full project components in your local machine, launch the components in the following order:
+In order to successfully run the full project components in your local machine, launch the components in the following order: <br /> <br />
     1.  Install your IP Cameras in the areas desired and connect it to the network. <br />
     2.  Run the media server.  <br />
     3.  Run the backend. <br />
