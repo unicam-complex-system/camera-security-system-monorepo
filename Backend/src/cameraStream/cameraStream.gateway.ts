@@ -1,14 +1,14 @@
 // websocket.gateway.ts
 import {
-  WebSocketGateway,
-  SubscribeMessage,
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
-  WsException,
+  SubscribeMessage,
+  WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { AuthGuard } from '../auth/auth.guard';
 import {
   Catch,
@@ -19,7 +19,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { cameraData } from './cameraData';
-import { OpenVidu } from './OpenVidu';
+import { CSSOpenVidu } from './open-vidu.service';
+import { ConnectionProperties, ConnectionType } from 'openvidu-node-client';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -44,28 +45,31 @@ type Message = { id: number; data: Buffer };
 @UseFilters(WsExceptionFilter)
 export class CameraStreamGateway implements OnGatewayConnection {
   @WebSocketServer() io: Server;
-  sessionId = null;
+  sessionId?: string = null;
 
-  constructor(private readonly jwtService: JwtService,private readonly openvidu:OpenVidu) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly openvidu: CSSOpenVidu,
+  ) {}
 
   async afterInit() {
     try {
-      const session = await this.openvidu.getInstance().createSession({});
+      const session = await this.openvidu.instance.createSession({});
       this.sessionId = session.sessionId;
-      cameraData.map((camera) => {
-        const connectionProperties = {
-          type: 'IPCAM',
+
+      cameraData.forEach((camera) => {
+        const connectionProperties: ConnectionProperties = {
+          type: ConnectionType.IPCAM,
           rtspUri: camera.rtspUrl,
           adaptativeBitrate: true,
           onlyPlayWithSubscribers: false,
           networkCache: 1000,
           data: camera.id,
         };
+
         session
           .createConnection(connectionProperties)
-          .then((connection: any) => {
-            console.log(connection);
-          })
+          .then((connection: unknown) => console.log(connection))
           .catch((error) => console.error(error));
       });
     } catch (error) {
@@ -76,7 +80,8 @@ export class CameraStreamGateway implements OnGatewayConnection {
   handleConnection(@ConnectedSocket() client: Socket) {
     try {
       new AuthGuard(this.jwtService).checkToken(client.handshake.headers);
-      console.log(`Welcome our new client .... ${client.id}`);
+
+      console.log(`Welcome new client .... ${client.id}`);
       client.emit(
         'session_delivery',
         JSON.stringify({ sessionId: this.sessionId }),
@@ -109,7 +114,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
   ) {
     try {
       const message = JSON.parse(data) as { sessionId: string };
-      const session = this.openvidu.getInstance().activeSessions.find(
+      const session = this.openvidu.instance.activeSessions.find(
         (s) => s.sessionId === message.sessionId,
       );
 

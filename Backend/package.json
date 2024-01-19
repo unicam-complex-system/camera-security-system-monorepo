@@ -6,8 +6,11 @@
   "private": true,
   "license": "GPL",
   "scripts": {
+    "docker:start": "npm ci && nest start",
+    "docker:dev": "npm run docker:start -- --watch",
+    "docker:test": "npm ci && jest",
     "build": "nest build",
-    "start": "npm ci && nest start",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "npm start -- --debug --watch",
     "start:prod": "node dist/main",

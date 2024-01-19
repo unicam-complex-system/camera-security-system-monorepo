@@ -17,7 +17,7 @@ services:
     image: node:21-alpine
     depends_on:
      - mongo
-    restart: always
+    restart: on-failure # always
     ports:
       - 8080:8080
     working_dir: /home/node
@@ -25,5 +25,4 @@ services:
       - ./Backend:/home/node
     env_file:
       - .secrets.yml
-#    command: npm start
-    command: npm run start -- --watch
+    command: npm run docker:dev
