@@ -3,8 +3,6 @@ import cv2
 import math 
 import threading
 import requests
-import numpy as np
-from skimage.metrics import structural_similarity as ssim
 from sklearn.metrics import mean_squared_error
 
 #model
@@ -32,6 +30,8 @@ cam7 = 'rtsp://192.168.1.41:80/ch6_0.264'
 cam8 = 'rtsp://192.168.1.41:80/ch7_0.264'
 
 
+TOKEN = '6929905186:AAEouI3G2sbfS-y6ZzkXrpNgPQRAPs5_v-g'
+channel_id = '792557360'
 last_sent_image = None
 
 def post_request(image):
