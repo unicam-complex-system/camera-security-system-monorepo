@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CameraStreamGateway } from './cameraStream.gateway';
 import { JwtModule } from '@nestjs/jwt';
+const OpenVidu = require('openvidu-node-client').OpenVidu;
+
 
 describe('WebStreamGateway', () => {
   let gateway: CameraStreamGateway;

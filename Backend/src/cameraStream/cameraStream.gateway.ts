@@ -19,7 +19,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { cameraData } from './cameraData';
-const OpenVidu = require('openvidu-node-client').OpenVidu;
+import { OpenVidu } from './OpenVidu';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -44,17 +44,13 @@ type Message = { id: number; data: Buffer };
 @UseFilters(WsExceptionFilter)
 export class CameraStreamGateway implements OnGatewayConnection {
   @WebSocketServer() io: Server;
-  openvidu = new OpenVidu(
-    process.env.OPENVIDU_URL,
-    process.env.OPENVIDU_SECRET,
-  );
   sessionId = null;
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService,private readonly openvidu:OpenVidu) {}
 
   async afterInit() {
     try {
-      const session = await this.openvidu.createSession({});
+      const session = await this.openvidu.getInstance().createSession({});
       this.sessionId = session.sessionId;
       cameraData.map((camera) => {
         const connectionProperties = {
@@ -113,7 +109,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
   ) {
     try {
       const message = JSON.parse(data) as { sessionId: string };
-      const session = this.openvidu.activeSessions.find(
+      const session = this.openvidu.getInstance().activeSessions.find(
         (s) => s.sessionId === message.sessionId,
       );
 

@@ -13,6 +13,7 @@ import { LoginController } from './app/login.controller';
 import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 import { LoginService } from './login/login.service';
 import { MediaServerController } from './app/mediaServer/mediaServer.controller';
+import { OpenVidu } from './cameraStream/OpenVidu';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MediaServerController } from './app/mediaServer/mediaServer.controller'
     TelegramService,
     CameraStreamGateway,
     LoginService,
+    OpenVidu
   ],
   exports: [DatabaseService, TelegramService],
 })
