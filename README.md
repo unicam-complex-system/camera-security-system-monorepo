@@ -48,7 +48,7 @@ You can get more information [here](https://nodejs.org/en/learn/getting-started/
 First open the terminal and move to the frontend directory.
 
 If you are currently in root directory of this repo. Type the following in the terminal to change directory:
-```yaml
+```bash
 cd ./Frontend/
 ```
 
@@ -58,6 +58,9 @@ In order to run the application you will need to define the environment variable
 
 Copy the content of .env_example found in the Frontend root directory and change the variable values
 accordingly. 
+```yaml
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8080/
+```
 
 ### 3- Install packages
 
