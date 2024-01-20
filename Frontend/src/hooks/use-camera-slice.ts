@@ -7,6 +7,7 @@ import {
   selectIsFullScreenGrid,
   updateCamera,
   toggleIsFullScreenGrid,
+  setCameras,
 } from "@/store";
 
 export const useCameraSlice = () => {
@@ -19,6 +20,10 @@ export const useCameraSlice = () => {
   const isFullScreenGrid: boolean = useAppSelector(selectIsFullScreenGrid);
 
   /* redux camera state updaters */
+  const setCamerasState = (cameras: Camera[]) => {
+    dispatch(setCameras(cameras));
+  };
+
   const updateCameraState = (updatedCamera: Camera) => {
     dispatch(updateCamera(updatedCamera));
   };
@@ -32,6 +37,7 @@ export const useCameraSlice = () => {
     cameraCount: cameraCount,
     activeCameraCount: activeCameraCount,
     isFullScreenGrid: isFullScreenGrid,
+    setCameras: setCamerasState,
     updateCamera: updateCameraState,
     toggleIsFullScreenGrid: toggleIsFullScreenGridState,
   };

@@ -2,18 +2,38 @@
 import type { FC } from "react";
 import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
-import { useCameraSlice } from "@/hooks";
+import { useCameraSlice, useSessionSlice } from "@/hooks";
+import { cameras as camerasData } from "@/data";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+import { OpenVidu } from "openvidu-browser";
 
 type PropsType = {
   sizePerScreen?: number;
 };
 
+const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
+  ? process.env.NEXT_PUBLIC_BACKEND_URL
+  : "";
+
+const socket = io(webSocketURL, {
+  transportOptions: {
+    polling: {
+      extraHeaders: {
+        Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+      },
+    },
+  },
+});
+
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
-  const { cameras, isFullScreenGrid, toggleIsFullScreenGrid } =
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  /* hooks */
+  const { cameras, isFullScreenGrid, toggleIsFullScreenGrid, setCameras } =
     useCameraSlice();
+  const videoRef: any = useRef(null);
 
   /* event handlers */
   const onScreenSizeClick = () => {
@@ -29,14 +49,124 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
     toggleIsFullScreenGrid();
   };
 
+  /* useEffect hooks */
+  useEffect(() => {
+    setCameras(camerasData);
+    const openVidu = new OpenVidu();
+    const session = openVidu.initSession();
+
+    const disconnectSession = () => {
+      if (session) {
+        session.disconnect();
+      }
+    };
+    window.addEventListener("beforeunload", disconnectSession);
+
+    // client-side
+    socket.on("connect", async () => {
+      console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+
+      try {
+        session.on("streamCreated", (event) => {
+          // Subscribe to the Stream to receive it. Second parameter is undefined
+          // so OpenVidu doesn't create an HTML video by its own
+          let subscriber = session.subscribe(event.stream, undefined);
+
+          // Update the state with the new subscribers
+          setSubscribers([...subscribers, subscriber]);
+        });
+
+        // On every Stream destroyed...
+        session.on("streamDestroyed", (event) => {
+          // Remove the stream from 'subscribers' array
+          const streamManager = event.stream.streamManager;
+          setSubscribers(
+            subscribers.filter((subscriber) => subscriber != streamManager)
+          );
+        });
+
+        // On every asynchronous exception...
+        session.on("exception", (exception) => {
+          console.error(exception);
+        });
+      } catch (error: any) {
+        console.log(error);
+      }
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log(reason); // undefined
+    });
+
+    socket.on("error", (data) => {
+      const error = JSON.parse(data);
+      console.log(error);
+    });
+
+    socket.on("session_delivery", (data) => {
+      console.log("session received");
+      const message = JSON.parse(data) as { sessionId: string };
+      socket.emit(
+        "token_request",
+        JSON.stringify({
+          sessionId: message.sessionId,
+        })
+      );
+    });
+
+    socket.on("token_delivery", (data) => {
+      console.log("token received");
+      const message = JSON.parse(data) as { token: any };
+      session
+        .connect(message.token, { clientData: "random" })
+        .then(async () => {
+          // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+          // element: we will manage it on our own) and with the desired properties.
+          // publishAudio and publishVideo are set to false since we only
+          // want to observe the stream of IPCAM only.
+          let publisher = await openVidu.initPublisherAsync(undefined, {
+            audioSource: false, // The source of audio. If undefined default microphone
+            videoSource: false, // The source of video. If undefined default webcam
+            publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
+            publishVideo: false, // Whether you want to start publishing with your video enabled or not
+          });
+
+          // -Publish your stream ---
+
+          session.publish(publisher);
+        })
+        .catch((error) => {
+          console.log(
+            "There was an error connecting to the session:",
+            error.code,
+            error.message
+          );
+        });
+    });
+
+    socket.on("participantLeft", (data) => {
+      const message = JSON.parse(data);
+      console.log(data);
+    });
+
+    return () => window.addEventListener("beforeunload", disconnectSession);
+  }, []);
+
+  useEffect(() => {
+    subscribers.forEach((subscriber) =>
+      subscriber.addVideoElement(
+        videoRef.current?.[subscriber?.stream?.connection?.data]
+      )
+    );
+  }, [subscribers]);
+
+  
   return (
     <>
       <div className="grid grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">
-        {Array.from({ length: sizePerScreen }).map((item, index) => (
+        {cameras.map((camera, index) => (
           <React.Fragment key={index}>
-            <VideoRecordingScreen
-              camera={index < cameras.length ? cameras[index] : undefined}
-            />
+            <VideoRecordingScreen camera={camera} videoRef={videoRef} />
           </React.Fragment>
         ))}
       </div>

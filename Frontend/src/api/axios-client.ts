@@ -1,8 +1,20 @@
+"use client";
+
 import axios from "axios";
 
+type RequestHeaderOptions = {
+  Authorization?: string;
+};
+
+const accessToken = sessionStorage.getItem("access_token");
+const headers: RequestHeaderOptions = {};
+
+if (accessToken) {
+  headers.Authorization = `Bearer ${sessionStorage.getItem("access_token")}`;
+}
 export const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  headers: { "X-Custom-Header": "foobar" },
+  headers: { ...headers },
 });
 
 axiosClient.interceptors.response.use(

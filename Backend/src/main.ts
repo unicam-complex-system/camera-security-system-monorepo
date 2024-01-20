@@ -7,9 +7,22 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+const fs = require('fs');
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    key: fs.readFileSync(
+      process.env.PRIVATE_KEY
+        ? process.env.PRIVATE_KEY
+        : `${__dirname}/ssl_certificate/server.key`,
+    ),
+    cert: fs.readFileSync(
+      process.env.SSL_CERTIFICATE
+        ? process.env.SSL_CERTIFICATE
+        : `${__dirname}/ssl_certificate/server.crt`,
+    ),
+  };
+  const app = await NestFactory.create(AppModule, { httpsOptions });
   app.useGlobalPipes(new ValidationPipe());
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.useWebSocketAdapter(new IoAdapter(app));
@@ -35,10 +48,12 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-api', app, document);
 
   app.enableCors({ origin: true });
-  await app.listen(8080);
+  await app.listen(process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080');
 
   console.log(
-    '\nApp started, look at http://localhost:8080/swagger-api for the documentation',
+    `\nApp started, look at https://localhost:${
+      process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080'
+    }/swagger-api for the documentation`,
   );
 }
 

@@ -6,8 +6,11 @@
   "private": true,
   "license": "GPL",
   "scripts": {
+    "docker:start": "npm ci && nest start",
+    "docker:dev": "npm run docker:start -- --watch",
+    "docker:test": "npm ci && jest",
     "build": "nest build",
-    "start": "npm ci && nest start",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "npm start -- --debug --watch",
     "start:prod": "node dist/main",
@@ -36,9 +39,9 @@
     "dotenv": "^16.3.1",
     "mongodb": "^6.3.0",
     "node-telegram-bot-api": "^0.64.0",
+    "openvidu-node-client": "^2.29.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "simple-peer": "^9.11.1",
     "ws": "^8.14.2"
   },
   "devDependencies": {

@@ -12,6 +12,8 @@ import { TelegramService } from './telegram/telegram.service';
 import { LoginController } from './app/login.controller';
 import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 import { LoginService } from './login/login.service';
+import { MediaServerController } from './app/mediaServer/mediaServer.controller';
+import { CSSOpenVidu } from './cameraStream/open-vidu.service';
 
 @Module({
   imports: [
@@ -23,12 +25,18 @@ import { LoginService } from './login/login.service';
       // signOptions: { expiresIn: "60s" },
     }),
   ],
-  controllers: [MachineLearningController, FrontendController, LoginController],
+  controllers: [
+    MachineLearningController,
+    FrontendController,
+    LoginController,
+    MediaServerController,
+  ],
   providers: [
     DatabaseService,
     TelegramService,
     CameraStreamGateway,
     LoginService,
+    CSSOpenVidu,
   ],
   exports: [DatabaseService, TelegramService],
 })
