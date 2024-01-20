@@ -3,6 +3,7 @@
  */
 
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MachineLearningController } from './app/machineLearning/machineLearning.controller';
 import { FrontendController } from './app/frontend/frontend.controller';
@@ -11,9 +12,12 @@ import { TelegramService } from './telegram/telegram.service';
 import { LoginController } from './app/login.controller';
 import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 import { LoginService } from './login/login.service';
+import { MediaServerController } from './app/mediaServer/mediaServer.controller';
+import { CSSOpenVidu } from './cameraStream/open-vidu.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -21,12 +25,18 @@ import { LoginService } from './login/login.service';
       // signOptions: { expiresIn: "60s" },
     }),
   ],
-  controllers: [MachineLearningController, FrontendController, LoginController],
+  controllers: [
+    MachineLearningController,
+    FrontendController,
+    LoginController,
+    MediaServerController,
+  ],
   providers: [
     DatabaseService,
     TelegramService,
     CameraStreamGateway,
     LoginService,
+    CSSOpenVidu,
   ],
   exports: [DatabaseService, TelegramService],
 })

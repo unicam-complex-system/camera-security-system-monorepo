@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { StoreProvider } from "@/store";
+import { ReactQueryProvider } from "@/api";
 import React from "react";
 import { LayoutContainer } from "@/containers";
+
+import "@/app/globals.css";
 
 /* font */
 const poppins = Poppins({
@@ -26,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <StoreProvider>
-          <LayoutContainer>{children}</LayoutContainer>
+          <ReactQueryProvider>
+            <LayoutContainer>{children}</LayoutContainer>
+          </ReactQueryProvider>
         </StoreProvider>
       </body>
     </html>

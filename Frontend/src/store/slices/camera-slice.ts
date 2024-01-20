@@ -1,7 +1,8 @@
+"use client";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { Camera } from "@/types";
+import type { Camera } from "@/types";
 import { cameras } from "@/data";
 
 // CameraSlice State type
@@ -14,7 +15,7 @@ type CameraStateType = {
 
 // Define the initial state using that type
 const initialState = {
-  cameras: cameras,
+  cameras: [],
   cameraCount: 8,
   activeCameraCount: 4,
   isFullScreenGrid: false,
@@ -26,6 +27,9 @@ export const cameraSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
+    setCameras: (state: CameraStateType, action: PayloadAction<Camera[]>) => {
+      state.cameras = [...action.payload];
+    },
     updateCamera: (state: CameraStateType, action: PayloadAction<Camera>) => {
       state.cameras = state.cameras.map((item) => {
         if (item.key === action.payload.key) {
@@ -40,7 +44,8 @@ export const cameraSlice = createSlice({
   },
 });
 
-export const { updateCamera, toggleIsFullScreenGrid } = cameraSlice.actions;
+export const { updateCamera, toggleIsFullScreenGrid, setCameras } =
+  cameraSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCameras = (state: RootState) => state.camera.cameras;

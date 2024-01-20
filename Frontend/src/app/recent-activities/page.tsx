@@ -9,6 +9,7 @@ export default function RecentActivities() {
         columns={recentActivitiesColumns}
         data={recentActivitiesData}
         pagination={{ total: recentActivitiesData.length }}
+        rowKey={"id"}
       />
     </div>
   );

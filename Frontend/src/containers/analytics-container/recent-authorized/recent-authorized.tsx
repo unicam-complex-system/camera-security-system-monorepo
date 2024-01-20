@@ -11,7 +11,7 @@ export const RecentAuthorizedContainer: FC = () => {
     <>
       <Card header={"Recent Authorzied Activities"}>
         <div className="py-4">
-          <Table columns={recentActivitiesColumns} data={authorizedEntities} />
+          <Table columns={recentActivitiesColumns} data={authorizedEntities} rowKey={"id"} />
         </div>
       </Card>
     </>

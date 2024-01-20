@@ -29,3 +29,5 @@ jobs:
           CSD_PASSWORD: ${{ secrets.CSD_PASSWORD }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           BCRYPT_SALT: ${{ secrets.BCRYPT_SALT }}
+          OPENVIDU_URL: ${{ secrets.OPENVIDU_URL }}
+          OPENVIDU_SECRET: ${{ secrets.OPENVIDU_SECRET }}
