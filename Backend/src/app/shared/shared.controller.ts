@@ -26,6 +26,7 @@ export class SharedController {
     examples: {
       undefined: {
         description: 'sends an undefined value',
+        value: undefined,
       },
       camera: {
         value: '1',
