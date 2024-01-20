@@ -3,6 +3,7 @@ import {
   Get,
   Header,
   Param,
+  Post,
   StreamableFile,
   UseGuards,
 } from '@nestjs/common';
@@ -20,10 +21,7 @@ import {
   FiltersAvailable,
   FiltersValidator,
 } from '../../validators/filters/filters.pipe';
-import {
-  CameraIds,
-  CameraValidator,
-} from '../../validators/camera-id/camera.pipe';
+import { PositiveNumberValidator } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
 
 const filterParams = {
@@ -87,7 +85,7 @@ export class FrontendController {
   @Header('Content-Type', 'image/jpeg')
   @Get('/:id(\\d+)/:timestamp')
   async getImage(
-    @Param('id', CameraValidator) cameraId: CameraIds,
+    @Param('id', PositiveNumberValidator) cameraId: number,
     @Param('timestamp') timestamp: string,
   ) {
     const array = await this.databaseService.getRawDataArray('cameras', {
@@ -96,5 +94,29 @@ export class FrontendController {
     });
 
     return new StreamableFile(array[0].intrusionDetection.buffer);
+  }
+
+  @Post('/:id(\\d+)/:name')
+  @ApiParam({
+    name: 'id',
+    type: 'number',
+    example: 1,
+  })
+  @ApiParam({
+    name: 'name',
+    type: 'string',
+    example: 'Kitchen',
+  })
+  async setChannelName(
+    @Param('id', PositiveNumberValidator) id: number,
+    @Param('name') name: string,
+  ) {
+    try {
+      await this.databaseService.setChannelName(id, name);
+      return 'OK';
+    } catch (e) {
+      console.error(e);
+      return 'ERROR' + e;
+    }
   }
 }

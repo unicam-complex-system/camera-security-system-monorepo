@@ -14,6 +14,7 @@ import { CameraStreamGateway } from './cameraStream/cameraStream.gateway';
 import { LoginService } from './login/login.service';
 import { MediaServerController } from './app/mediaServer/mediaServer.controller';
 import { CSSOpenVidu } from './cameraStream/open-vidu.service';
+import { SharedController } from './app/shared/shared.controller';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CSSOpenVidu } from './cameraStream/open-vidu.service';
     FrontendController,
     LoginController,
     MediaServerController,
+    SharedController,
   ],
   providers: [
     DatabaseService,
