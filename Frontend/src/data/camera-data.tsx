@@ -37,4 +37,16 @@ export const cameras: Camera[] = [
     isActive: false,
     url: "https://www.youtube.com/embed/ewEW_xAKRMg?modestbranding=1&showinfo=0&controls=0&autoplay=1&mute=1",
   },
+  {
+    key: "dinning-room",
+    name: "Dinning room",
+    isActive: false,
+    url: "https://www.youtube.com/embed/ewEW_xAKRMg?modestbranding=1&showinfo=0&controls=0&autoplay=1&mute=1",
+  },
+  {
+    key: "kitchen",
+    name: "Kitchen",
+    isActive: false,
+    url: "https://www.youtube.com/embed/ewEW_xAKRMg?modestbranding=1&showinfo=0&controls=0&autoplay=1&mute=1",
+  },
 ];

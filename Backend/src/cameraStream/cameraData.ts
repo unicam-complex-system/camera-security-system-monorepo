@@ -2,6 +2,8 @@ export type Camera = {
   id: string;
   name: string;
   rtspUrl: string;
+  ip: string;
+  port: string;
 };
 
 export const cameraData: Camera[] = [
@@ -9,6 +11,8 @@ export const cameraData: Camera[] = [
     id: '1',
     name: 'Mainroad',
     rtspUrl: 'rtsp://192.168.129.244:554',
+    ip: '192.168.129.244',
+    port: '554',
   },
   /*  {
     id: 2,

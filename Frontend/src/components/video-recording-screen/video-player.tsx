@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Camera } from "@/types";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
 
 const VideoPlayer = ({
@@ -12,6 +12,7 @@ const VideoPlayer = ({
 }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [videoControlHidden, setvideoControlHidden] = useState(false);
+  const [loading, setLoading] = useState(true);
   const intervalRef: any = useRef(null);
 
   /* event handlers */
@@ -58,10 +59,8 @@ const VideoPlayer = ({
   }, []);
 
   return (
-    <div
-      className="w-full min-h-[250px] video-container relative"
-      onKeyDown={onScreenSizeToggle}
-    >
+    <div className="w-full min-h-[250px] video-container relative">
+      {/* <Spin className="absolute top-1/2 left-1/2" /> */}
       <video
         ref={(el) => {
           videoRef.current = { ...videoRef.current, [camera.key]: el };

@@ -62,7 +62,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
           type: ConnectionType.IPCAM,
           rtspUri: camera.rtspUrl,
           adaptativeBitrate: true,
-          onlyPlayWithSubscribers: false,
+          onlyPlayWithSubscribers: true,
           networkCache: 1000,
           data: camera.id,
         };

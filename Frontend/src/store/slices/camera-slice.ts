@@ -38,8 +38,11 @@ export const cameraSlice = createSlice({
         return item;
       });
     },
-    toggleIsFullScreenGrid: (state: CameraStateType) => {
-      state.isFullScreenGrid = !state.isFullScreenGrid;
+    toggleIsFullScreenGrid: (
+      state: CameraStateType,
+      action: PayloadAction<boolean>
+    ) => {
+      state.isFullScreenGrid = action.payload;
     },
   },
 });
