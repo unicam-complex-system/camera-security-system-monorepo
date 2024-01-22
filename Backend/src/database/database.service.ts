@@ -71,25 +71,28 @@ export class DatabaseService {
     return await col.insertOne(data);
   }
 
-  getData(filter?: FiltersAvailable): Promise<Document[]> {
-    return this.DB.collection('cameras')
-      .aggregate([
-        {
-          $addFields: {
-            intrusionDetection: {
-              $cond: {
-                if: {
-                  $ifNull: ['$intrusionDetection', false],
-                },
-                then: true,
-                else: false,
+  getData(
+    filter: FiltersAvailable,
+    limit: number = undefined,
+  ): Promise<Document[]> {
+    const res = this.DB.collection('cameras').aggregate([
+      {
+        $addFields: {
+          intrusionDetection: {
+            $cond: {
+              if: {
+                $ifNull: ['$intrusionDetection', false],
               },
+              then: true,
+              else: false,
             },
           },
         },
-      ])
-      .match(this.getFilter(filter))
-      .toArray();
+      },
+    ]);
+    if (limit != undefined)
+      return res.limit(limit).match(this.getFilter(filter)).toArray();
+    else return res.match(this.getFilter(filter)).toArray();
   }
 
   aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {

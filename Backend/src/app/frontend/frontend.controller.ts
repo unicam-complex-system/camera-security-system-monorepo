@@ -71,6 +71,20 @@ export class FrontendController {
     return this.databaseService.getData(filter);
   }
 
+  @ApiParam(filterParams)
+  @ApiParam({
+    name: 'limit',
+    type: 'number',
+    example: 10,
+  })
+  @Get(`:filter(${filters.join('|')})/:limit(\\d+)`)
+  getValuesLimit(
+    @Param('filter', FiltersValidator) filter: FiltersAvailable,
+    @Param('limit', PositiveNumberValidator) limit: number,
+  ) {
+    return this.databaseService.getData(filter, limit);
+  }
+
   @ApiParam({
     name: 'id',
     type: 'number',
