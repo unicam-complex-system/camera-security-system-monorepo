@@ -101,9 +101,24 @@ export class DatabaseService {
     else return res.toArray();
   }
 
-  aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
+  aggregateCamera(filter: FiltersAvailable): Promise<Document[]> {
+    console.log(this.getFilter(filter));
     return this.DB.collection('cameras')
-      .aggregate()
+      .aggregate([
+        {
+          $addFields: {
+            intrusionDetection: {
+              $cond: {
+                if: {
+                  $ifNull: ['$intrusionDetection', false],
+                },
+                then: true,
+                else: false,
+              },
+            },
+          },
+        },
+      ])
       .match(this.getFilter(filter))
       .group({
         _id: '$cameraId',
@@ -149,7 +164,7 @@ export class DatabaseService {
     });
   }
 
-  private getFilter(filter?: FiltersAvailable) {
+  private getFilter(filter: FiltersAvailable) {
     switch (filter) {
       case 'intrusionDetection':
         return {
