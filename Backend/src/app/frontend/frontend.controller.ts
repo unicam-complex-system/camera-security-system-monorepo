@@ -77,12 +77,20 @@ export class FrontendController {
     type: 'number',
     example: 10,
   })
-  @Get(`:filter(${filters.join('|')})/:limit(\\d+)`)
+  @ApiParam({
+    name: 'step',
+    type: 'number',
+    example: 0,
+    description:
+      'if 0 returns the first values, if 1 returns the second values, etc... . When no data is found it simply return an empty string',
+  })
+  @Get(`:filter(${filters.join('|')})/:limit(\\d+)/:step(\\d+)`)
   getValuesLimit(
     @Param('filter', FiltersValidator) filter: FiltersAvailable,
     @Param('limit', PositiveNumberValidator) limit: number,
+    @Param('step', PositiveNumberValidator) step: number,
   ) {
-    return this.databaseService.getData(filter, limit);
+    return this.databaseService.getData(filter, limit, step);
   }
 
   @ApiParam({
