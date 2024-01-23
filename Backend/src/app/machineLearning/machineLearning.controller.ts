@@ -28,10 +28,7 @@ import {
   ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  CameraIds,
-  CameraValidator,
-} from '../../validators/camera-id/camera.pipe';
+import { PositiveNumberValidator } from '../../validators/camera-id/camera.pipe';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TelegramService } from '../../telegram/telegram.service';
 
@@ -80,7 +77,7 @@ export class MachineLearningController {
   @UseGuards(AuthGuard)
   @Post(`:status(online|offline)`)
   saveStatus(
-    @Param('id', CameraValidator) cameraId: CameraIds,
+    @Param('id', PositiveNumberValidator) cameraId: number,
     @Param('status') status: string,
   ) {
     // Following condition could be removed as the path can only be online or offline
@@ -112,7 +109,7 @@ export class MachineLearningController {
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   async uploadImage(
-    @Param('id', CameraValidator) cameraId: CameraIds,
+    @Param('id', PositiveNumberValidator) cameraId: number,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'image/jpeg' })
