@@ -74,25 +74,31 @@ export class DatabaseService {
   getData(
     filter: FiltersAvailable,
     limit: number = undefined,
+    step: number = undefined,
   ): Promise<Document[]> {
-    const res = this.DB.collection('cameras').aggregate([
-      {
-        $addFields: {
-          intrusionDetection: {
-            $cond: {
-              if: {
-                $ifNull: ['$intrusionDetection', false],
+    const res = this.DB.collection('cameras')
+      .aggregate([
+        {
+          $addFields: {
+            intrusionDetection: {
+              $cond: {
+                if: {
+                  $ifNull: ['$intrusionDetection', false],
+                },
+                then: true,
+                else: false,
               },
-              then: true,
-              else: false,
             },
           },
         },
-      },
-    ]);
-    if (limit != undefined)
-      return res.limit(limit).match(this.getFilter(filter)).toArray();
-    else return res.match(this.getFilter(filter)).toArray();
+      ])
+      .match(this.getFilter(filter));
+    if (limit != undefined && step != undefined)
+      return res
+        .skip(limit * step)
+        .limit(limit)
+        .toArray();
+    else return res.toArray();
   }
 
   aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
