@@ -18,9 +18,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { cameraData } from './cameraData';
 import { CSSOpenVidu } from './open-vidu.service';
 import { ConnectionProperties, ConnectionType } from 'openvidu-node-client';
+import { DatabaseService } from '../database/database.service';
+import * as console from 'console';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -50,6 +51,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
   constructor(
     private readonly jwtService: JwtService,
     private readonly openvidu: CSSOpenVidu,
+    private readonly database: DatabaseService,
   ) {}
 
   async afterInit() {
@@ -57,15 +59,17 @@ export class CameraStreamGateway implements OnGatewayConnection {
       const session = await this.openvidu.instance.createSession({});
       this.sessionId = session.sessionId;
 
-      cameraData.forEach((camera) => {
+      const nvr = await this.database.getNVRData();
+      nvr.channels.forEach((id: number) => {
         const connectionProperties: ConnectionProperties = {
           type: ConnectionType.IPCAM,
-          rtspUri: camera.rtspUrl,
+          rtspUri: `${nvr.ip}/ch${id}_0.264`,
           adaptativeBitrate: true,
           onlyPlayWithSubscribers: true,
           networkCache: 1000,
-          data: camera.id,
+          data: id.toString(),
         };
+        console.log(connectionProperties);
 
         session
           .createConnection(connectionProperties)
@@ -73,7 +77,7 @@ export class CameraStreamGateway implements OnGatewayConnection {
           .catch((error) => console.error(error));
       });
     } catch (error) {
-      console.error('Failed after initalizing...');
+      console.error(`OpenVidu initialization Failed...`);
     }
   }
 

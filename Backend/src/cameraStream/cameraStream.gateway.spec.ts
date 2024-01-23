@@ -4,13 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { OpenVidu } from 'openvidu-node-client';
 import { CSSOpenVidu } from './open-vidu.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('WebStreamGateway', () => {
   let gateway: CameraStreamGateway;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CameraStreamGateway, CSSOpenVidu],
+      providers: [CameraStreamGateway, CSSOpenVidu, DatabaseService],
       imports: [
         JwtModule.register({
           global: true,

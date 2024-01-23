@@ -79,11 +79,7 @@ export const LayoutContainer = ({
                 />
               </Sider>
               <Layout>
-                <Header className="bg-primary flex justify-end">
-                  {session && (
-                    <BellOutlined className="cursor-pointer text-2xl text-white" />
-                  )}
-                </Header>
+                <Header className="bg-primary flex justify-end" />
                 <Content
                   className={`${
                     isFullScreenGrid

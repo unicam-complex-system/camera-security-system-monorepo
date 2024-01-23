@@ -37,12 +37,12 @@ export const loggedInNavBarItems: NavBarItem[] = [
   //   route: "/playback",
   //   icon: PlayCircleOutlined,
   // },
-  {
-    key: "analytics",
-    label: "Analytics",
-    route: "/analytics",
-    icon: BarChartOutlined,
-  },
+  // {
+  //   key: "analytics",
+  //   label: "Analytics",
+  //   route: "/analytics",
+  //   icon: BarChartOutlined,
+  // },
   {
     key: "setting",
     label: "Setting",

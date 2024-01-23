@@ -19,24 +19,15 @@ export const recentActivitiesColumns: ColumnsType<Activity> = [
     render: (_, record) => <span>{record.camera.name}</span>,
   },
   {
-    title: "Entity",
-    dataIndex: "entity",
-    render: (_, record) => (
-      <span className={`${record.entity ? "text-success" : "text-danger"}`}>
-        {record.entity ? record.entity.name : "Unkown"}
-      </span>
-    ),
-  },
-  {
     title: "Action",
     key: "action",
     render: (_, record) => (
       <Space size="middle">
         <Button toolTipText="View screenshot" icon={<CameraOutlined />} />
-        <Button
+        {/* <Button
           toolTipText={"View video playback"}
           icon={<VideoCameraOutlined />}
-        />
+        /> */}
       </Space>
     ),
   },
@@ -46,24 +37,21 @@ export const recentActivitiesData: Activity[] = [
   {
     id: "fad4sl3jf21oia32232sj",
     timestamp: Date().toString().substring(0, 21),
-    entity: authorizedEntitiesData[0],
-    camera: cameras[1],
+    cameraId: cameras[1].key,
   },
   {
     id: "fad4sl3jf21oia322tesj",
     timestamp: Date().toString().substring(0, 21),
-    entity: authorizedEntitiesData[2],
-    camera: cameras[4],
+    cameraId: cameras[4].key,
   },
   {
     id: "fad4sl3jflfoia32232sj",
     timestamp: Date().toString().substring(0, 21),
-    entity: authorizedEntitiesData[4],
-    camera: cameras[3],
+    cameraId: cameras[3].key,
   },
   {
     id: "fad4sl3jf21oia72232sj",
     timestamp: Date().toString().substring(0, 21),
-    camera: cameras[0],
+    cameraId: cameras[0].key,
   },
 ];
