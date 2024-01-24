@@ -15,8 +15,8 @@ export const recentActivitiesColumns: ColumnsType<Activity> = [
   },
   {
     title: "Camera",
-    dataIndex: "camera",
-    render: (_, record) => <span>{record.camera.name}</span>,
+    dataIndex: "cameraName",
+    render: (_, record) => <span>{record.cameraName}</span>,
   },
   {
     title: "Action",
