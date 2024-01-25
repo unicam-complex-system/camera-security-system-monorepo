@@ -21,7 +21,7 @@ describe('DatabaseService', () => {
   });
 
   it('should get aggregated data', async () => {
-    const aggregateData = await databaseService.aggregateCamera();
+    const aggregateData = await databaseService.aggregateCamera('all');
 
     expect(aggregateData).not.toBeNull();
   });

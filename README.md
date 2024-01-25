@@ -76,9 +76,9 @@ BCRYPT_SALT=...
 # Put the openvidu URL of the component that you have launched earlier
 OPENVIDU_URL= http://localhost:4443/
 # Put the OPENVIDU_SECRET of the component that you have launched earlier
-OPENVIDU_SECRET=MY_SECRET 
-# NVR IP
-NVR_IP_ADDRESS=localhost:2314 
+OPENVIDU_SECRET=MY_SECRET
+# Put the IP address of the NVR
+NVR_IP_ADDRESS=
 ```
 Then you can run
 ```bash
