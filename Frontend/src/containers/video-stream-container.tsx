@@ -172,11 +172,15 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   }, []);
 
   useEffect(() => {
-    subscribers.forEach((subscriber) =>
-      subscriber.addVideoElement(
-        videoRef.current?.[subscriber?.stream?.connection?.data]
-      )
-    );
+    subscribers.forEach((subscriber) => {
+      try {
+        subscriber.addVideoElement(
+          videoRef.current?.[subscriber?.stream?.connection?.data]
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    });
   }, [subscribers]);
 
   return (
