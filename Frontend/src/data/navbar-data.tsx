@@ -46,7 +46,7 @@ export const loggedInNavBarItems: NavBarItem[] = [
   {
     key: "setting",
     label: "Setting",
-    route: "/setting",
+    route: "/settings",
     icon: SettingOutlined,
   },
   {

@@ -8,3 +8,5 @@ export { AboutUsMissionContainer } from "./about-us-container/about-us-mission-c
 export { AnalyticsContainer } from "./analytics-container/analytics-container";
 export { LoginContainer } from "./login-container";
 export { RecentActivitiesContainer } from "./recent-activities-container";
+export { SettingsContainer } from "./settings-container";
+export { ModalContainer } from "./modal-container";

@@ -63,7 +63,7 @@ const VideoPlayer = ({
       {/* <Spin className="absolute top-1/2 left-1/2" /> */}
       <video
         ref={(el) => {
-          videoRef.current = { ...videoRef.current, [camera.key]: el };
+          videoRef.current = { ...videoRef.current, [camera.id]: el };
         }}
         className={`${
           fullScreen

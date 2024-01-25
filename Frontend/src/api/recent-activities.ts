@@ -11,6 +11,10 @@ type RecentActivitiesCountResponseDTO = {
   count: number;
 }[];
 
+type RecentActivityImageResponseDTO = {
+  data: any;
+};
+
 export const getRecentActivities = (top: number, skip: number) => {
   return () =>
     axiosClient
@@ -37,4 +41,14 @@ export const getRecentActivitiesCount = () => {
 
         return totalCount;
       });
+};
+
+export const getActivityImage = (id: string, timestamp: string) => {
+  return () =>
+    axiosClient
+      .get<RecentActivityImageResponseDTO>(
+        `${id}/${timestamp}`,
+        {}
+      )
+      .then((result) => result.data);
 };

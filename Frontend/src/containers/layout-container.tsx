@@ -6,10 +6,12 @@ import { loggedInNavBarItems, guestNavBarItems } from "@/data";
 import { antTheme } from "../../theme";
 import type { NavBarItem } from "@/types";
 import { getCurrentNav } from "@/utils";
-import { BellOutlined } from "@ant-design/icons";
 import { useSessionSlice, useCameraSlice } from "@/hooks";
 import { ProtectionContainer } from "./protection-container";
 import { NotificationContainer } from "./notification-container";
+import { useQuery } from "react-query";
+import { getCameras } from "@/api";
+import { ModalContainer } from "./modal-container";
 const { Header, Content, Footer, Sider } = Layout;
 
 export const LayoutContainer = ({
@@ -19,11 +21,14 @@ export const LayoutContainer = ({
 }) => {
   /* state to check if ant design styled loaded */
   const { session, logOut } = useSessionSlice();
-  const { isFullScreenGrid } = useCameraSlice();
+  const { isFullScreenGrid, setCameras } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
+
+  // Initialize camera
+  const { data: camerasFetchedData } = useQuery("cameras", getCameras());
 
   /* event handler */
   const onMenuClick = (info: any) => {
@@ -40,6 +45,12 @@ export const LayoutContainer = ({
   useEffect(() => {
     setAntStyleLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if (camerasFetchedData && session) {
+      setCameras(camerasFetchedData);
+    }
+  }, [camerasFetchedData, session]);
 
   useEffect(() => {
     /* navbar menu */
@@ -81,11 +92,10 @@ export const LayoutContainer = ({
               <Layout>
                 <Header className="bg-primary flex justify-end" />
                 <Content
-                  className={`${
-                    isFullScreenGrid
-                      ? "fixed top-0 left-0 w-screen h-screen"
-                      : "pt-6 px-4 p-0"
-                  }`}
+                  className={`${isFullScreenGrid
+                    ? "fixed top-0 left-0 w-screen h-screen"
+                    : "pt-6 px-4 p-0"
+                    }`}
                 >
                   <div className="p-2 bg-white min-h-[360px]">{children}</div>
                 </Content>
@@ -96,6 +106,7 @@ export const LayoutContainer = ({
             </Layout>
           </ProtectionContainer>
         )}
+        <ModalContainer />
       </NotificationContainer>
     </ConfigProvider>
   );

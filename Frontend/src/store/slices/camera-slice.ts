@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import type { Camera } from "@/types";
-import { cameras } from "@/data";
 
 // CameraSlice State type
 type CameraStateType = {
@@ -32,7 +31,7 @@ export const cameraSlice = createSlice({
     },
     updateCamera: (state: CameraStateType, action: PayloadAction<Camera>) => {
       state.cameras = state.cameras.map((item) => {
-        if (item.key === action.payload.key) {
+        if (item.id === action.payload.id) {
           return action.payload;
         }
         return item;

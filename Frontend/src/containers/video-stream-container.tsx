@@ -60,7 +60,6 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
 
   /* useEffect hooks */
   useEffect(() => {
-    setCameras(camerasData);
     const openVidu = new OpenVidu();
     const session = openVidu.initSession();
 

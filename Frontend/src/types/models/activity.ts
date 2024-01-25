@@ -2,7 +2,7 @@
  * Activity is composed of properties such as id, timestamp, camera,entity etc.
  * */
 export type Activity = {
-  id: string;
+  _id: string;
   timestamp: string;
   cameraId: string;
   cameraName?: string;

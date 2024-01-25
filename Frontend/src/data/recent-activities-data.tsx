@@ -1,11 +1,9 @@
 "use client";
 import { Activity } from "@/types";
-import { Button } from "@/components";
+import { ViewScreenshotButton } from "@/components";
 import { Space } from "antd";
-import { CameraOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { cameras } from "./camera-data";
-import { authorizedEntitiesData } from "./authorized-entities-data";
 
 export const recentActivitiesColumns: ColumnsType<Activity> = [
   {
@@ -23,7 +21,10 @@ export const recentActivitiesColumns: ColumnsType<Activity> = [
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <Button toolTipText="View screenshot" icon={<CameraOutlined />} />
+        <ViewScreenshotButton
+          cameraId={record.cameraId}
+          timestamp={record.timestamp.replaceAll(" ", "")}
+        />
         {/* <Button
           toolTipText={"View video playback"}
           icon={<VideoCameraOutlined />}
@@ -35,23 +36,23 @@ export const recentActivitiesColumns: ColumnsType<Activity> = [
 
 export const recentActivitiesData: Activity[] = [
   {
-    id: "fad4sl3jf21oia32232sj",
+    _id: "fad4sl3jf21oia32232sj",
     timestamp: Date().toString().substring(0, 21),
-    cameraId: cameras[1].key,
+    cameraId: cameras[1].id,
   },
   {
-    id: "fad4sl3jf21oia322tesj",
+    _id: "fad4sl3jf21oia322tesj",
     timestamp: Date().toString().substring(0, 21),
-    cameraId: cameras[4].key,
+    cameraId: cameras[4].id,
   },
   {
-    id: "fad4sl3jflfoia32232sj",
+    _id: "fad4sl3jflfoia32232sj",
     timestamp: Date().toString().substring(0, 21),
-    cameraId: cameras[3].key,
+    cameraId: cameras[3].id,
   },
   {
-    id: "fad4sl3jf21oia72232sj",
+    _id: "fad4sl3jf21oia72232sj",
     timestamp: Date().toString().substring(0, 21),
-    cameraId: cameras[0].key,
+    cameraId: cameras[0].id,
   },
 ];

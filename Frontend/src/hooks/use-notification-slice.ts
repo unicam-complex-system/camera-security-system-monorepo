@@ -10,7 +10,7 @@ export const useNotificationSlice = () => {
   const dispatch = useAppDispatch();
 
   /* redux notification state properties */
-  const notification: Notification = useAppSelector(selectNotification);
+  const notification: Notification | null = useAppSelector(selectNotification);
 
   /* redux notification state updaters */
   const openNotificationState = (

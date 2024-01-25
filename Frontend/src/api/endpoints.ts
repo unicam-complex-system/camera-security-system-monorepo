@@ -1,7 +1,11 @@
 export const endpoints = {
-  /* authentication endpoints */
+  // authentication endpoints
   login: "login",
+
+  // ِRecent activites endpoints
   recentActivities: "intrusionDetection",
-  getCameraName: "shared/channel",
   getIntrusionCount: "intrusionDetection/aggregate",
+
+  // Camera endpoints
+  getCameras: "cameras",
 };

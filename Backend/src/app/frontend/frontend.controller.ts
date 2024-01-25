@@ -57,6 +57,11 @@ const filterParams = {
 export class FrontendController {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  @Get(`cameras`)
+  getCameras() {
+    return this.databaseService.getCameras();
+  }
+
   @ApiParam(filterParams)
   @Get(`:filter(${filters.join('|')})/aggregate`)
   getAggregateValues(
