@@ -1,167 +1,101 @@
+import io
 from ultralytics import YOLO
 import cv2
-import math 
+import math
 import threading
 import requests
 from sklearn.metrics import mean_squared_error
+import numpy as np
 
-#model
+# model
 model = YOLO("yolo-Wheights/yolov8n.pt")
-#class of YOLO
-classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
-              "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-              "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
-              "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
-              "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
-              "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
-              "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
-              "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
-              "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"
-              ]
-
-cam1 = 'rtsp://192.168.1.41:80/ch0_0.264'
-cam2 = 'rtsp://192.168.1.41:80/ch1_0.264'
-cam3 = 'rtsp://192.168.1.41:80/ch2_0.264'
-cam4 = 'rtsp://192.168.1.41:80/ch3_0.264'
-cam5 = 'rtsp://192.168.1.41:80/ch4_0.264'
-cam6 = 'rtsp://192.168.1.41:80/ch5_0.264'
-cam7 = 'rtsp://192.168.1.41:80/ch6_0.264'
-cam8 = 'rtsp://192.168.1.41:80/ch7_0.264'
-
 
 last_sent_image = None
+url = "https://localhost:8080"
+
 
 def post_request(image, camera_id, status):
     global last_sent_image
-    url = 'http://localhost:8080'
-    
-    data = {
-        'id': camera_id,
-        'status': status,
-    }
-    
-    if last_sent_image is None:
-        last_sent_image = image
-        try:
-            response = requests.post(url, data=data, files={'file':  (image, 'image/jpeg')})
-            print("Status code is: ", response.status_code)      
-        except requests.exceptions.RequestException as e:
-            print("There was an exception that occurred while handling your request.", e)
-    else:  
 
+    if last_sent_image is not None:
         # Resizing
         flat_last_sent_image = last_sent_image.flatten()
         flat_image = image.flatten()
+
         min_len = min(len(flat_last_sent_image), len(flat_image))
-        r_last_sent_image = cv2.resize(flat_last_sent_image.reshape(1, -1), (min_len, 1))
+        r_last_sent_image = cv2.resize(
+            flat_last_sent_image.reshape(1, -1), (min_len, 1)
+        )
         r_image = cv2.resize(flat_image.reshape(1, -1), (min_len, 1))
 
-        #mean squared error
+        # mean squared error
         mse = mean_squared_error(r_last_sent_image, r_image)
         print("MEAN SQUARED ERROR is: ", mse)
-        if mse > 105.85:
-            try:
-                response = requests.post(url, data=data, files={'file':  (image, 'image/jpeg')})
-                print("Status code is: ", response.status_code)
-        
-                if response.status_code == 200:
-                    last_sent_image = image      
-            except requests.exceptions.RequestException as e:
-                print("There was an exception that occurred while handling your request.", e)
-        
-    
-   
+        if mse < 105.70:
+            return
 
-#filename = url of cam
-#file_index = index of the file that can be assigned to each thread. cam1 has file_index as 1, cam2 has file_index as 2...
-def detection(filename, file_index):
-    cap = cv2.VideoCapture(filename) 
-    global last_sent_image
-    status = 'offline'
+    # image = cv2.resize(image, (0.5, 0.5))
+    image_stream = np.array(image).tobytes()
+
+    try:
+        response = requests.post(
+            f"{url}/{camera_id}",
+            files={"file": ("image.jpg", image_stream, "image/jpeg")},
+            verify=False,  # "Backend/src/ssl_certificate/server.pem",
+        )
+
+        if response.status_code == 201:
+            last_sent_image = image
+        elif response.status_code == 422:
+            print(response.content)
+            print(response.request.headers)
+        # else:
+        #     print("Status code is: ", response.status_code)
+    except requests.exceptions.RequestException as e:
+        print(
+            "There was an exception that occurred while handling your request.",
+            e,
+        )
+
+
+# filename = url of cam
+# file_index = index of the file that can be assigned to each thread. cam1 has file_index as 1, cam2 has file_index as 2...
+def detection(camera_id: int, _: int):
+    print(f"capturing {camera_id}")
+    print(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
+
+    # FIXME camera capture takes to much time to load the camera connection (first time)
+    cap = cv2.VideoCapture(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
+    status = "offline"
+
+    print(f"started {camera_id}")
 
     while cap.isOpened():
-       
-       success, img = cap.read()
-       if not success:
-           break
-       
-       status = 'online'
-       results = model(img, stream = True, classes = 0, conf=0.5) 
-       foundPerson = False
-       #coordinates
-       for r in results:
-          boxes = r.boxes
-          for box in boxes:
-            #bounding box
-            x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-            # confidence
-            confidence = math.ceil((box.conf[0]*100))/100
-            print("Confidence --->",confidence)
-            # class name
-            cls = int(box.cls[0])
-            print("Class name -->", classNames[cls])
+        success, img = cap.read()
+        if not success:
+            continue
 
-            foundPerson = True
-       
-       if(foundPerson):
-           _, img_encoded = cv2.imencode('.jpg', img)
-           post_request(img_encoded, file_index, status)
+        print(f"captured image from {camera_id}")
 
-      
+        status = "online"
+        results = model(img, stream=True, classes=0, conf=0.5, verbose=False)
+        foundPerson = False
+        # coordinates
+        for r in results:
+            boxes = r.boxes
+            for box in boxes:
+                # bounding box
+                x1, y1, x2, y2 = box.xyxy[0]
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                # confidence
+                confidence = math.ceil((box.conf[0] * 100)) / 100
+                print("Confidence --->", confidence)
+
+                foundPerson = True
+
+        if foundPerson:
+            _, img_encoded = cv2.imencode(".jpg", img)
+            post_request(img_encoded, camera_id, status)
+
     cap.release()
-
-
-
-detect_thread1 = threading.Thread(target=detection,
-                                   args=(cam1, 1),
-                                   daemon=True)
-
-detect_thread2 = threading.Thread(target=detection,
-                                   args=(cam2, 2),
-                                   daemon=True)
-
-detect_thread3 = threading.Thread(target=detection,
-                                   args=(cam3, 3),
-                                   daemon=True)
-
-detect_thread4 = threading.Thread(target=detection,
-                                   args=(cam4, 4),
-                                   daemon=True)
-
-detect_thread5 = threading.Thread(target=detection,
-                                   args=(cam5, 5),
-                                   daemon=True)
-
-detect_thread6 = threading.Thread(target=detection,
-                                   args=(cam6, 6),
-                                   daemon=True)
-
-detect_thread7 = threading.Thread(target=detection,
-                                   args=(cam7, 7),
-                                   daemon=True)
-
-detect_thread8 = threading.Thread(target=detection,
-                                   args=(cam8, 8),
-                                   daemon=True)
-
-
-detect_thread1.start()
-detect_thread2.start()
-detect_thread3.start()
-detect_thread4.start()
-detect_thread5.start()
-detect_thread6.start()
-detect_thread7.start()
-detect_thread8.start()
-
-detect_thread1.join()
-detect_thread2.join()
-detect_thread3.join()
-detect_thread4.join()
-detect_thread5.join()
-detect_thread6.join()
-detect_thread7.join()
-detect_thread8.join()

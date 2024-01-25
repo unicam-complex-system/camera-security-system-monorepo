@@ -112,8 +112,9 @@ dist
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
+# VSCode files
 .vscode-test
+.vscode
 
 # yarn v2
 .yarn/cache
