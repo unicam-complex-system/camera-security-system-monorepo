@@ -59,11 +59,29 @@ export class DatabaseService {
     );
   }
 
+  async initDBNvr() {
+    const data = {
+      name: 'NVR',
+    };
+    const filter = {
+      name: 'NVR',
+      ip: process.env.NVR_IP_ADDRESS,
+      channels: [0, 1, 2, 3, 4, 5, 6, 7],
+    };
+
+    const size = await this.DB.collection('General').countDocuments(filter);
+
+    if (size == 0) {
+      await this.DB.collection('General').insertOne(data);
+    }
+  }
+
   constructor() {
     const client = new MongoClient(url);
 
     this.DB = client.db('csd');
     this.initDBUser();
+    this.initDBNvr();
   }
 
   async addData(data: DataType<number>) {
@@ -102,7 +120,6 @@ export class DatabaseService {
   }
 
   aggregateCamera(filter: FiltersAvailable): Promise<Document[]> {
-    console.log(this.getFilter(filter));
     return this.DB.collection('cameras')
       .aggregate([
         {
@@ -221,54 +238,13 @@ export class DatabaseService {
   // TODO TESTME
   // Returns NVR info such as IP address and available channels
   async getNVRData(): Promise<Document> {
-    const array = await this.getOtherwiseInsert(
-      'General',
-      {
-        name: 'NVR',
-      },
-      {
-        name: 'NVR',
-        ip: process.env.NVR_IP_ADDRESS,
-        channels: [0, 1, 2, 3, 4, 5, 6, 7],
-      },
-    );
+    const array = await this.getRawDataArray('General', {
+      name: 'NVR',
+    });
+
     return {
       ip: array[0].ip,
       channels: array[0].channels,
     };
-
-    // try {
-    //   const array = await this.getRawDataArray('General', {
-    //     name: 'NVR',
-    //   });
-    //   return array[0];
-    // } catch (e) {
-    //   if (e instanceof NotFoundException) {
-    //     const data = {
-    //       name: 'NVR',
-    //       ip: process.env.NVR_IP_ADDRESS,
-    //       channels: [0, 1, 2, 3, 4, 5, 6, 7],
-    //     };
-    //
-    //     await this.DB.collection(`General`).insertOne(data);
-    //     return data;
-    //   } else {
-    //     console.error(e);
-    //   }
-    // }
-  }
-
-  async getOtherwiseInsert(
-    name: string,
-    filter: Filter<Document>,
-    data: Document,
-  ): Promise<WithId<Document>[]> {
-    const size = await this.DB.collection(name).countDocuments(filter);
-
-    if (size == 0) {
-      await this.DB.collection(name).insertOne(data);
-    }
-
-    return await this.getRawDataArray(name, filter);
   }
 }
