@@ -30,18 +30,21 @@ cam7 = 'rtsp://192.168.1.41:80/ch6_0.264'
 cam8 = 'rtsp://192.168.1.41:80/ch7_0.264'
 
 
-TOKEN = '6929905186:AAEouI3G2sbfS-y6ZzkXrpNgPQRAPs5_v-g'
-channel_id = '792557360'
 last_sent_image = None
 
-def post_request(image):
+def post_request(image, camera_id, status):
     global last_sent_image
-    apiURL = f"https://api.telegram.org/bot{TOKEN}/sendPhoto?chat_id={channel_id}"
+    url = 'http://localhost:8080'
+    
+    data = {
+        'id': camera_id,
+        'status': status,
+    }
     
     if last_sent_image is None:
         last_sent_image = image
         try:
-            response = requests.post(apiURL, files={'photo':  image})
+            response = requests.post(url, data=data, files={'file':  (image, 'image/jpeg')})
             print("Status code is: ", response.status_code)      
         except requests.exceptions.RequestException as e:
             print("There was an exception that occurred while handling your request.", e)
@@ -59,7 +62,7 @@ def post_request(image):
         print("MEAN SQUARED ERROR is: ", mse)
         if mse > 105.85:
             try:
-                response = requests.post(apiURL, files={'photo':  image})
+                response = requests.post(url, data=data, files={'file':  (image, 'image/jpeg')})
                 print("Status code is: ", response.status_code)
         
                 if response.status_code == 200:
@@ -73,16 +76,17 @@ def post_request(image):
 #filename = url of cam
 #file_index = index of the file that can be assigned to each thread. cam1 has file_index as 1, cam2 has file_index as 2...
 def detection(filename, file_index):
-    cap = cv2.VideoCapture(filename)  # Read the video file
+    cap = cv2.VideoCapture(filename) 
     global last_sent_image
+    status = 'offline'
 
     while cap.isOpened():
        
        success, img = cap.read()
-       # Exit the loop if no more frames in either video
        if not success:
            break
        
+       status = 'online'
        results = model(img, stream = True, classes = 0, conf=0.5) 
        foundPerson = False
        #coordinates
@@ -91,8 +95,7 @@ def detection(filename, file_index):
           for box in boxes:
             #bounding box
             x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # convert to int values
-            # put box in cam
+            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
             cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
             # confidence
             confidence = math.ceil((box.conf[0]*100))/100
@@ -105,14 +108,13 @@ def detection(filename, file_index):
        
        if(foundPerson):
            _, img_encoded = cv2.imencode('.jpg', img)
-           post_request(img_encoded)
+           post_request(img_encoded, file_index, status)
 
       
     cap.release()
 
 
 
-#initialize thread
 detect_thread1 = threading.Thread(target=detection,
                                    args=(cam1, 1),
                                    daemon=True)
@@ -145,7 +147,7 @@ detect_thread8 = threading.Thread(target=detection,
                                    args=(cam8, 8),
                                    daemon=True)
 
-#start thread
+
 detect_thread1.start()
 detect_thread2.start()
 detect_thread3.start()
