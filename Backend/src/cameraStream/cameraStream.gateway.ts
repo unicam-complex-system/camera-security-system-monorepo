@@ -58,14 +58,14 @@ export class CameraStreamGateway implements OnGatewayConnection {
     try {
       const session = await this.openvidu.instance.createSession({});
       this.sessionId = session.sessionId;
- 
+
       const nvr = await this.database.getNVRData();
       nvr.channels.forEach((id: number) => {
         const connectionProperties: ConnectionProperties = {
           type: ConnectionType.IPCAM,
           rtspUri: `${nvr.ip}/ch${id}_0.264`,
-          adaptativeBitrate: true, 
-          onlyPlayWithSubscribers: false, 
+          adaptativeBitrate: true,
+          onlyPlayWithSubscribers: false,
           networkCache: 1000,
           data: id.toString(),
         };
