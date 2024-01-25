@@ -6,7 +6,7 @@ export const useSessionSlice = () => {
   const dispatch = useAppDispatch();
 
   /* redux session state properties */
-  const session: Session = useAppSelector(selectSession);
+  const session: Session | null = useAppSelector(selectSession);
 
   /* redux session state updaters */
   const logInState = (newSession: Session) => {

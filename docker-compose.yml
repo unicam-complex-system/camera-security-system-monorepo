@@ -12,11 +12,20 @@ services:
     env_file:
       - .secrets.yml
 
+  openvidu:
+    image: openvidu/openvidu-dev:2.29.0 
+    restart: on-failure # always
+    ports:
+      - "4443:4443"
+    env_file:
+      - ./Backend/.env-openvidu
+
   backend:
     container_name: backend
     image: node:21-alpine
     depends_on:
      - mongo
+     - openvidu
     restart: on-failure # always
     ports:
       - 8080:8080
@@ -26,3 +35,16 @@ services:
     env_file:
       - .secrets.yml
     command: npm run docker:dev
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    restart: on-failure # always
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./Frontend/.env
+    depends_on:
+      - backend
+

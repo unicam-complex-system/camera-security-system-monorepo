@@ -19,34 +19,34 @@ export const loggedInNavBarItems: NavBarItem[] = [
     route: "/video-stream",
     icon: VideoCameraOutlined,
   },
-  {
-    key: "authorized-entites",
-    label: "Authorized Entities",
-    route: "/authorized-entities",
-    icon: UserOutlined,
-  },
+  // {
+  //   key: "authorized-entites",
+  //   label: "Authorized Entities",
+  //   route: "/authorized-entities",
+  //   icon: UserOutlined,
+  // },
   {
     key: "recent-activities",
     label: "Recent Activities",
     route: "/recent-activities",
     icon: HistoryOutlined,
   },
-  {
-    key: "playback",
-    label: "Playback",
-    route: "/playback",
-    icon: PlayCircleOutlined,
-  },
-  {
-    key: "analytics",
-    label: "Analytics",
-    route: "/analytics",
-    icon: BarChartOutlined,
-  },
+  // {
+  //   key: "playback",
+  //   label: "Playback",
+  //   route: "/playback",
+  //   icon: PlayCircleOutlined,
+  // },
+  // {
+  //   key: "analytics",
+  //   label: "Analytics",
+  //   route: "/analytics",
+  //   icon: BarChartOutlined,
+  // },
   {
     key: "setting",
     label: "Setting",
-    route: "/setting",
+    route: "/settings",
     icon: SettingOutlined,
   },
   {

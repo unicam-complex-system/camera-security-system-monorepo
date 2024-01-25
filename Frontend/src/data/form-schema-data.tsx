@@ -6,3 +6,11 @@ export const loginFormSchema = yup
     password: yup.string().required("This field is required"),
   })
   .required();
+
+
+  export const settingFormSchema = yup
+  .object({
+    name: yup.string().required("This field is required"),
+    password: yup.string().required("This field is required"),
+  })
+  .required();

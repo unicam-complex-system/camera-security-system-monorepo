@@ -496,13 +496,13 @@ export const AuthorizedUnauthorizedLineContainer: FC = () => {
         <div className={"pt-3 flex  gap-2 items-center"}>
           <span>Date:</span>
           <div>
-            <DatePicker
+            {/* <DatePicker
               format={timeOption === "month" ? "MMM-YYYY" : "DD-MMM-YYYY"}
               onChange={setDate}
               defaultValue={date}
               allowClear={false}
               picker={timeOption === "month" ? timeOption : undefined}
-            />
+            /> */}
           </div>
         </div>
       </Card>

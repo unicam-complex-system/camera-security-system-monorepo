@@ -28,8 +28,8 @@ export const useCameraSlice = () => {
     dispatch(updateCamera(updatedCamera));
   };
 
-  const toggleIsFullScreenGridState = () => {
-    dispatch(toggleIsFullScreenGrid());
+  const toggleIsFullScreenGridState = (value: boolean) => {
+    dispatch(toggleIsFullScreenGrid(value));
   };
 
   return {

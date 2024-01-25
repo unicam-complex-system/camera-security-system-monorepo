@@ -2,7 +2,7 @@
  * properties such as key, name, isActive, etc.
  * */
 export type Camera = {
-  key: string;
+  id: string;
   name: string;
   isActive: boolean;
   url: string;

@@ -20,6 +20,7 @@ import DataType from '../DataType';
 import { FiltersAvailable } from '../validators/filters/filters.pipe';
 import * as process from 'process';
 import * as bcrypt from 'bcrypt';
+import { cameraIds } from '../camera.config';
 
 const url = `${process.env.MONGO_PROTOCOL ?? 'mongodb'}://${
   process.env.MONGO_INITDB_ROOT_USERNAME
@@ -59,11 +60,22 @@ export class DatabaseService {
     );
   }
 
+  // If no camera exists it automatically creates one with the default config in camera.config.ts file
+  async initCameras() {
+    const size = await this.DB.collection('camera_names').countDocuments();
+    if (size == 0) {
+      await this.DB.collection(`camera_names`).insertMany(
+        cameraIds.map((id) => ({ id: id, name: 'No name' })),
+      );
+    }
+  }
+
   constructor() {
     const client = new MongoClient(url);
 
     this.DB = client.db('csd');
     this.initDBUser();
+    this.initCameras();
   }
 
   async addData(data: DataType<number>) {
@@ -99,6 +111,10 @@ export class DatabaseService {
         .limit(limit)
         .toArray();
     else return res.toArray();
+  }
+
+  getCameras(): Promise<Document[]> {
+    return this.DB.collection('camera_names').find().toArray();
   }
 
   aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
@@ -214,11 +230,12 @@ export class DatabaseService {
       {
         name: 'NVR',
         ip: process.env.NVR_IP_ADDRESS,
-        channels: [0, 1, 2, 3, 4, 5, 6, 7],
+        channels: cameraIds,
       },
     );
+
     return {
-      ip: array[0].ip,
+      ip: process.env.NVR_IP_ADDRESS,
       channels: array[0].channels,
     };
 

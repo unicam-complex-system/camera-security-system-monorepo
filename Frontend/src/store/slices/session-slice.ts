@@ -10,11 +10,6 @@ let initialState = {
   currentSession: null,
 } as SessionState;
 
-const accessToken = sessionStorage.getItem("access_token");
-if (accessToken) {
-  initialState.currentSession = { accessToken: accessToken };
-}
-
 export const sessionSlice = createSlice({
   name: "session",
   // `createSlice` will infer the state type from the `initialState` argument
