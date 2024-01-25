@@ -1,6 +1,5 @@
 import cv2
 import socketio
-import base64
 import threading
 
 #cameras data
@@ -40,7 +39,7 @@ def send_frames(camera_id, capture, interval=0.1):
 for camera_id, camera_url in cameras.items():
     capture = cv2.VideoCapture(camera_url)
     if not capture.isOpened():
-        print(f"Errore nell'apertura della telecamera {camera_id}")
+        print(f"Error stream with camera {camera_id}")
         continue
     
     threading.Thread(target=send_frames, args=(camera_id, capture)).start()
