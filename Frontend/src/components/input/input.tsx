@@ -11,7 +11,7 @@ type PropsType = {
 
 /**  This component renders a input field */
 export const Input = React.forwardRef<HTMLInputElement, PropsType>(
-  ({ label, password = false, error = undefined, ...props }, ref) => {
+  ({ label, password = false, error = undefined, ...props }, ref:any) => {
     return (
       <div className="py-1">
         <div className={"font-bold pb-2"}>{label}</div>

@@ -17,16 +17,6 @@ const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
   ? process.env.NEXT_PUBLIC_BACKEND_URL
   : "";
 
-const socket = io(webSocketURL, {
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-        Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
-      },
-    },
-  },
-});
-
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   const [subscribers, setSubscribers] = useState<any[]>([]);
@@ -60,6 +50,16 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
 
   /* useEffect hooks */
   useEffect(() => {
+    const socket = io(webSocketURL, {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+          },
+        },
+      },
+    });
+
     const openVidu = new OpenVidu();
     const session = openVidu.initSession();
 

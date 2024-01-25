@@ -10,7 +10,7 @@ import { useSessionSlice, useCameraSlice } from "@/hooks";
 import { ProtectionContainer } from "./protection-container";
 import { NotificationContainer } from "./notification-container";
 import { useQuery } from "react-query";
-import { getCameras } from "@/api";
+import { axiosClient, getCameras } from "@/api";
 import { ModalContainer } from "./modal-container";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -20,7 +20,7 @@ export const LayoutContainer = ({
   children: React.ReactNode;
 }) => {
   /* state to check if ant design styled loaded */
-  const { session, logOut } = useSessionSlice();
+  const { session, logOut, logIn } = useSessionSlice();
   const { isFullScreenGrid, setCameras } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
@@ -44,6 +44,13 @@ export const LayoutContainer = ({
   /* useEffect */
   useEffect(() => {
     setAntStyleLoaded(true);
+    const accessToken = sessionStorage.getItem("access_token");
+    if (accessToken) {
+      axiosClient.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${sessionStorage.getItem("access_token")}`;
+      logIn({ accessToken: accessToken });
+    }
   }, []);
 
   useEffect(() => {
@@ -92,10 +99,11 @@ export const LayoutContainer = ({
               <Layout>
                 <Header className="bg-primary flex justify-end" />
                 <Content
-                  className={`${isFullScreenGrid
-                    ? "fixed top-0 left-0 w-screen h-screen"
-                    : "pt-6 px-4 p-0"
-                    }`}
+                  className={`${
+                    isFullScreenGrid
+                      ? "fixed top-0 left-0 w-screen h-screen"
+                      : "pt-6 px-4 p-0"
+                  }`}
                 >
                   <div className="p-2 bg-white min-h-[360px]">{children}</div>
                 </Content>

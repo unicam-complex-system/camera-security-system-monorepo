@@ -44,20 +44,22 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
 
   useEffect(() => {
     if (isErrorRecentActivities) {
+      const error: any = isErrorRecentActivities;
       openNotification({
         type: "error",
-        message: isErrorRecentActivities?.response?.data
-          ? isErrorRecentActivities?.response?.data?.message
-          : isErrorRecentActivities?.message,
+        message: error?.response?.data
+          ? error?.response?.data?.message
+          : error?.message,
       });
     }
 
     if (isErrorRecentActivitiesCount) {
+      const error: any = isErrorRecentActivitiesCount;
       openNotification({
         type: "error",
-        message: isErrorRecentActivitiesCount?.response?.data
-          ? isErrorRecentActivitiesCount?.response?.data?.message
-          : isErrorRecentActivitiesCount?.message,
+        message: error?.response?.data
+          ? error?.response?.data?.message
+          : error?.message,
       });
     }
   }, [isErrorRecentActivities, isErrorRecentActivitiesCount]);
@@ -68,11 +70,12 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
         columns={recentActivitiesColumns}
         data={
           /* recentActivitiesFetchedData */ recentActivitiesData?.map(
-          (event) => ({
-            ...event,
-            cameraName: cameras.find((item) => item.id == event.cameraId)?.name,
-          })
-        )
+            (event) => ({
+              ...event,
+              cameraName: cameras.find((item) => item.id == event.cameraId)
+                ?.name,
+            })
+          )
         }
         pagination={{
           total: recentActivitiesCountFetchedData,

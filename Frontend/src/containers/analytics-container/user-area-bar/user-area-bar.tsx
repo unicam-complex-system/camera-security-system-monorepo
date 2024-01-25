@@ -24,7 +24,7 @@ import type { AnyObject, AuthorizedEntity, Camera } from "@/types";
 export const UserAreaBarContainer: FC = () => {
   const cameraOptions = cameras.map((item) => ({
     label: item.name,
-    value: item.key,
+    value: item.id,
   }));
   const entityOptions = authorizedEntitiesData.map((item) => ({
     label: item.name,
@@ -70,7 +70,7 @@ export const UserAreaBarContainer: FC = () => {
   };
 
   const handleCameraSelectChange = (value: string[]) => {
-    const selectedCamerasObject = getObjectArray(value, "key", cameras);
+    const selectedCamerasObject = getObjectArray(value, "id", cameras);
     setSelectedCameras(selectedCamerasObject);
   };
 
@@ -130,13 +130,13 @@ export const UserAreaBarContainer: FC = () => {
         <div className={"pt-3 flex  gap-4 items-center"}>
           <div className={"flex  gap-2 items-center"}>
             <span>Date:</span>
-            <DatePicker
+            {/* <DatePicker
               format={timeOption === "month" ? "MMM-YYYY" : "DD-MMM-YYYY"}
               onChange={setDate}
               defaultValue={date}
               allowClear={false}
               picker={timeOption === "month" ? timeOption : undefined}
-            />
+            /> */}
           </div>
 
           <div className={"grow flex  gap-2 items-center"}>

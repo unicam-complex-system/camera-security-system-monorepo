@@ -18,7 +18,6 @@ export const SettingsContainer: FC<PropsType> = () => {
   /* state*/
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { cameras } = useCameraSlice();
-  console.log(cameras);
   const {
     control,
     handleSubmit,
