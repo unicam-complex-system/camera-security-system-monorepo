@@ -1,8 +1,6 @@
-import io
 from ultralytics import YOLO
 import cv2
 import math
-import threading
 import requests
 from sklearn.metrics import mean_squared_error
 import numpy as np
