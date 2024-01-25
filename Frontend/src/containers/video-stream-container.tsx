@@ -17,16 +17,6 @@ const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
   ? process.env.NEXT_PUBLIC_BACKEND_URL
   : "";
 
-const socket = io(webSocketURL, {
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-        Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
-      },
-    },
-  },
-});
-
 /* This container renders different video recording screens */
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   const [subscribers, setSubscribers] = useState<any[]>([]);
@@ -40,18 +30,36 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
     const elem = document.documentElement;
     if (elem.requestFullscreen && !isFullScreenGrid) {
       elem.requestFullscreen();
+      toggleIsFullScreenGrid(true);
+      console.log("Setting true");
     }
 
     if (document.exitFullscreen && isFullScreenGrid) {
       document.exitFullscreen();
+      toggleIsFullScreenGrid(false);
+      console.log("Setting false");
     }
+  };
 
-    toggleIsFullScreenGrid();
+  const onExitFullScreenEscape = () => {
+    if (!document.fullscreen) {
+      document.body.style.overflow = "auto";
+      toggleIsFullScreenGrid(false);
+    }
   };
 
   /* useEffect hooks */
   useEffect(() => {
-    setCameras(camerasData);
+    const socket = io(webSocketURL, {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+          },
+        },
+      },
+    });
+
     const openVidu = new OpenVidu();
     const session = openVidu.initSession();
 
@@ -79,10 +87,16 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
         // On every Stream destroyed...
         session.on("streamDestroyed", (event) => {
           // Remove the stream from 'subscribers' array
+          console.log(event);
           const streamManager = event.stream.streamManager;
           setSubscribers(
             subscribers.filter((subscriber) => subscriber != streamManager)
           );
+        });
+
+        // On every Stream destroyed...
+        session.on("streamPropertyChanged", (event) => {
+          console.log(event);
         });
 
         // On every asynchronous exception...
@@ -149,7 +163,12 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
       console.log(data);
     });
 
-    return () => window.addEventListener("beforeunload", disconnectSession);
+    document.addEventListener("fullscreenchange", onExitFullScreenEscape);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onExitFullScreenEscape);
+      window.addEventListener("beforeunload", disconnectSession);
+    };
   }, []);
 
   useEffect(() => {
@@ -160,7 +179,6 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
     );
   }, [subscribers]);
 
-  
   return (
     <>
       <div className="grid grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">

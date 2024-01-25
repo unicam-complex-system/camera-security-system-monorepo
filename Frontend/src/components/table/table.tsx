@@ -7,7 +7,7 @@ import { Table as AntTable } from "antd";
 import { AnyObject } from "@/types";
 
 type PropsType<T extends AnyObject> = {
-  data: T[];
+  data: T[] | undefined;
   columns: ColumnsType<T>;
   pagination?: TablePaginationConfig;
   loading?: boolean;

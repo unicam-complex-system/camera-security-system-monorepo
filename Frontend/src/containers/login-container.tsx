@@ -31,12 +31,6 @@ export const LoginContainer: FC = () => {
       const result = await login(data);
       logIn({
         accessToken: result.data.access_token,
-        user: {
-          firstName: "Nabil Mohammed",
-          lastName: "Khelifa",
-          email: "nabil.nablotech@gmail.com",
-          mobileNumber: "393513117160",
-        },
       });
     } catch (error: any) {
       openNotification({

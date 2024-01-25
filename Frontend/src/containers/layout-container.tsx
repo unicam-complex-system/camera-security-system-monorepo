@@ -6,10 +6,12 @@ import { loggedInNavBarItems, guestNavBarItems } from "@/data";
 import { antTheme } from "../../theme";
 import type { NavBarItem } from "@/types";
 import { getCurrentNav } from "@/utils";
-import { BellOutlined } from "@ant-design/icons";
 import { useSessionSlice, useCameraSlice } from "@/hooks";
 import { ProtectionContainer } from "./protection-container";
 import { NotificationContainer } from "./notification-container";
+import { useQuery } from "react-query";
+import { axiosClient, getCameras } from "@/api";
+import { ModalContainer } from "./modal-container";
 const { Header, Content, Footer, Sider } = Layout;
 
 export const LayoutContainer = ({
@@ -18,12 +20,15 @@ export const LayoutContainer = ({
   children: React.ReactNode;
 }) => {
   /* state to check if ant design styled loaded */
-  const { session, logOut } = useSessionSlice();
-  const { isFullScreenGrid } = useCameraSlice();
+  const { session, logOut, logIn } = useSessionSlice();
+  const { isFullScreenGrid, setCameras } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
+
+  // Initialize camera
+  const { data: camerasFetchedData } = useQuery("cameras", getCameras());
 
   /* event handler */
   const onMenuClick = (info: any) => {
@@ -39,7 +44,20 @@ export const LayoutContainer = ({
   /* useEffect */
   useEffect(() => {
     setAntStyleLoaded(true);
+    const accessToken = sessionStorage.getItem("access_token");
+    if (accessToken) {
+      axiosClient.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${sessionStorage.getItem("access_token")}`;
+      logIn({ accessToken: accessToken });
+    }
   }, []);
+
+  useEffect(() => {
+    if (camerasFetchedData && session) {
+      setCameras(camerasFetchedData);
+    }
+  }, [camerasFetchedData, session]);
 
   useEffect(() => {
     /* navbar menu */
@@ -79,11 +97,7 @@ export const LayoutContainer = ({
                 />
               </Sider>
               <Layout>
-                <Header className="bg-primary flex justify-end">
-                  {session && (
-                    <BellOutlined className="cursor-pointer text-2xl text-white" />
-                  )}
-                </Header>
+                <Header className="bg-primary flex justify-end" />
                 <Content
                   className={`${
                     isFullScreenGrid
@@ -100,6 +114,7 @@ export const LayoutContainer = ({
             </Layout>
           </ProtectionContainer>
         )}
+        <ModalContainer />
       </NotificationContainer>
     </ConfigProvider>
   );

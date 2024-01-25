@@ -15,3 +15,11 @@ export {
   openNotification,
   closeNotification,
 } from "./slices/notification-slice";
+export {
+  selectIsModalOpen,
+  selectModalContent,
+  selectModalTitle,
+  selectIsLoading,
+  openModal,
+  closeModal,
+} from "./slices/modal-slice";

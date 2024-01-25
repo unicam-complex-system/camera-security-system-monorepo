@@ -58,13 +58,13 @@ export const AuthorizedUnauthorizedPieContainer: FC = () => {
         <div className={"flex flex-col gap-2 justify-center items-center"}>
           <span>Date:</span>
           <div>
-            <DatePicker
+            {/* <DatePicker
               format={timeOption === "month" ? "MMM-YYYY" : "DD-MMM-YYYY"}
               onChange={setDate}
               defaultValue={date}
               allowClear={false}
               picker={timeOption === "month" ? timeOption : undefined}
-            />
+            /> */}
           </div>
         </div>
       </Card>
