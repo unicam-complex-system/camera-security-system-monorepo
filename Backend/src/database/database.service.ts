@@ -60,6 +60,23 @@ export class DatabaseService {
     );
   }
 
+  async initDBNvr() {
+    const data = {
+      name: 'NVR',
+    };
+    const filter = {
+      name: 'NVR',
+      ip: process.env.NVR_IP_ADDRESS,
+      channels: [0, 1, 2, 3, 4, 5, 6, 7],
+    };
+
+    const size = await this.DB.collection('General').countDocuments(filter);
+
+    if (size == 0) {
+      await this.DB.collection('General').insertOne(data);
+    }
+  }
+
   // If no camera exists it automatically creates one with the default config in camera.config.ts file
   async initCameras() {
     const size = await this.DB.collection('camera_names').countDocuments();
@@ -75,6 +92,7 @@ export class DatabaseService {
 
     this.DB = client.db('csd');
     this.initDBUser();
+    this.initDBNvr();
     this.initCameras();
   }
 
@@ -117,9 +135,23 @@ export class DatabaseService {
     return this.DB.collection('camera_names').find().toArray();
   }
 
-  aggregateCamera(filter?: FiltersAvailable): Promise<Document[]> {
+  aggregateCamera(filter: FiltersAvailable): Promise<Document[]> {
     return this.DB.collection('cameras')
-      .aggregate()
+      .aggregate([
+        {
+          $addFields: {
+            intrusionDetection: {
+              $cond: {
+                if: {
+                  $ifNull: ['$intrusionDetection', false],
+                },
+                then: true,
+                else: false,
+              },
+            },
+          },
+        },
+      ])
       .match(this.getFilter(filter))
       .group({
         _id: '$cameraId',
@@ -165,7 +197,7 @@ export class DatabaseService {
     });
   }
 
-  private getFilter(filter?: FiltersAvailable) {
+  private getFilter(filter: FiltersAvailable) {
     switch (filter) {
       case 'intrusionDetection':
         return {
@@ -222,55 +254,13 @@ export class DatabaseService {
   // TODO TESTME
   // Returns NVR info such as IP address and available channels
   async getNVRData(): Promise<Document> {
-    const array = await this.getOtherwiseInsert(
-      'General',
-      {
-        name: 'NVR',
-      },
-      {
-        name: 'NVR',
-        ip: process.env.NVR_IP_ADDRESS,
-        channels: cameraIds,
-      },
-    );
-    
+    const array = await this.getRawDataArray('General', {
+      name: 'NVR',
+    });
+
     return {
       ip: process.env.NVR_IP_ADDRESS,
       channels: array[0].channels,
     };
-
-    // try {
-    //   const array = await this.getRawDataArray('General', {
-    //     name: 'NVR',
-    //   });
-    //   return array[0];
-    // } catch (e) {
-    //   if (e instanceof NotFoundException) {
-    //     const data = {
-    //       name: 'NVR',
-    //       ip: process.env.NVR_IP_ADDRESS,
-    //       channels: [0, 1, 2, 3, 4, 5, 6, 7],
-    //     };
-    //
-    //     await this.DB.collection(`General`).insertOne(data);
-    //     return data;
-    //   } else {
-    //     console.error(e);
-    //   }
-    // }
-  }
-
-  async getOtherwiseInsert(
-    name: string,
-    filter: Filter<Document>,
-    data: Document,
-  ): Promise<WithId<Document>[]> {
-    const size = await this.DB.collection(name).countDocuments(filter);
-
-    if (size == 0) {
-      await this.DB.collection(name).insertOne(data);
-    }
-
-    return await this.getRawDataArray(name, filter);
   }
 }

@@ -114,7 +114,7 @@ export class MachineLearningController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'image/jpeg' })
         .addMaxSizeValidator({
-          maxSize: 100000, // 100Kb
+          maxSize: 50000000, // 100Kb
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
