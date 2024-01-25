@@ -233,8 +233,9 @@ export class DatabaseService {
         channels: cameraIds,
       },
     );
+    
     return {
-      ip: array[0].ip,
+      ip: process.env.NVR_IP_ADDRESS,
       channels: array[0].channels,
     };
 
