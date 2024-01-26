@@ -37,14 +37,17 @@ services:
     command: npm run docker:dev
 
   frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
+    container_name: frontend
+    image: node:21-alpine
+    depends_on:
+      - backend
     restart: on-failure # always
     ports:
       - "3000:3000"
+    working_dir: /home/node
+    volumes:
+      - ./Frontend:/home/node
     env_file:
       - .secrets.yml
-    depends_on:
-      - backend
+    command: npm run docker:start
 

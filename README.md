@@ -79,6 +79,8 @@ OPENVIDU_URL= http://localhost:4443/
 OPENVIDU_SECRET=MY_SECRET
 # Put the IP address of the NVR
 NVR_IP_ADDRESS=
+## Frontend
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8080/
 ```
 Then you can run
 ```bash
