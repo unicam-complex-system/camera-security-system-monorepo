@@ -4,20 +4,25 @@ import math
 import requests
 from sklearn.metrics import mean_squared_error
 import numpy as np
+import time
 
 # model
 model = YOLO("yolo-Wheights/yolov8n.pt")
 
-last_sent_image = None
 url = "https://localhost:8080"
+MSE_VALUE = 105.80
+
+last_sent_image = []
 
 
-def post_request(image, camera_id, status):
+def post_request(camera_id: int, image):
     global last_sent_image
 
-    if last_sent_image is not None:
+    # image = cv2.resize(image, (0.5, 0.5))
+
+    if last_sent_image[camera_id] is not None:
         # Resizing
-        flat_last_sent_image = last_sent_image.flatten()
+        flat_last_sent_image = last_sent_image[camera_id].flatten()
         flat_image = image.flatten()
 
         min_len = min(len(flat_last_sent_image), len(flat_image))
@@ -28,11 +33,9 @@ def post_request(image, camera_id, status):
 
         # mean squared error
         mse = mean_squared_error(r_last_sent_image, r_image)
-        print("MEAN SQUARED ERROR is: ", mse)
-        if mse < 105.70:
+        print(f"MEAN SQUARED ERROR is: {mse} discard: {mse < MSE_VALUE}")
+        if mse < MSE_VALUE:
             return
-
-    # image = cv2.resize(image, (0.5, 0.5))
     image_stream = np.array(image).tobytes()
 
     try:
@@ -43,7 +46,7 @@ def post_request(image, camera_id, status):
         )
 
         if response.status_code == 201:
-            last_sent_image = image
+            last_sent_image[camera_id] = image
         elif response.status_code == 422:
             print(response.content)
             print(response.request.headers)
@@ -56,24 +59,37 @@ def post_request(image, camera_id, status):
         )
 
 
+# def check_image(camera_id: int, image):
+
+
 # filename = url of cam
 # file_index = index of the file that can be assigned to each thread. cam1 has file_index as 1, cam2 has file_index as 2...
 def detection(camera_id: int, _: int):
+    # print(last_sent_image[camera_id])
+
     print(f"capturing {camera_id}")
-    print(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
 
     # FIXME camera capture takes to much time to load the camera connection (first time)
     cap = cv2.VideoCapture(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
+    cap.set(cv2.CAP_PROP_FPS, 5)
+
+    # TODO handle status
     status = "offline"
 
     print(f"started {camera_id}")
 
     while cap.isOpened():
         success, img = cap.read()
+
         if not success:
+            print(f"No frame {camera_id}")
             continue
 
-        print(f"captured image from {camera_id}")
+        print(f"Captured frame from {camera_id}")
+
+        # cv2.imshow(f"Camera {camera_id}", img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         status = "online"
         results = model(img, stream=True, classes=0, conf=0.5, verbose=False)
@@ -93,7 +109,14 @@ def detection(camera_id: int, _: int):
                 foundPerson = True
 
         if foundPerson:
-            _, img_encoded = cv2.imencode(".jpg", img)
-            post_request(img_encoded, camera_id, status)
+            _, image = cv2.imencode(".jpg", img)
+
+            post_request(camera_id, image)
 
     cap.release()
+
+
+def initBufferSize(size: int):
+    global last_sent_image
+    if len(last_sent_image) < size:
+        last_sent_image = [None for _ in range(size + 1)]

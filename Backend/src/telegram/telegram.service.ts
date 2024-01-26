@@ -7,6 +7,8 @@ import * as TelegramBot from 'node-telegram-bot-api';
 import * as process from 'process';
 import { DatabaseService } from '../database/database.service';
 import UserDTO from '../user.dto';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class TelegramService {
@@ -14,7 +16,6 @@ export class TelegramService {
 
   constructor(private readonly databaseService: DatabaseService) {
     this.bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
-
     this.bot.onText(/\/user (.+)/, (m) => this.onLogin(m));
     this.bot.onText(/\/start/, (m) => this.welcome(m));
     this.bot.onText(/\/disable/, (m) => this.setIntrusionDetection(m, false));
@@ -37,7 +38,7 @@ export class TelegramService {
     const array = msg.text.substring(6).split(' ');
     const userData: UserDTO = {
       name: array[0],
-      password: array[1],
+      password: bcrypt.hashSync(array[1], process.env.BCRYPT_SALT),
     };
 
     try {

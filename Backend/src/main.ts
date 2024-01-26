@@ -18,7 +18,7 @@ async function bootstrap() {
       process.env.SSL_CERTIFICATE ?? `${__dirname}/ssl_certificate/server.crt`,
     ),
   };
-  const app = await NestFactory.create(AppModule); //, { httpsOptions });
+  const app = await NestFactory.create(AppModule, { httpsOptions });
   app.useGlobalPipes(new ValidationPipe());
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.useWebSocketAdapter(new IoAdapter(app));
