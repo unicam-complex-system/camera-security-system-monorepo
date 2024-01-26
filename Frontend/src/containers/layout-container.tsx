@@ -55,7 +55,9 @@ export const LayoutContainer = ({
 
   useEffect(() => {
     if (camerasFetchedData && session) {
-      setCameras(camerasFetchedData);
+      setCameras(
+        camerasFetchedData.map((item) => ({ ...item, isActive: true }))
+      );
     }
   }, [camerasFetchedData, session]);
 

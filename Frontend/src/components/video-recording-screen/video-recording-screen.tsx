@@ -14,12 +14,11 @@ export const VideoRecordingScreen: FC<PropsType> = ({ camera, videoRef }) => {
     <>
       {camera && (
         <>
-          {/* {camera.isActive && (
+          {camera.isActive && (
             <VideoPlayer camera={camera} videoRef={videoRef} />
-          )} */}
-          <VideoPlayer camera={camera} videoRef={videoRef} />
+          )}
 
-          {/* {!camera.isActive && (
+          {!camera.isActive && (
             <div className="bg-black min-h-[250px] relative">
               <span className="absolute animate-pulse top-1/2 left-1/2 bg-red-500 -translate-x-1/2 -translate-y-1/2 rounded-full w-8 h-8"></span>
               <p className="text-white pl-2">NO SIGNAL</p>
@@ -27,7 +26,7 @@ export const VideoRecordingScreen: FC<PropsType> = ({ camera, videoRef }) => {
                 {camera.name}
               </p>
             </div>
-          )} */}
+          )}
         </>
       )}
 

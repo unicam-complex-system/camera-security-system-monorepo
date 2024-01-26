@@ -30,7 +30,6 @@ export class MediaServerController {
   @Header('Content-Type', 'application/json')
   @Post('/media-server')
   async getMediaServerEvents(@Body() event: any) {
-    console.log(event);
     this.cameraStreamGateway.broadcastEvent(event);
     return { message: 'OK' };
   }

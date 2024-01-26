@@ -37,6 +37,17 @@ export const cameraSlice = createSlice({
         return item;
       });
     },
+    updateCameraStatus: (
+      state: CameraStateType,
+      action: PayloadAction<{ id: string; status: boolean }>
+    ) => {
+      state.cameras = state.cameras.map((item) => {
+        if (item.id === action.payload.id) {
+          return { ...item, isActive: action.payload.status };
+        }
+        return item;
+      });
+    },
     toggleIsFullScreenGrid: (
       state: CameraStateType,
       action: PayloadAction<boolean>
@@ -46,8 +57,12 @@ export const cameraSlice = createSlice({
   },
 });
 
-export const { updateCamera, toggleIsFullScreenGrid, setCameras } =
-  cameraSlice.actions;
+export const {
+  updateCamera,
+  toggleIsFullScreenGrid,
+  setCameras,
+  updateCameraStatus,
+} = cameraSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCameras = (state: RootState) => state.camera.cameras;

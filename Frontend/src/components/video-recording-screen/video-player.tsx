@@ -12,9 +12,8 @@ const VideoPlayer = ({
 }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [videoControlHidden, setvideoControlHidden] = useState(false);
-  const [loading, setLoading] = useState(true);
   const intervalRef: any = useRef(null);
-
+  
   /* event handlers */
   const onScreenSizeToggle = () => {
     const elem = document.documentElement;
@@ -60,7 +59,6 @@ const VideoPlayer = ({
 
   return (
     <div className="w-full min-h-[250px] video-container relative">
-      {/* <Spin className="absolute top-1/2 left-1/2" /> */}
       <video
         ref={(el) => {
           videoRef.current = { ...videoRef.current, [camera.id]: el };

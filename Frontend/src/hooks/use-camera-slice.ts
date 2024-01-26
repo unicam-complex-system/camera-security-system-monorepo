@@ -8,6 +8,7 @@ import {
   updateCamera,
   toggleIsFullScreenGrid,
   setCameras,
+  updateCameraStatus,
 } from "@/store";
 
 export const useCameraSlice = () => {
@@ -31,6 +32,11 @@ export const useCameraSlice = () => {
   const toggleIsFullScreenGridState = (value: boolean) => {
     dispatch(toggleIsFullScreenGrid(value));
   };
+  updateCameraStatus;
+
+  const updateCameraStatusState = (update: { id: string; status: boolean }) => {
+    dispatch(updateCameraStatus(update));
+  };
 
   return {
     cameras: cameras,
@@ -40,5 +46,6 @@ export const useCameraSlice = () => {
     setCameras: setCamerasState,
     updateCamera: updateCameraState,
     toggleIsFullScreenGrid: toggleIsFullScreenGridState,
+    updateCameraStatus: updateCameraStatusState,
   };
 };

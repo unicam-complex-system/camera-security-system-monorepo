@@ -2,8 +2,7 @@
 import type { FC } from "react";
 import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
-import { useCameraSlice, useSessionSlice } from "@/hooks";
-import { cameras as camerasData } from "@/data";
+import { useCameraSlice } from "@/hooks";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
@@ -21,8 +20,12 @@ const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
 export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   const [subscribers, setSubscribers] = useState<any[]>([]);
   /* hooks */
-  const { cameras, isFullScreenGrid, toggleIsFullScreenGrid, setCameras } =
-    useCameraSlice();
+  const {
+    cameras,
+    isFullScreenGrid,
+    toggleIsFullScreenGrid,
+    updateCameraStatus,
+  } = useCameraSlice();
   const videoRef: any = useRef(null);
 
   /* event handlers */
@@ -31,13 +34,11 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
     if (elem.requestFullscreen && !isFullScreenGrid) {
       elem.requestFullscreen();
       toggleIsFullScreenGrid(true);
-      console.log("Setting true");
     }
 
     if (document.exitFullscreen && isFullScreenGrid) {
       document.exitFullscreen();
       toggleIsFullScreenGrid(false);
-      console.log("Setting false");
     }
   };
 
@@ -94,11 +95,6 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           );
         });
 
-        // On every Stream destroyed...
-        session.on("streamPropertyChanged", (event) => {
-          console.log(event);
-        });
-
         // On every asynchronous exception...
         session.on("exception", (exception) => {
           console.error(exception);
@@ -141,8 +137,6 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           let publisher = await openVidu.initPublisherAsync(undefined, {
             audioSource: false, // The source of audio. If undefined default microphone
             videoSource: false, // The source of video. If undefined default webcam
-            publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
-            publishVideo: false, // Whether you want to start publishing with your video enabled or not
           });
 
           // -Publish your stream ---
@@ -172,16 +166,31 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
   }, []);
 
   useEffect(() => {
-    subscribers.forEach((subscriber) => {
-      try {
-        subscriber.addVideoElement(
-          videoRef.current?.[subscriber?.stream?.connection?.data]
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  }, [subscribers]);
+    if (cameras.length === 8) {
+      let toBeInActive = [...cameras];
+      subscribers.forEach((subscriber, index) => {
+        try {
+          subscriber.addVideoElement(
+            videoRef.current?.[subscriber?.stream?.connection?.data]
+          );
+          toBeInActive = toBeInActive.filter(
+            (item) => item.id != subscriber?.stream?.connection?.data
+          );
+        } catch (err) {
+          console.log(err);
+        }
+
+        if (index === subscribers.length - 1) {
+          toBeInActive.forEach((item) =>
+            updateCameraStatus({
+              id: item.id,
+              status: false,
+            })
+          );
+        }
+      });
+    }
+  }, [subscribers, cameras.length > 0]);
 
   return (
     <>

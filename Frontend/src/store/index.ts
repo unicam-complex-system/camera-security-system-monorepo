@@ -9,6 +9,7 @@ export {
   setCameras,
   updateCamera,
   toggleIsFullScreenGrid,
+  updateCameraStatus
 } from "./slices/camera-slice";
 export {
   selectNotification,
