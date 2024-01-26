@@ -39,7 +39,7 @@ export const ViewScreenshotButton: React.FC<PropsType> = ({
     if (imageData) {
       openModal({
         title: timestamp,
-        modalContent: imageData,
+        modalContent: imageData.imageUrl,
         isLoading: false,
       });
     }

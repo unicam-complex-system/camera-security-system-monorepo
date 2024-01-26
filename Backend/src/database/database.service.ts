@@ -257,10 +257,10 @@ export class DatabaseService {
     const array = await this.getRawDataArray('General', {
       name: 'NVR',
     });
-    
+
     return {
       ip: process.env.NVR_IP_ADDRESS,
-      channels: cameraIds, 
+      channels: cameraIds,
     };
   }
 }

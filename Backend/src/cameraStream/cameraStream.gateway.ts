@@ -21,7 +21,6 @@ import { JwtService } from '@nestjs/jwt';
 import { CSSOpenVidu } from './open-vidu.service';
 import { ConnectionProperties, ConnectionType } from 'openvidu-node-client';
 import { DatabaseService } from '../database/database.service';
-import * as console from 'console';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {

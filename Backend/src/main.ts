@@ -7,22 +7,18 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-const fs = require('fs');
+import * as fs from 'fs';
 
 async function bootstrap() {
   const httpsOptions = {
     key: fs.readFileSync(
-      process.env.PRIVATE_KEY
-        ? process.env.PRIVATE_KEY
-        : `${__dirname}/ssl_certificate/server.key`,
+      process.env.PRIVATE_KEY ?? `${__dirname}/ssl_certificate/server.key`,
     ),
     cert: fs.readFileSync(
-      process.env.SSL_CERTIFICATE
-        ? process.env.SSL_CERTIFICATE
-        : `${__dirname}/ssl_certificate/server.crt`,
+      process.env.SSL_CERTIFICATE ?? `${__dirname}/ssl_certificate/server.crt`,
     ),
   };
-  const app = await NestFactory.create(AppModule, { httpsOptions });
+  const app = await NestFactory.create(AppModule); //, { httpsOptions });
   app.useGlobalPipes(new ValidationPipe());
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.useWebSocketAdapter(new IoAdapter(app));

@@ -28,7 +28,7 @@ services:
      - openvidu
     restart: on-failure # always
     ports:
-      - 8080:8080
+      - "8080:8080"
     working_dir: /home/node
     volumes:
       - ./Backend:/home/node
@@ -44,7 +44,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./Frontend/.env
+      - .secrets.yml
     depends_on:
       - backend
 
