@@ -59,15 +59,15 @@ export class CameraStreamGateway implements OnGatewayConnection {
       const session = await this.openvidu.instance.createSession();
       this.sessionId = session.sessionId;
       const nvr = await this.database.getNVRData();
-      
-      [{rtsp:"rtsp://192.168.129.244:554",id:"0"},{rtsp:"rtsp://192.168.129.234:554",id:"1"}].forEach((item) => {
+
+      nvr.channels.forEach((id: number) => {
         const connectionProperties: ConnectionProperties = {
           type: ConnectionType.IPCAM,
-          rtspUri: item.rtsp,
+          rtspUri: `${nvr.ip}/ch${id}_0.264`,
           adaptativeBitrate: true,
           onlyPlayWithSubscribers: true,
           networkCache: 1000,
-          data: item.id,
+          data: id.toString(),
         };
         console.log(connectionProperties);
 
@@ -76,23 +76,6 @@ export class CameraStreamGateway implements OnGatewayConnection {
           .then((connection: unknown) => console.log(connection))
           .catch((error) => console.error(error));
       });
-      
-      // nvr.channels.forEach((id: number) => {
-      //   const connectionProperties: ConnectionProperties = {
-      //     type: ConnectionType.IPCAM,
-      //     rtspUri: `${nvr.ip}/ch${id}_0.264`,
-      //     adaptativeBitrate: true,
-      //     onlyPlayWithSubscribers: true,
-      //     networkCache: 1000,
-      //     data: id.toString(),
-      //   };
-      //   console.log(connectionProperties);
-
-      //   session
-      //     .createConnection(connectionProperties)
-      //     .then((connection: unknown) => console.log(connection))
-      //     .catch((error) => console.error(error));
-      // });
     } catch (error) {
       console.error(error);
     }
