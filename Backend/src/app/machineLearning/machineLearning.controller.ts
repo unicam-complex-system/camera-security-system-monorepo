@@ -114,7 +114,7 @@ export class MachineLearningController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'image/jpeg' })
         .addMaxSizeValidator({
-          maxSize: 50000000, // 100Kb
+          maxSize: 5000000, // 100Kb
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -124,7 +124,9 @@ export class MachineLearningController {
   ) {
     const date = new Date();
 
+    console.log('Adding data to database');
     await this.database.addData(new DataType(cameraId, date, null, file));
+    console.log('Sending intrusion detection notification');
     await this.telegramApi.sendIntrusionDetectionNotification(
       cameraId,
       date,

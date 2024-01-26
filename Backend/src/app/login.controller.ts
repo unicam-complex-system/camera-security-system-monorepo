@@ -24,13 +24,13 @@ export class LoginController {
     examples: {
       a: {
         summary: 'Existing user',
-        value: {   
+        value: {
           name: process.env.CSD_USER,
           password: process.env.CSD_PASSWORD,
         },
       },
-      b: { 
-        summary: 'Non existing user', 
+      b: {
+        summary: 'Non existing user',
         value: { name: 'non', password: 'Basic' },
       },
     },
