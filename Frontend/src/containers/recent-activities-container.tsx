@@ -68,15 +68,10 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
     <>
       <Table
         columns={recentActivitiesColumns}
-        data={
-          /* recentActivitiesFetchedData */ recentActivitiesData?.map(
-            (event) => ({
-              ...event,
-              cameraName: cameras.find((item) => item.id == event.cameraId)
-                ?.name,
-            })
-          )
-        }
+        data={recentActivitiesFetchedData?.map((event) => ({
+          ...event,
+          cameraName: cameras.find((item) => item.id == event.cameraId)?.name,
+        }))}
         pagination={{
           total: recentActivitiesCountFetchedData,
           onChange: setPageNumber,

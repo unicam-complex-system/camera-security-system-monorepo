@@ -9,16 +9,15 @@ export const ModalContainer = () => {
   const onCancel = () => {
     closeModal();
   }
-
+  console
   return (
     <>
       <Modal title={title} open={isModalOpen} onOk={onCancel} onCancel={onCancel} afterClose={onCancel}>
-        {modalContent}
         {isLoading &&
           <Spin/>
         }
         {!isLoading &&
-          <img src={modalContent} alt="Ima"/>
+          <img src={modalContent} alt="Image detection"/>
         }
       </Modal>
     </>

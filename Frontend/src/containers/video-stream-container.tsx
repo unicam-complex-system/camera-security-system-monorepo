@@ -173,13 +173,15 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           subscriber.addVideoElement(
             videoRef.current?.[subscriber?.stream?.connection?.data]
           );
+        console.log(toBeInActive);
+
           toBeInActive = toBeInActive.filter(
             (item) => item.id != subscriber?.stream?.connection?.data
           );
         } catch (err) {
           console.log(err);
         }
-
+        console.log(toBeInActive);
         if (index === subscribers.length - 1) {
           toBeInActive.forEach((item) =>
             updateCameraStatus({

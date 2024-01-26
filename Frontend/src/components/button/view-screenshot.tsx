@@ -26,7 +26,7 @@ export const ViewScreenshotButton: React.FC<PropsType> = ({
     data: imageData,
     refetch: fetchImage,
   } = useQuery(
-    ["recentActivitiesCount", cameraId],
+    ["recentActivitiesImage", cameraId, timestamp],
     getActivityImage(cameraId, timestamp),
     { enabled: false }
   );
@@ -39,8 +39,8 @@ export const ViewScreenshotButton: React.FC<PropsType> = ({
     if (imageData) {
       openModal({
         title: timestamp,
-        modalContent: imageData.data,
-        isLoading: true,
+        modalContent: imageData,
+        isLoading: false,
       });
     }
   }, [imageData]);

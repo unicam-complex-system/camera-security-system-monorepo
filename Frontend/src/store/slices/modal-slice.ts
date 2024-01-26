@@ -9,13 +9,13 @@ type ModalStateType = {
     title: string;
     isModalOpen: boolean;
     isLoading: boolean;
-    modalContent: string;
+    modalContent: any;
   };
 };
 
 type OpenModalPayloadType = {
   title: string;
-  modalContent: string;
+  modalContent: any;
   isLoading: boolean;
 };
 

@@ -2,18 +2,14 @@ import { Activity } from "@/types";
 import { axiosClient } from "./axios-client";
 import { endpoints } from "./endpoints";
 
-type RecentActivitiesResponseDTO = {
-  data: Activity[];
-};
+type RecentActivitiesResponseDTO = Activity[];
 
 type RecentActivitiesCountResponseDTO = {
   _id: string;
   count: number;
 }[];
 
-type RecentActivityImageResponseDTO = {
-  data: any;
-};
+type RecentActivityImageResponseDTO = any;
 
 export const getRecentActivities = (top: number, skip: number) => {
   return () =>
@@ -50,5 +46,8 @@ export const getActivityImage = (id: string, timestamp: string) => {
         `${id}/${timestamp}`,
         {}
       )
-      .then((result) => result.data);
+      .then((result) => {
+        const blob = new Blob([result.data], { type: 'image/jpeg' });
+        return {imageUrl:URL.createObjectURL(blob)}
+      });
 };
