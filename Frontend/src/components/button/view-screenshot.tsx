@@ -4,7 +4,7 @@ import { useModalSlice, useNotificationSlice } from "@/hooks";
 import { useQuery } from "react-query";
 import { getActivityImage } from "@/api";
 import { Spin } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type PropsType = {
   cameraId: string;
@@ -18,13 +18,14 @@ export const ViewScreenshotButton: React.FC<PropsType> = ({
 }) => {
   const { openModal, closeModal } = useModalSlice();
   const { openNotification } = useNotificationSlice();
+  const [fetchImage, setFetchImage] = useState<boolean>(false);
 
   // Get total number of recent activities
   const {
     isLoading: isLoadingImage,
     error: isErrorImage,
     data: imageData,
-    refetch: fetchImage,
+    refetch: refetchImage,
   } = useQuery(
     ["recentActivitiesImage", cameraId, timestamp],
     getActivityImage(cameraId, timestamp),
@@ -32,13 +33,20 @@ export const ViewScreenshotButton: React.FC<PropsType> = ({
   );
 
   const onButtonClick = () => {
-    fetchImage();
+    setFetchImage(true);
+    refetchImage();
   };
 
   useEffect(() => {
-    if (imageData) {
+    if (fetchImage) {
+      refetchImage();
+    }
+  }, [fetchImage]);
+
+  useEffect(() => {
+    if (fetchImage && imageData) {
       openModal({
-        title: timestamp,
+        title: new Date(timestamp).toString().substring(0, 21),
         modalContent: imageData.imageUrl,
         isLoading: false,
       });

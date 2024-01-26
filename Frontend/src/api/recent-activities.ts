@@ -42,12 +42,11 @@ export const getRecentActivitiesCount = () => {
 export const getActivityImage = (id: string, timestamp: string) => {
   return () =>
     axiosClient
-      .get<RecentActivityImageResponseDTO>(
-        `${id}/${timestamp}`,
-        {}
-      )
+      .get<RecentActivityImageResponseDTO>(`${id}/${timestamp}`, {
+        responseType: "arraybuffer",
+      })
       .then((result) => {
-        const blob = new Blob([result.data], { type: 'image/jpeg' });
-        return {imageUrl:URL.createObjectURL(blob)}
+        const blob = new Blob([result.data], { type: "image/jpeg" });
+        return { imageUrl: URL.createObjectURL(blob) };
       });
 };

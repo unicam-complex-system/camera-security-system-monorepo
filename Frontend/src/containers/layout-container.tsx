@@ -28,7 +28,11 @@ export const LayoutContainer = ({
   const pathname = usePathname();
 
   // Initialize camera
-  const { data: camerasFetchedData } = useQuery("cameras", getCameras());
+  const { data: camerasFetchedData } = useQuery("cameras", getCameras(), {
+    enabled:
+      typeof window !== "undefined" &&
+      sessionStorage?.getItem("access_token") != null,
+  });
 
   /* event handler */
   const onMenuClick = (info: any) => {
@@ -44,12 +48,14 @@ export const LayoutContainer = ({
   /* useEffect */
   useEffect(() => {
     setAntStyleLoaded(true);
-    const accessToken = sessionStorage.getItem("access_token");
-    if (accessToken) {
-      axiosClient.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${sessionStorage.getItem("access_token")}`;
-      logIn({ accessToken: accessToken });
+    if (typeof window !== "undefined") {
+      const accessToken = sessionStorage.getItem("access_token");
+      if (accessToken) {
+        axiosClient.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
+        logIn({ accessToken: accessToken });
+      }
     }
   }, []);
 
