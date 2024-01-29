@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # args: (int, int) = [(i, i) for i in range(0, 8)]
-        args: (int, int) = [(i, i) for i in range(2, 4)]
+        args: (int, int) = [(i, i) for i in range(0, 1)]
 
         results = [executor.submit(detection, *arg) for arg in args]
         concurrent.futures.wait(results)

@@ -70,7 +70,7 @@ def detection(camera_id: int, _: int):
     print(f"capturing {camera_id}")
 
     # FIXME camera capture takes to much time to load the camera connection (first time)
-    cap = cv2.VideoCapture(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
+    cap = cv2.VideoCapture(f"rtsp://192.168.1.114:80/ch{camera_id}_0.264")
     cap.set(cv2.CAP_PROP_FPS, 5)
 
     # TODO handle status

@@ -59,17 +59,35 @@ export class CameraStreamGateway implements OnGatewayConnection {
       this.sessionId = session.sessionId;
       const nvr = await this.database.getNVRData();
 
+      // [{ id: '1', url: 'rtsp://192.168.129.244:554' }].forEach((elemn) => {
+      //   const connectionProperties: ConnectionProperties = {
+      //     type: ConnectionType.IPCAM,
+      //     rtspUri: elemn.url,
+      //     adaptativeBitrate: true,
+      //     onlyPlayWithSubscribers: true,
+      //     networkCache: 1000,
+      //     data: elemn.id,
+      //   };
+      //   console.log(connectionProperties);
+
+      //   session
+      //     .createConnection(connectionProperties)
+      //     .then((connection: unknown) => console.log(connection))
+      //     .catch((error) => console.error(error));
+      // });
+
+
       nvr.channels.forEach((id: number) => {
         const connectionProperties: ConnectionProperties = {
           type: ConnectionType.IPCAM,
           rtspUri: `${nvr.ip}/ch${id}_0.264`,
-          adaptativeBitrate: true,
-          onlyPlayWithSubscribers: true,
-          networkCache: 1000,
+          adaptativeBitrate: false,
+          onlyPlayWithSubscribers: false,
+          networkCache: 15000,
           data: id.toString(),
+          record: false,
         };
-        console.log(connectionProperties);
-
+      
         session
           .createConnection(connectionProperties)
           .then((connection: unknown) => console.log(connection))
