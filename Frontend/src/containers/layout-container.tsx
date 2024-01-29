@@ -29,9 +29,7 @@ export const LayoutContainer = ({
 
   // Initialize camera
   const { data: camerasFetchedData } = useQuery("cameras", getCameras(), {
-    enabled:
-      typeof window !== "undefined" &&
-      sessionStorage?.getItem("access_token") != null,
+    enabled: session != null,
   });
 
   /* event handler */

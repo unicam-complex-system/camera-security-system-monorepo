@@ -173,7 +173,7 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
           subscriber.addVideoElement(
             videoRef.current?.[subscriber?.stream?.connection?.data]
           );
-        console.log(toBeInActive);
+          console.log(toBeInActive);
 
           toBeInActive = toBeInActive.filter(
             (item) => item.id != subscriber?.stream?.connection?.data
