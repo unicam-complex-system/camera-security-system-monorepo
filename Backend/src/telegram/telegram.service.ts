@@ -7,7 +7,6 @@ import * as TelegramBot from 'node-telegram-bot-api';
 import * as process from 'process';
 import { DatabaseService } from '../database/database.service';
 import UserDTO from '../user.dto';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
