@@ -18,9 +18,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CSSOpenVidu } from './open-vidu.service';
-import { ConnectionProperties, ConnectionType } from 'openvidu-node-client';
 import { DatabaseService } from '../database/database.service';
+import { transcode } from './transcode';
 
 @Catch(WsException, HttpException)
 export class WsExceptionFilter implements WsExceptionFilter {
@@ -49,13 +48,27 @@ export class CameraStreamGateway implements OnGatewayConnection {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly openvidu: CSSOpenVidu,
     private readonly database: DatabaseService,
   ) {}
 
   async afterInit() {
     try {
-     
+      //const nvr = await this.database.getNVRData();
+
+      /* To be used with NVR */
+      // const cameras = nvr.channels.map((id: number) => ({
+      //   id: id.toString(),
+      //   rtspUri: `${nvr.ip}/ch${id}_0.264`,
+      // }));
+
+      const cameras = [
+        {
+          id: '0',
+          rtspUri: `rtsp://192.168.155.244:554`,
+        },
+      ];
+
+      transcode(cameras);
     } catch (error) {
       console.error(error);
     }
@@ -66,10 +79,6 @@ export class CameraStreamGateway implements OnGatewayConnection {
       new AuthGuard(this.jwtService).checkToken(client.handshake.headers);
 
       console.log(`Welcome new client .... ${client.id}`);
-      client.emit(
-        'session_delivery',
-        JSON.stringify({ sessionId: this.sessionId }),
-      );
     } catch (e) {
       client.disconnect();
       return;
@@ -86,34 +95,6 @@ export class CameraStreamGateway implements OnGatewayConnection {
       const message = JSON.parse(data) as Message;
 
       client.to('clients').emit(message.id.toString(), message.data);
-    } catch (e) {
-      return e.message;
-    }
-  }
-
-  @SubscribeMessage('token_request')
-  private async createToken(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: string,
-  ) {
-    try {
-      const message = JSON.parse(data) as { sessionId: string };
-      const session = this.openvidu.instance.activeSessions.find(
-        (s) => s.sessionId === message.sessionId,
-      );
-
-      if (!session) {
-        client.emit(
-          'error',
-          JSON.stringify({ message: 'Error getting the session' }),
-        );
-      } else {
-        const connection = await session.createConnection();
-        client.emit(
-          'token_delivery',
-          JSON.stringify({ token: connection.token }),
-        );
-      }
     } catch (e) {
       return e.message;
     }

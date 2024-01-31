@@ -13,12 +13,12 @@ import {
 } from "@ant-design/icons";
 
 export const loggedInNavBarItems: NavBarItem[] = [
-  // {
-  //   key: "video-stream",
-  //   label: "Video stream",
-  //   route: "/video-stream",
-  //   icon: VideoCameraOutlined,
-  // },
+  {
+    key: "video-stream",
+    label: "Video stream",
+    route: "/video-stream",
+    icon: VideoCameraOutlined,
+  },
   // {
   //   key: "authorized-entites",
   //   label: "Authorized Entities",

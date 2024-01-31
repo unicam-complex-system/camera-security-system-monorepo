@@ -56,7 +56,7 @@ export const ProtectionContainer = ({
       ) {
         setRenderChildren(false);
         window.location.href =
-          "http://" + window.location.host + "/recent-activities";
+          "http://" + window.location.host + "/video-stream";
       } else if (isAllowedPath) {
         setRenderChildren(true);
       }

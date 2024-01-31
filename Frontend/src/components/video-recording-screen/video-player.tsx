@@ -1,19 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Camera } from "@/types";
-import { Tooltip, Spin } from "antd";
+import { Tooltip } from "antd";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
+import Hls from "hls.js";
 
-const VideoPlayer = ({
-  camera,
-  videoRef,
-}: {
-  camera: Camera;
-  videoRef: any;
-}) => {
+const VideoPlayer = ({ camera }: { camera: Camera }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [videoControlHidden, setvideoControlHidden] = useState(false);
   const intervalRef: any = useRef(null);
-  
+  const videoRef: any = useRef();
+
   /* event handlers */
   const onScreenSizeToggle = () => {
     const elem = document.documentElement;
@@ -50,6 +46,24 @@ const VideoPlayer = ({
   };
 
   useEffect(() => {
+    if (Hls.isSupported()) {
+      let hls = new Hls();
+      // bind them together
+      hls.attachMedia(videoRef.current);
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        console.log("video and hls.js are now bound together !");
+        hls.loadSource(
+          process.env.NEXT_PUBLIC_BACKEND_URL
+            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}stream/cam${camera.id}/index.m3u8`
+            : ""
+        );
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          console.log("I am parsing");
+          console.log(data);
+          console.log(event);
+        });
+      });
+    }
     document.addEventListener("fullscreenchange", onExitFullScreenEscape);
 
     return () => {
@@ -60,9 +74,6 @@ const VideoPlayer = ({
   return (
     <div className="w-full min-h-[250px] video-container relative">
       <video
-        ref={(el) => {
-          videoRef.current = { ...videoRef.current, [camera.id]: el };
-        }}
         className={`${
           fullScreen
             ? "w-screen h-screen fixed top-0 -bottom-10 left-0 right-0 z-50"
@@ -71,7 +82,8 @@ const VideoPlayer = ({
         autoPlay={true}
         muted={true}
         onMouseMove={onMouseMove}
-      ></video>
+        ref={(el) => (videoRef.current = el)}
+      />
       {!videoControlHidden && (
         <div
           className={`video-control z-50 bg-primary text-white flex justify-end ${
