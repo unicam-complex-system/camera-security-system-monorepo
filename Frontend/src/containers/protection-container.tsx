@@ -54,12 +54,9 @@ export const ProtectionContainer = ({
         session &&
         (pathname === "/login" || pathname === "/")
       ) {
-        console.log(window.location.host + "/video-stream");
         setRenderChildren(false);
-        console.log(window.location.host + "/video-stream");
         window.location.href =
-          "http://" + window.location.host + "/video-stream";
-        console.log(window.location.host + "/video-stream");
+          "http://" + window.location.host + "/recent-activities";
       } else if (isAllowedPath) {
         setRenderChildren(true);
       }
