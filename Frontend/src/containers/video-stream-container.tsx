@@ -196,7 +196,7 @@ export const VideoStreamContainer: FC<PropsType> = ({ sizePerScreen = 9 }) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">
+      <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-auto gap-1 items-stretch min-h-[80vh]">
         {cameras.map((camera, index) => (
           <React.Fragment key={index}>
             <VideoRecordingScreen camera={camera} videoRef={videoRef} />

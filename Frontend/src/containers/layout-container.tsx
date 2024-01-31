@@ -21,16 +21,11 @@ export const LayoutContainer = ({
 }) => {
   /* state to check if ant design styled loaded */
   const { session, logOut, logIn } = useSessionSlice();
-  const { isFullScreenGrid, setCameras } = useCameraSlice();
+  const { isFullScreenGrid } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
-
-  // Initialize camera
-  const { data: camerasFetchedData } = useQuery("cameras", getCameras(), {
-    enabled: session != null,
-  });
 
   /* event handler */
   const onMenuClick = (info: any) => {
@@ -56,14 +51,6 @@ export const LayoutContainer = ({
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (camerasFetchedData && session) {
-      setCameras(
-        camerasFetchedData.map((item) => ({ ...item, isActive: true }))
-      );
-    }
-  }, [camerasFetchedData, session]);
 
   useEffect(() => {
     /* navbar menu */

@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { loggedInNavBarItems, guestNavBarItems } from "@/data";
-import { useSessionSlice } from "@/hooks";
+import { useCameraSlice, useSessionSlice } from "@/hooks";
+import { useQuery } from "react-query";
+import { getCameras } from "@/api";
 
 export const ProtectionContainer = ({
   children,
@@ -15,8 +17,22 @@ export const ProtectionContainer = ({
   const pathname = usePathname();
   const [isAllowedPath, setIsAllowedPath] = useState<boolean | undefined>();
   const [renderChildren, setRenderChildren] = useState<boolean>(false);
+  const { setCameras } = useCameraSlice();
+
+  // Initialize camera
+  const { data: camerasFetchedData } = useQuery("cameras", getCameras(), {
+    enabled: session !== null,
+  });
 
   /* useEffect */
+  useEffect(() => {
+    if (camerasFetchedData && session) {
+      setCameras(
+        camerasFetchedData.map((item) => ({ ...item, isActive: true }))
+      );
+    }
+  }, [camerasFetchedData, session]);
+
   useEffect(() => {
     if (
       (loggedInNavBarItems.find((navItem) => pathname === navItem.route) &&
@@ -38,8 +54,12 @@ export const ProtectionContainer = ({
         session &&
         (pathname === "/login" || pathname === "/")
       ) {
+        console.log(window.location.host + "/video-stream");
         setRenderChildren(false);
-        router.push("/video-stream");
+        console.log(window.location.host + "/video-stream");
+        window.location.href =
+          "http://" + window.location.host + "/video-stream";
+        console.log(window.location.host + "/video-stream");
       } else if (isAllowedPath) {
         setRenderChildren(true);
       }
