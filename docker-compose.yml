@@ -12,20 +12,20 @@ services:
     env_file:
       - .secrets.yml
 
-  openvidu:
-    image: openvidu/openvidu-dev:2.29.0 
-    restart: on-failure # always
-    ports:
-      - "4443:4443"
-    env_file:
-      - ./Backend/.env-openvidu
+  # openvidu:
+  #   image: openvidu/openvidu-dev:2.29.0 
+  #   restart: on-failure # always
+  #   ports:
+  #     - "4443:4443"
+  #   env_file:
+  #     - ./Backend/.env-openvidu
 
   backend:
     container_name: backend
     image: node:21-alpine
     depends_on:
      - mongo
-     - openvidu
+    #  - openvidu
     restart: on-failure # always
     ports:
       - "8080:8080"
