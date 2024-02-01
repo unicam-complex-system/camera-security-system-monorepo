@@ -75,8 +75,6 @@ def detection(camera_id: int, _: int):
 
         prev_time = 0
 
-        id = 0
-
         # TODO handle status
         status = "offline"
 
@@ -118,9 +116,6 @@ def detection(camera_id: int, _: int):
 
             if foundPerson:
                 _, image = cv2.imencode(".jpg", img)
-                # cv2.imwrite(f"img/test.{camera_id}_frame_{id}.jpeg", img)
-                cv2.imwrite(f"img/test.{camera_id}_frame.jpeg", img)
-                id += 1
 
                 post_request(camera_id, image)
 
