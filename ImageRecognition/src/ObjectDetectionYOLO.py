@@ -10,7 +10,7 @@ import time
 model = YOLO("yolo-Wheights/yolov8n.pt")
 
 url = "https://localhost:8080"
-MSE_VALUE = 105.80
+MSE_VALUE = 105.57
 
 last_sent_image = []
 frame_rate = 3
