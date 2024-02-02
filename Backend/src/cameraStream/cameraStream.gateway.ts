@@ -68,7 +68,9 @@ export class CameraStreamGateway implements OnGatewayConnection {
         },
       ];
 
-      transcode(cameras);
+      cameras.forEach((camera) => {
+        transcode(camera, this.io);
+      });
     } catch (error) {
       console.error(error);
     }

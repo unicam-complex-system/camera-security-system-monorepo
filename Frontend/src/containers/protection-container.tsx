@@ -28,7 +28,7 @@ export const ProtectionContainer = ({
   useEffect(() => {
     if (camerasFetchedData && session) {
       setCameras(
-        camerasFetchedData.map((item) => ({ ...item, isActive: true }))
+        camerasFetchedData.map((item) => ({ ...item, isActive: false }))
       );
     }
   }, [camerasFetchedData, session]);

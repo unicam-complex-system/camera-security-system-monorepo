@@ -5,6 +5,7 @@ import { VideoRecordingScreen } from "@/components";
 import { useCameraSlice } from "@/hooks";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
 import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 type PropsType = {};
 
@@ -40,7 +41,37 @@ export const VideoStreamContainer: FC<PropsType> = () => {
   };
 
   /* useEffect hooks */
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const webSocketURL = process.env.NEXT_PUBLIC_BACKEND_URL
+      ? process.env.NEXT_PUBLIC_BACKEND_URL
+      : "";
+
+    const socket = io(webSocketURL, {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+          },
+        },
+      },
+    });
+
+    socket.on("active", (data) => {
+      const message = JSON.parse(data);
+      updateCameraStatus({ id: message.id, status: true });
+    });
+
+    socket.on("inactive", (data) => {
+      const message = JSON.parse(data);
+      updateCameraStatus({ id: message.id, status: false });
+    });
+
+    document.addEventListener("fullscreenchange", onExitFullScreenEscape);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onExitFullScreenEscape);
+    };
+  }, []);
 
   return (
     <>
@@ -51,7 +82,7 @@ export const VideoStreamContainer: FC<PropsType> = () => {
           </React.Fragment>
         ))}
       </div>
-      <div className="flex justify-end py-3">
+      <div className="hidden sm:flex justify-end py-3">
         {!isFullScreenGrid && (
           <Tooltip title="Full screen">
             <FullscreenOutlined

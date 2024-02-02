@@ -8,11 +8,12 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [videoControlHidden, setvideoControlHidden] = useState(false);
   const intervalRef: any = useRef(null);
+  const videoContainerRef: any = useRef();
   const videoRef: any = useRef();
 
   /* event handlers */
   const onScreenSizeToggle = () => {
-    const elem = document.documentElement;
+    const elem = videoContainerRef.current;
     // Enter fullscreen mode
     if (elem.requestFullscreen && !fullScreen) {
       elem.requestFullscreen();
@@ -51,14 +52,12 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
       // bind them together
       hls.attachMedia(videoRef.current);
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        console.log("video and hls.js are now bound together !");
         hls.loadSource(
           process.env.NEXT_PUBLIC_BACKEND_URL
             ? `${process.env.NEXT_PUBLIC_BACKEND_URL}stream/cam${camera.id}/index.m3u8`
             : ""
         );
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          console.log("I am parsing");
           console.log(data);
           console.log(event);
         });
@@ -72,7 +71,10 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
   }, []);
 
   return (
-    <div className="w-full min-h-[250px] video-container relative">
+    <div
+      className="w-full min-h-[250px] video-container relative"
+      ref={(el) => (videoContainerRef.current = el)}
+    >
       <video
         className={`${
           fullScreen
@@ -82,6 +84,7 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
         autoPlay={true}
         muted={true}
         onMouseMove={onMouseMove}
+        onClick={onMouseMove}
         ref={(el) => (videoRef.current = el)}
       />
       {!videoControlHidden && (
