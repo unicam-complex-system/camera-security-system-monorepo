@@ -10,15 +10,14 @@ import time
 model = YOLO("yolo-Wheights/yolov8n.pt")
 
 url = "https://localhost:8080"
-MSE_VALUE = 105.80
+MSE_VALUE = 105.57
 
 last_sent_image = []
+frame_rate = 3
 
 
 def post_request(camera_id: int, image):
     global last_sent_image
-
-    # image = cv2.resize(image, (0.5, 0.5))
 
     if last_sent_image[camera_id] is not None:
         # Resizing
@@ -69,51 +68,58 @@ def detection(camera_id: int, _: int):
 
     print(f"capturing {camera_id}")
 
-    # FIXME camera capture takes to much time to load the camera connection (first time)
-    cap = cv2.VideoCapture(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
-    cap.set(cv2.CAP_PROP_FPS, 5)
+    # cap = cv2.VideoCapture(f"rtsp://172.20.14.1:80/ch{camera_id}_0.264")
 
-    # TODO handle status
-    status = "offline"
+    while True:
+        cap = cv2.VideoCapture(f"rtsp://192.168.1.41:80/ch{camera_id}_0.264")
 
-    print(f"started {camera_id}")
+        prev_time = 0
 
-    while cap.isOpened():
-        success, img = cap.read()
+        # TODO handle status
+        status = "offline"
 
-        if not success:
-            print(f"No frame {camera_id}")
-            continue
+        print(f"started {camera_id}")
 
-        print(f"Captured frame from {camera_id}")
+        while cap.isOpened():
+            success, img = cap.read()
 
-        # cv2.imshow(f"Camera {camera_id}", img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+            time_elapsed = time.time() - prev_time
 
-        status = "online"
-        results = model(img, stream=True, classes=0, conf=0.5, verbose=False)
-        foundPerson = False
-        # coordinates
-        for r in results:
-            boxes = r.boxes
-            for box in boxes:
-                # bounding box
-                x1, y1, x2, y2 = box.xyxy[0]
-                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                # confidence
-                confidence = math.ceil((box.conf[0] * 100)) / 100
-                print("Confidence --->", confidence)
+            if time_elapsed <= 1.0 / frame_rate:
+                continue
 
-                foundPerson = True
+            prev_time = time.time()
 
-        if foundPerson:
-            _, image = cv2.imencode(".jpg", img)
+            if not success:
+                cap.release()
+                continue
+            print(f"Captured frame from {camera_id}")
 
-            post_request(camera_id, image)
+            status = "online"
+            results = model(img, stream=True, classes=0, conf=0.5, verbose=False)
+            foundPerson = False
+            # coordinates
+            for r in results:
+                boxes = r.boxes
+                for box in boxes:
+                    # bounding box
+                    x1, y1, x2, y2 = box.xyxy[0]
+                    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                    cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                    # confidence
+                    confidence = math.ceil((box.conf[0] * 100)) / 100
+                    print(
+                        f"    Person detected in {camera_id} with Confidence ---> {confidence}"
+                    )
 
-    cap.release()
+                    foundPerson = True
+
+            if foundPerson:
+                _, image = cv2.imencode(".jpg", img)
+
+                post_request(camera_id, image)
+
+        cap.release()
 
 
 def initBufferSize(size: int):
