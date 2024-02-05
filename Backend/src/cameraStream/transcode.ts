@@ -23,28 +23,28 @@ export const transcode = async (
   };
 
   const performTranscoding = async () => {
-      const ffmpegOptions = [
-        '-i',
-        camera.rtspUri,
-        '-c:v',
-        'libx264',
-        '-crf',
-        '23',
-        '-preset',
-        'ultrafast',
-        '-an',
-        '-force_key_frames',
-        'expr:gte(t,n_forced*4)',
-        '-hls_time',
-        '2',
-        '-hls_list_size',
-        '5',
-        '-hls_flags',
-        'delete_segments',
-        '-start_number',
-        '1',
-        'index.m3u8',
-      ];
+    const ffmpegOptions = [
+      '-i',
+      camera.rtspUri,
+      '-c:v',
+      'libx264',
+      '-crf',
+      '23',
+      '-preset',
+      'ultrafast',
+      '-an',
+      '-force_key_frames',
+      'expr:gte(t,n_forced*4)',
+      '-hls_time',
+      '2',
+      '-hls_list_size',
+      '5',
+      '-hls_flags',
+      'delete_segments',
+      '-start_number',
+      '1',
+      'index.m3u8',
+    ];
 
     const childProcess = spawn('ffmpeg', ffmpegOptions, workingDirectory);
 
@@ -53,18 +53,15 @@ export const transcode = async (
         active = true;
         trialCount = 0;
       }
-      console.log(data.toString());
     });
 
     childProcess.on('close', (code) => {
       active = false;
-      console.log(`closed and removed`);
-      console.log(camera.rtspUri);
+      console.log(`closed and removed ${camera.id}`);
       exec('rm -f *', workingDirectory, (error, stdout, stderr) => {
         if (error) {
           console.error(`Clearning folder cam${camera.id} error`);
         }
-        console.log(`Clearning folder cam${camera.id} successful`);
       });
     });
   };
