@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CameraStreamGateway } from './cameraStream.gateway';
 import { JwtModule } from '@nestjs/jwt';
 
-import { CSSOpenVidu } from './open-vidu.service';
+
 import { DatabaseService } from '../database/database.service';
 
 describe('WebStreamGateway', () => {
@@ -10,7 +10,7 @@ describe('WebStreamGateway', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CameraStreamGateway, CSSOpenVidu, DatabaseService],
+      providers: [CameraStreamGateway, DatabaseService],
       imports: [
         JwtModule.register({
           global: true,
