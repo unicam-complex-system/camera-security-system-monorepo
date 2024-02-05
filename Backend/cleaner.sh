@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 rm -r ./static/stream/*
 mkdir -p ./static/stream/cam0
 mkdir -p ./static/stream/cam1

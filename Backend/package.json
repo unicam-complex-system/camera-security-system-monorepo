@@ -6,7 +6,7 @@
   "private": true,
   "license": "GPL",
   "scripts": {
-    "docker:start": "npm ci && nest start",
+    "docker:start": "chmod +x cleaner.sh && ls -l && ./cleaner.sh && npm ci && nest start",
     "docker:dev": "npm run docker:start -- --watch",
     "docker:test": "npm ci && jest",
     "build": "nest build",

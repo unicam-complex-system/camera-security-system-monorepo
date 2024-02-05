@@ -6,7 +6,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - ./mongo-data:/data/db
     env_file:
@@ -17,7 +17,6 @@ services:
     image: node:21-alpine
     depends_on:
      - mongo
-     - openvidu
     restart: on-failure # always
     ports:
       - "8080:8080"
@@ -26,7 +25,7 @@ services:
       - ./Backend:/home/node
     env_file:
       - .secrets.yml
-    command: npm run docker:dev
+    command: npm run docker:start
 
   frontend:
     container_name: frontend
