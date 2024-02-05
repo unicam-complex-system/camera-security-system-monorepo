@@ -67,9 +67,9 @@ export const VideoStreamContainer: FC<PropsType> = () => {
     socket.on("inactive", (data) => {
       const message = JSON.parse(data);
       const currentCamera = cameras.find((camera) => camera.id === message.id);
-      if (currentCamera?.isActive) {
+      // if (currentCamera?.isActive) {
         updateCameraStatus({ id: message.id, status: false });
-      }
+      // }
     });
 
     document.addEventListener("fullscreenchange", onExitFullScreenEscape);

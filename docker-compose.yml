@@ -12,27 +12,29 @@ services:
     env_file:
       - .secrets.yml
 
-  backend:
-    container_name: backend
-    image: node:lts-bullseye
-    depends_on:
-      - mongo
-    restart: on-failure # always
-    ports:
-      - "8080:8080"
-    working_dir: /home/node
-    volumes:
-      - ./Backend:/home/node
-    env_file:
-      - .secrets.yml
-    command:
-      - /bin/sh
-      - -c
-      - |
-        apt update
-        apt install ffmpeg -y
-        npm run docker:start
-
+#  backend:
+#    container_name: backend
+#    platform: linux/amd64
+#    image: node:lts-bullseye
+#    depends_on:
+#      - mongo
+#    restart: on-failure # always
+#    ports:
+#      - "8080:8080"
+#    working_dir: /home/node
+#    volumes:
+#      - ./Backend:/home/node
+#    env_file:
+#      - .secrets.yml
+#    command:
+#      - /bin/sh
+#      - -c
+#      - |
+#        apt update
+#        apt install ffmpeg -y
+#        npm run docker:start
+#
+#
   frontend:
     container_name: frontend
     image: node:21-alpine
