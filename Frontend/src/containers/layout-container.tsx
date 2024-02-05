@@ -9,8 +9,7 @@ import { getCurrentNav } from "@/utils";
 import { useSessionSlice, useCameraSlice } from "@/hooks";
 import { ProtectionContainer } from "./protection-container";
 import { NotificationContainer } from "./notification-container";
-import { useQuery } from "react-query";
-import { axiosClient, getCameras } from "@/api";
+import { axiosClient } from "@/api";
 import { ModalContainer } from "./modal-container";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -23,6 +22,7 @@ export const LayoutContainer = ({
   const { session, logOut, logIn } = useSessionSlice();
   const { isFullScreenGrid } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
+  const [navBarCollapsed, setNavBarCollapsed] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
@@ -36,6 +36,7 @@ export const LayoutContainer = ({
       router.push("/login");
       logOut();
     }
+    setNavBarCollapsed(true);
   };
 
   /* useEffect */
@@ -67,7 +68,14 @@ export const LayoutContainer = ({
         {antStyleLoaded && (
           <ProtectionContainer>
             <Layout className="min-h-screen">
-              <Sider className="bg-primary" breakpoint="xl" collapsedWidth="0">
+              <Sider
+                className="bg-primary"
+                breakpoint="xl"
+                collapsedWidth="0"
+                collapsible
+                collapsed={navBarCollapsed}
+                onCollapse={setNavBarCollapsed}
+              >
                 <div className="flex justify-center p-2">
                   <img
                     src="/images/logo-without-text.svg"

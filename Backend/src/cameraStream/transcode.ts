@@ -1,57 +1,70 @@
 import { spawn, exec } from 'child_process';
 
-export const transcode = (
+export const transcode = async (
   camera: { id: string; rtspUri: string },
   socket: any,
 ) => {
   let trialCount = 0;
-  let active = true;
+  let active = false;
   const workingDirectory = {
     cwd: `./static/stream/cam${camera.id}`,
   };
 
-  const performTranscoding = () => {
-    const ffmpegOptions = [
-      '-i',
-      camera.rtspUri,
-      '-c:v',
-      'copy',
-      '-c:a',
-      'copy',
-      '-hls_time',
-      '2',
-      '-hls_list_size',
-      '3',
-      '-hls_flags',
-      'delete_segments',
-      '-start_number',
-      '1',
-      'index.m3u8',
-    ];
+  const notifiyActive = async (active: boolean) => {
+    const timeout = setTimeout(() => {
+      if (active) {
+        socket.to('clients').emit('active', JSON.stringify({ id: camera.id }));
+      } else {
+        socket
+          .to('clients')
+          .emit('inactive', JSON.stringify({ id: camera.id }));
+      }
+    }, 15000);
+  };
+
+  const performTranscoding = async () => {
+      const ffmpegOptions = [
+        '-i',
+        camera.rtspUri,
+        '-c:v',
+        'libx264',
+        '-crf',
+        '23',
+        '-preset',
+        'ultrafast',
+        '-an',
+        '-force_key_frames',
+        'expr:gte(t,n_forced*4)',
+        '-hls_time',
+        '2',
+        '-hls_list_size',
+        '5',
+        '-hls_flags',
+        'delete_segments',
+        '-start_number',
+        '1',
+        'index.m3u8',
+      ];
 
     const childProcess = spawn('ffmpeg', ffmpegOptions, workingDirectory);
 
-    childProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-      active = true;
-      trialCount = 0;
-    });
-
     childProcess.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-      active = true;
+      if (data?.includes('frame=') || data?.includes('[hls')) {
+        active = true;
+        trialCount = 0;
+      }
+      console.log(data.toString());
     });
 
     childProcess.on('close', (code) => {
       active = false;
-      console.log(`child process exited with code ${code}`);
-      exec('rm *', workingDirectory, (error, stdout, stderr) => {
+      console.log(`closed and removed`);
+      console.log(camera.rtspUri);
+      exec('rm -f *', workingDirectory, (error, stdout, stderr) => {
         if (error) {
-          console.error(`exec error: ${error}`);
-          return;
+          console.error(`Clearning folder cam${camera.id} error`);
         }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
+        console.log(`Clearning folder cam${camera.id} successful`);
       });
     });
   };
@@ -61,16 +74,10 @@ export const transcode = (
   // Check inactivity every five second
   const interval = setInterval(() => {
     if (!active) {
-      trialCount = trialCount + 1;
-      if (trialCount > 10) {
-        socket
-          .to('clients')
-          .emit('inactive', JSON.stringify({ id: camera.id }));
-      }
-
+      notifiyActive(false);
       performTranscoding();
     } else if (active) {
-      socket.to('clients').emit('active', JSON.stringify({ id: camera.id }));
+      notifiyActive(true);
     }
   }, 5000);
 };

@@ -47,8 +47,8 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
   };
 
   useEffect(() => {
+    let hls = new Hls();
     if (Hls.isSupported()) {
-      let hls = new Hls();
       // bind them together
       hls.attachMedia(videoRef.current);
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
@@ -62,11 +62,16 @@ const VideoPlayer = ({ camera }: { camera: Camera }) => {
           console.log(event);
         });
       });
+    } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+      videoRef.current.src = process.env.NEXT_PUBLIC_BACKEND_URL
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}stream/cam${camera.id}/index.m3u8`
+        : "";
     }
     document.addEventListener("fullscreenchange", onExitFullScreenEscape);
 
     return () => {
       document.removeEventListener("fullscreenchange", onExitFullScreenEscape);
+      hls.destroy();
     };
   }, []);
 

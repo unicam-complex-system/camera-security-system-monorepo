@@ -53,24 +53,19 @@ export class CameraStreamGateway implements OnGatewayConnection {
 
   async afterInit() {
     try {
-      //const nvr = await this.database.getNVRData();
+      const nvr = await this.database.getNVRData();
 
       /* To be used with NVR */
-      // const cameras = nvr.channels.map((id: number) => ({
-      //   id: id.toString(),
-      //   rtspUri: `${nvr.ip}/ch${id}_0.264`,
-      // }));
+      const cameras = nvr.channels.map((id: number) => ({
+        id: id.toString(),
+        rtspUri: `${nvr.ip}/ch${id}_0.264`,
+      }));
 
-      const cameras = [
-        {
-          id: '0',
-          rtspUri: `rtsp://192.168.155.244:554`,
-        },
-      ];
-
-      cameras.forEach((camera) => {
-        transcode(camera, this.io);
-      });
+      Promise.all(
+        cameras.map((camera) => {
+          transcode(camera, this.io);
+        }),
+      );
     } catch (error) {
       console.error(error);
     }

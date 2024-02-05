@@ -4,7 +4,7 @@ import { Tooltip } from "antd";
 import { VideoRecordingScreen } from "@/components";
 import { useCameraSlice } from "@/hooks";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 
 type PropsType = {};
@@ -58,18 +58,25 @@ export const VideoStreamContainer: FC<PropsType> = () => {
 
     socket.on("active", (data) => {
       const message = JSON.parse(data);
-      updateCameraStatus({ id: message.id, status: true });
+      const currentCamera = cameras.find((camera) => camera.id === message.id);
+      if (!currentCamera?.isActive) {
+        updateCameraStatus({ id: message.id, status: true });
+      }
     });
 
     socket.on("inactive", (data) => {
       const message = JSON.parse(data);
-      updateCameraStatus({ id: message.id, status: false });
+      const currentCamera = cameras.find((camera) => camera.id === message.id);
+      if (currentCamera?.isActive) {
+        updateCameraStatus({ id: message.id, status: false });
+      }
     });
 
     document.addEventListener("fullscreenchange", onExitFullScreenEscape);
 
     return () => {
       document.removeEventListener("fullscreenchange", onExitFullScreenEscape);
+      socket.disconnect();
     };
   }, []);
 
@@ -82,7 +89,7 @@ export const VideoStreamContainer: FC<PropsType> = () => {
           </React.Fragment>
         ))}
       </div>
-      <div className="hidden sm:flex justify-end py-3">
+      <div className="hidden md:flex justify-end py-3">
         {!isFullScreenGrid && (
           <Tooltip title="Full screen">
             <FullscreenOutlined
