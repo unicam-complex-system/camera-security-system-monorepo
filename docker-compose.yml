@@ -14,7 +14,7 @@ services:
 
   backend:
     container_name: backend
-    image: node:21-alpine
+    image: node:lts-bullseye
     depends_on:
       - mongo
     restart: on-failure # always
@@ -29,7 +29,8 @@ services:
       - /bin/sh
       - -c
       - |
-        apk add ffmpeg
+        apt update
+        apt install ffmpeg -y
         npm run docker:start
 
   frontend:
