@@ -6,7 +6,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27018:27017"
+      - "27017:27017"
     volumes:
       - ./mongo-data:/data/db
     env_file:
@@ -16,7 +16,7 @@ services:
     container_name: backend
     image: node:21-alpine
     depends_on:
-     - mongo
+      - mongo
     restart: on-failure # always
     ports:
       - "8080:8080"
@@ -25,7 +25,12 @@ services:
       - ./Backend:/home/node
     env_file:
       - .secrets.yml
-    command: apk add ffmpeg && npm run docker:start
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add ffmpeg
+        npm run docker:start
 
   frontend:
     container_name: frontend
