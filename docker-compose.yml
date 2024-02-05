@@ -25,7 +25,7 @@ services:
       - ./Backend:/home/node
     env_file:
       - .secrets.yml
-    command: apk add ffmpeg && npm run docker:start
+    command: npm run docker:start
 
   frontend:
     container_name: frontend
