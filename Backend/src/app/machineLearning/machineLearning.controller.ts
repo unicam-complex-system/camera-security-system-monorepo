@@ -124,9 +124,9 @@ export class MachineLearningController {
   ) {
     const date = new Date();
 
-    console.log('Adding data to database');
+    // console.log('Adding data to database');
     await this.database.addData(new DataType(cameraId, date, null, file));
-    console.log('Sending intrusion detection notification');
+    // console.log('Sending intrusion detection notification');
     await this.telegramApi.sendIntrusionDetectionNotification(
       cameraId,
       date,
