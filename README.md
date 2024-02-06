@@ -29,23 +29,6 @@ To run the frontend you need to have the following environment variables defined
 
 ```yaml
 NEXT_PUBLIC_BACKEND_URL=https://localhost:8080/
-```
-
-### 2- Run the application
-
-Install the required packages by running:
-```shell
-docker compose up -d
-```
-
-# Backend
-The backend is the part of the camera security system that is responsible for authentication, logging detection events, and establish communication between the frontend and the media server to access the IP Cameras.
-
-### 1- Define environment variables
-To run the backend you need to have the following environment variables defined in a `.env` file in the root directory of the backend. You can use the following example
-
-```yaml
-# mongodb+srv is the protocol when connecting to cloud mongodb
 MONGO_PROTOCOL=mongodb
 # mongo:27017 indicates the container called mongo and the port it is listening on
 MONGO_HOST=mongo:27017
@@ -63,6 +46,44 @@ CSD_PASSWORD=Password
 TELEGRAM_TOKEN=api_token
 # Should be of the format of BCrypt hash
 BCRYPT_SALT=...
+# Put the IP address of the NVR
+NVR_IP_ADDRESS=
+```
+
+### 2- Run the application
+
+Install the required packages by running:
+```shell
+docker compose up -d
+```
+
+# Backend
+The backend is the part of the camera security system that is responsible for authentication, logging detection events, and establish communication between the frontend and the media server to access the IP Cameras.
+
+### 1- Define environment variables
+To run the backend you need to have the following environment variables defined in a `.env` file in the root directory of the backend. You can use the following example
+
+```yaml
+# User to access the backend
+CSD_USER=User
+# Password to access the backend
+CSD_PASSWORD=Password
+
+MONGO_PROTOCOL=mongodb
+# mongo:27017 indicates the container called mongo and the port it is listening on
+MONGO_HOST=localhost:27017
+# DB root username
+MONGO_INITDB_ROOT_USERNAME=username
+# DB root password
+MONGO_INITDB_ROOT_PASSWORD=password
+
+# JWT cryptographic secret
+JWT_SECRET=secret
+# Telegram bot token
+TELEGRAM_TOKEN=api_token
+# Should be of the format of BCrypt hash
+BCRYPT_SALT=...
+
 # Put the IP address of the NVR
 NVR_IP_ADDRESS=
 ```
