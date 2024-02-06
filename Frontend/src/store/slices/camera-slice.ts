@@ -41,12 +41,12 @@ export const cameraSlice = createSlice({
       state: CameraStateType,
       action: PayloadAction<{ id: string; status: boolean }>
     ) => {
-      state.cameras = state.cameras.map((item) => {
-        if (item.id === action.payload.id) {
+      state.cameras = [...state.cameras.map((item) => {
+        if (item.id == action.payload.id) {
           return { ...item, isActive: action.payload.status };
         }
         return item;
-      });
+      })];
     },
     toggleIsFullScreenGrid: (
       state: CameraStateType,

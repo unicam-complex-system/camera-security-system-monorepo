@@ -9,7 +9,8 @@ export const recentActivitiesColumns: ColumnsType<Activity> = [
   {
     title: "Time",
     dataIndex: "timestamp",
-    key: "timestamp",
+    render: (_, record) => <span>{new Date(record.timestamp).toString().substring(0, 21)}</span>,
+
   },
   {
     title: "Camera",

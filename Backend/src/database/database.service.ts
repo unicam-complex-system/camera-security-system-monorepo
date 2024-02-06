@@ -66,12 +66,9 @@ export class DatabaseService {
     };
     const filter = {
       name: 'NVR',
-      ip: process.env.NVR_IP_ADDRESS,
-      channels: [0, 1, 2, 3, 4, 5, 6, 7],
     };
 
     const size = await this.DB.collection('General').countDocuments(filter);
-
     if (size == 0) {
       await this.DB.collection('General').insertOne(data);
     }

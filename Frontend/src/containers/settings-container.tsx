@@ -22,7 +22,7 @@ export const SettingsContainer: FC<PropsType> = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(
       generateSettingFormSchema(cameras.map((item) => item.id))
@@ -31,21 +31,20 @@ export const SettingsContainer: FC<PropsType> = () => {
   const { openNotification } = useNotificationSlice();
   const { mutate } = useMutation(updateCamera, {
     onSuccess: () => {
-      queryClient.invalidateQueries('cameras')
+      queryClient.invalidateQueries("cameras");
     },
   });
-
 
   /* event handlers */
   const onSubmit = async (data: any) => {
     try {
       setIsLoading(true);
-      console.log(data);
       mutate(data);
       openNotification({
         type: "success",
         message: "Updated Successfully.",
       });
+      queryClient.invalidateQueries("cameras");
     } catch (error: any) {
       openNotification({
         type: "error",
@@ -60,12 +59,11 @@ export const SettingsContainer: FC<PropsType> = () => {
 
   useEffect(() => {
     if (cameras.length > 0) {
-      cameras.forEach(
-        (camera) => { setValue(camera.id.toString(), camera.name) }
-      )
+      cameras.forEach((camera) => {
+        setValue(camera.id.toString(), camera.name);
+      });
     }
-
-  }, [cameras])
+  }, [cameras]);
 
   return (
     <div className="flex flex-col">
@@ -86,11 +84,7 @@ export const SettingsContainer: FC<PropsType> = () => {
         ))}
 
         <div className="pt-2">
-          <Button
-            htmlType="submit"
-            disabled={!isValid}
-            loading={isLoading}
-          >
+          <Button htmlType="submit" disabled={!isValid} loading={isLoading}>
             Save
           </Button>
         </div>

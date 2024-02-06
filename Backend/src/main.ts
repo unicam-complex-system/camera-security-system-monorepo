@@ -44,7 +44,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-api', app, document);
 
   app.enableCors({ origin: true });
-  await app.listen(process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080');
+  await app.listen(process.env.LISTEN_PORT ? process.env.LISTEN_PORT : '8080',"0.0.0.0");
 
   console.log(
     `\nApp started, look at https://localhost:${

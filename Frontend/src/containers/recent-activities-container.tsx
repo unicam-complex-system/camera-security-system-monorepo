@@ -21,7 +21,10 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
     isLoading: isLoadingRecentActivitiesCount,
     error: isErrorRecentActivitiesCount,
     data: recentActivitiesCountFetchedData,
-  } = useQuery("recentActivitiesCount", getRecentActivitiesCount());
+    refetch: refetchCount,
+  } = useQuery("recentActivitiesCount", getRecentActivitiesCount(), {
+    enabled: false,
+  });
 
   // get paginated recent activities
   const {
@@ -32,8 +35,15 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
   } = useQuery(
     ["recentActivities", pageNumber],
     getRecentActivities(10, pageNumber - 1),
-    { keepPreviousData: true, enabled: false }
+    {
+      keepPreviousData: true,
+      enabled: recentActivitiesCountFetchedData != undefined,
+    }
   );
+
+  useEffect(() => {
+    refetchCount();
+  }, []);
 
   useEffect(() => {
     if (recentActivitiesCountFetchedData) {
@@ -41,6 +51,13 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
       refechRecentActivites();
     }
   }, [recentActivitiesCountFetchedData]);
+
+  useEffect(() => {
+    if (pageNumber) {
+      console.log(pageNumber);
+      refechRecentActivites();
+    }
+  }, [pageNumber]);
 
   useEffect(() => {
     if (isErrorRecentActivities) {
@@ -66,6 +83,12 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
 
   return (
     <>
+      {recentActivitiesCountFetchedData && (
+        <div className="py-4">
+          <span className="font-bold">Total Detections:</span>{" "}
+          {recentActivitiesCountFetchedData}
+        </div>
+      )}
       <Table
         columns={recentActivitiesColumns}
         data={recentActivitiesFetchedData?.map((event) => ({
@@ -74,7 +97,7 @@ export const RecentActivitiesContainer: FC<PropsType> = () => {
         }))}
         pagination={{
           total: recentActivitiesCountFetchedData,
-          onChange: setPageNumber,
+          onChange: (pageNumber) => setPageNumber(pageNumber),
         }}
         rowKey={"_id"}
         loading={isLoadingRecentActivitiesCount || isLoadingRecentActivities}

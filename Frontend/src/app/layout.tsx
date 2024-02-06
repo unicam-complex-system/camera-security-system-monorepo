@@ -6,6 +6,7 @@ import React from "react";
 import { LayoutContainer } from "@/containers";
 
 import "@/app/globals.css";
+import 'video.js/dist/video-js.css';
 
 /* font */
 const poppins = Poppins({

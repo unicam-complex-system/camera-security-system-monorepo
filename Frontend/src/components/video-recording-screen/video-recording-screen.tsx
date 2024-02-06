@@ -5,18 +5,15 @@ import VideoPlayer from "./video-player";
 
 type PropsType = {
   camera?: Camera;
-  videoRef: any;
 };
 
 /**  This component renders a single video recording screen */
-export const VideoRecordingScreen: FC<PropsType> = ({ camera, videoRef }) => {
+export const VideoRecordingScreen: FC<PropsType> = ({ camera }) => {
   return (
     <>
       {camera && (
         <>
-          {camera.isActive && (
-            <VideoPlayer camera={camera} videoRef={videoRef} />
-          )}
+          {camera.isActive && <VideoPlayer camera={camera} />}
 
           {!camera.isActive && (
             <div className="bg-black min-h-[250px] relative">

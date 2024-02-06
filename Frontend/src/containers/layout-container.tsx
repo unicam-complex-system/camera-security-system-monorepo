@@ -9,8 +9,7 @@ import { getCurrentNav } from "@/utils";
 import { useSessionSlice, useCameraSlice } from "@/hooks";
 import { ProtectionContainer } from "./protection-container";
 import { NotificationContainer } from "./notification-container";
-import { useQuery } from "react-query";
-import { axiosClient, getCameras } from "@/api";
+import { axiosClient } from "@/api";
 import { ModalContainer } from "./modal-container";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -21,14 +20,12 @@ export const LayoutContainer = ({
 }) => {
   /* state to check if ant design styled loaded */
   const { session, logOut, logIn } = useSessionSlice();
-  const { isFullScreenGrid, setCameras } = useCameraSlice();
+  const { isFullScreenGrid } = useCameraSlice();
   const [antStyleLoaded, setAntStyleLoaded] = useState<boolean>(false);
+  const [navBarCollapsed, setNavBarCollapsed] = useState<boolean>(false);
   const [currentNavMenu, setCurrentNavMenu] = useState<NavBarItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
-
-  // Initialize camera
-  const { data: camerasFetchedData } = useQuery("cameras", getCameras());
 
   /* event handler */
   const onMenuClick = (info: any) => {
@@ -39,27 +36,22 @@ export const LayoutContainer = ({
       router.push("/login");
       logOut();
     }
+    setNavBarCollapsed(true);
   };
 
   /* useEffect */
   useEffect(() => {
     setAntStyleLoaded(true);
-    const accessToken = sessionStorage.getItem("access_token");
-    if (accessToken) {
-      axiosClient.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${sessionStorage.getItem("access_token")}`;
-      logIn({ accessToken: accessToken });
+    if (typeof window !== "undefined") {
+      const accessToken = sessionStorage.getItem("access_token");
+      if (accessToken) {
+        axiosClient.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
+        logIn({ accessToken: accessToken });
+      }
     }
   }, []);
-
-  useEffect(() => {
-    if (camerasFetchedData && session) {
-      setCameras(
-        camerasFetchedData.map((item) => ({ ...item, isActive: true }))
-      );
-    }
-  }, [camerasFetchedData, session]);
 
   useEffect(() => {
     /* navbar menu */
@@ -76,7 +68,14 @@ export const LayoutContainer = ({
         {antStyleLoaded && (
           <ProtectionContainer>
             <Layout className="min-h-screen">
-              <Sider className="bg-primary" breakpoint="xl" collapsedWidth="0">
+              <Sider
+                className="bg-primary"
+                breakpoint="xl"
+                collapsedWidth="0"
+                collapsible
+                collapsed={navBarCollapsed}
+                onCollapse={setNavBarCollapsed}
+              >
                 <div className="flex justify-center p-2">
                   <img
                     src="/images/logo-without-text.svg"
