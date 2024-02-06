@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-29T07:45:12.564Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15" etag="QAOwW3cFHUZmFp2pdd4H" version="22.1.4" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-06T09:31:10.406Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15" etag="ff41Zmwjp_plJYJGg38b" version="23.1.1" type="device">
   <diagram name="Page-1" id="5f0bae14-7c28-e335-631c-24af17079c00">
-    <mxGraphModel dx="1080" dy="1884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1214" dy="2004" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -62,21 +62,30 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="729.9999999999998" y="570" as="sourcePoint" />
             <mxPoint x="760" y="370" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="730" y="630" />
+            </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="CCcryx04_NlbNabwv35F-1" value="&lt;font style=&quot;font-size: 32px;&quot;&gt;Camera system&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="660" y="570" width="140" height="80" as="geometry" />
+        <mxCell id="CCcryx04_NlbNabwv35F-1" value="&lt;font style=&quot;font-size: 32px;&quot;&gt;Camera system&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="455" y="590" width="140" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="CCcryx04_NlbNabwv35F-2" value="&lt;font style=&quot;font-size: 32px;&quot;&gt;Telegram Bot&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="CCcryx04_NlbNabwv35F-2" value="&lt;font style=&quot;font-size: 32px;&quot;&gt;Telegram Bot&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="650" y="-390" width="160" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="CCcryx04_NlbNabwv35F-3" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;" edge="1" parent="1" source="39150e848f15840c-3" target="CCcryx04_NlbNabwv35F-2">
+        <mxCell id="CCcryx04_NlbNabwv35F-3" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;" parent="1" source="39150e848f15840c-3" target="CCcryx04_NlbNabwv35F-2" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="470" y="-40" as="sourcePoint" />
             <mxPoint x="520" y="-90" as="targetPoint" />
             <Array as="points">
               <mxPoint x="730" y="10" />
             </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WISknSA-FnQMQl5b_77A-1" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;" edge="1" parent="1" source="CCcryx04_NlbNabwv35F-1" target="39150e848f15840c-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="280" as="sourcePoint" />
+            <mxPoint x="510" y="230" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>

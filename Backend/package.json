@@ -6,7 +6,7 @@
   "private": true,
   "license": "GPL",
   "scripts": {
-    "docker:start": "chmod +x cleaner.sh && ./cleaner.sh && npm ci && nest start",
+    "css:start": "chmod +x cleaner.sh && ./cleaner.sh && npm ci && nest start",
     "docker:dev": "npm run docker:start -- --watch",
     "docker:test": "npm ci && jest",
     "build": "nest build",
@@ -40,7 +40,6 @@
     "dotenv": "^16.3.1",
     "mongodb": "^6.3.0",
     "node-telegram-bot-api": "^0.64.0",
-    "openvidu-node-client": "^2.29.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "ws": "^8.14.2"
