@@ -6,12 +6,13 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - ./mongo-data:/data/db
     env_file:
       - .secrets.yml
 
+# WE can only dockerize this in a linux machine
 #  backend:
 #    container_name: backend
 #    platform: linux/amd64
@@ -32,9 +33,9 @@ services:
 #      - |
 #        apt update
 #        apt install ffmpeg -y
-#        npm run docker:start
+#        npm run css:start
 #
-#
+
   frontend:
     container_name: frontend
     image: node:21-alpine
@@ -48,5 +49,5 @@ services:
       - ./Frontend:/home/node
     env_file:
       - .secrets.yml
-    command: npm run docker:start
+    command: npm run css:start
 

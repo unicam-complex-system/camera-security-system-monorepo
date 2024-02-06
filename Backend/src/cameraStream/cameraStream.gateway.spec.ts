@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CameraStreamGateway } from './cameraStream.gateway';
 import { JwtModule } from '@nestjs/jwt';
-
 import { DatabaseService } from '../database/database.service';
 
 describe('WebStreamGateway', () => {

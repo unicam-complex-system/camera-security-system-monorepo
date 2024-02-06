@@ -9,27 +9,40 @@ The CSS is mainly composed of three 5 components: <br /> <br />
     detected. <br />
     5. **NVR & IPCameras**: These are the cameras that captures videos of the surrounding.<br />
 
-In order to successfully run the full project components in your local machine, launch the components in the following order: <br /> <br />
-    1.  Install your IP Cameras in the areas desired and connect it to the network. <br />
-    2.  Run the media server.  <br />
-    3.  Run the backend. <br />
-    4.  Run the frontend. <br />
-    5.  Run the machine learning component. <br />
+In order to successfully run the full project components in your local machine, launch the components in the following order: <br />
+1. Install your IP Cameras in the areas desired and connect it to the network. <br />
+4. Run the frontend and DB dockerized images. <br />
+3. Run the backend. <br />
+5. Run the machine learning component. <br />
 
 Below, you will get full details on how to run each component.
 
 # Prerequisites
 
-You should first install node.js in your machine.
-You can get more information [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
+You should first install [node.js](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs) and [docker](https://docs.docker.com/get-docker/) in your machine.
 
-You should also have docker installed in your machine.
+# Frontend and DB
+The frontend is the part of the camera security system that enables user to interact with the system visually.
+
+### 1- Define environment variables
+To run the frontend you need to have the following environment variables defined in a `.secrets.yml` file in the root directory. You can use the following example
+
+```yaml
+NEXT_PUBLIC_BACKEND_URL=https://localhost:8080/
+```
+
+### 2- Run the application
+
+Install the required packages by running:
+```shell
+docker compose up -d
+```
 
 # Backend
+The backend is the part of the camera security system that is responsible for authentication, logging detection events, and establish communication between the frontend and the media server to access the IP Cameras.
 
-## Just Run
-
-To run the backend you need to have the following environment variables defined in a .env file in the root directory of the backend. You can use the following example
+### 1- Define environment variables
+To run the backend you need to have the following environment variables defined in a `.env` file in the root directory of the backend. You can use the following example
 
 ```yaml
 # mongodb+srv is the protocol when connecting to cloud mongodb
@@ -52,20 +65,11 @@ TELEGRAM_TOKEN=api_token
 BCRYPT_SALT=...
 # Put the IP address of the NVR
 NVR_IP_ADDRESS=
-## Frontend
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8080/
 ```
-Then you can run
 
+You can also run the backend by just adding the telegram token and leave the rest of the config as it is.
 
-### 2- Define environment variables
-In order to run the application you will need to define the environment variable by creating
-.env file in the root Backend directory.
-
-Copy the content of .env_example found in the Backend root directory and change the variable values
-accordingly. You can also run the backend by just adding the telegram token and leave the rest of the config as it is.
-
-### 3- Install packages and Run the application
+### 2- Run the application
 
 Run the application using the following commands:
 
@@ -73,47 +77,12 @@ Run the application using the following commands:
 cd Backend
 npm run css:start
 ```
-Note: If you are running the backend locally make sure that you followed the steps in the [Media Server Section](#media-server). 
 
-# Frontend
+# Machine Learning
+The machine learning component is responsible for analyzing the camera streams and check if an object is detected.
 
-This is the frontend part of the camera security system. It is this part that enables
-user to interact with the system visually.
+It is simple to start it using the following commands:
 
-### 0- Prerequisite
-You should first install node.js in your machine.
-You can get more information [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
-### 1- Open terminal
-
-First open the terminal and move to the frontend directory.
-
-If you are currently in root directory of this repo. Type the following in the terminal to change directory:
-```yaml
-cd ./Frontend/
+```shell
+python ImageRecognition/main.py
 ```
-
-### 2- Define environment variables
-In order to run the application you will need to define the environment variable by creating
-.env file in the root Frontend directory.
-
-Copy the content of .env_example found in the Frontend root directory and change the variable values
-accordingly.
-```yaml
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8080/
-```
-
-### 3- Install packages
-
-Install the required packages by running:
-```yaml
-npm install
-```
-
-### 4- Run the application
-
-Run the application using this command:
-
-```yaml
-npm run dev
-```
-Note: If you are running the backend locally make sure that you followed the steps in the [backend section](#backend). 
